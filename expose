@@ -1,0 +1,3 @@
+#!/bin/bash
+to_ip=`ifconfig $1 | grep "inet addr:" | awk '{ print $2 }' | sed -e s/addr://g`
+ssh -L $to_ip:$2:localhost:$2 guest@localhost

@@ -1,0 +1,8 @@
+#!/bin/bash
+echo -e "Picking commit \E[32m $1 \E[0m for \E[31m $2 \E[0m ..."
+read -p " Pick? (Y/n):"
+if [ "$REPLY" != "n" ]; then
+  cur_branch=`git branch | grep "*" | awk '{ print $2}'`
+  git checkout $2 && git cherry-pick $1 && git checkout $cur_branch && echo "Done ..."
+fi
+

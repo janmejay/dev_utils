@@ -1,0 +1,5 @@
+#!/bin/bash
+echo "Processes to be killed are..."
+ps ax | grep $1 | grep -v grep
+read -p "Kill them??? (Y/n):"
+[ "$REPLY" == "n" ] || ps ax | grep $1 | grep -v grep | awk '{print $1}' | xargs kill -9

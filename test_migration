@@ -1,0 +1,14 @@
+#!/bin/bash
+if [ ! $1 ]; then
+  offset="0"
+else
+  offset=$1
+fi
+echo "offset is -> $offset"
+second_last_version=`echo "select * from schema_migrations order by version desc limit 1 offset $offset" | ./script/dbconsole 2>/dev/null | grep -v 'version'`
+echo "second last migration number is -> $second_last_version"
+rake db:migrate
+rake db:migrate VERSION=$second_last_version
+rake db:migrate
+rake db:migrate VERSION=$second_last_version
+rake db:migrate

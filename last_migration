@@ -1,0 +1,2 @@
+#!/bin/bash
+echo "select * from schema_migrations order by version desc limit 2" | ./script/dbconsole 2>/dev/null | grep -v 'version'

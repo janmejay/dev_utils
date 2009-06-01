@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo echo "search corporate.thoughtworks.com thoughtworks.com thoughtworks.net wazokazi.com thoughtworks.org" > /etc/resolv.conf
