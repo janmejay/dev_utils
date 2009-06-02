@@ -1,0 +1,7 @@
+hardstatus on
+hardstatus alwayslastline
+hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %m/%d %C%a "
+escape ^Jj
+startup_message off
+defscrollback 30000
+vbell off
