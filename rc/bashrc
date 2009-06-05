@@ -98,7 +98,7 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-alias ruby_tags='ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
+alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
 alias sql='~/.sq_client/squirrel-sql.sh'
 alias e=$SVN_EDITOR
