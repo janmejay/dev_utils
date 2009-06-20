@@ -102,4 +102,5 @@ alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
 alias sql='~/.sq_client/squirrel-sql.sh'
 alias e=$SVN_EDITOR
+alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
 

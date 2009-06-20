@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# script assumes jail in projects/jail
+export jail_dir=~/projects/jail
+
+sudo mount -t proc proc "$jail_dir/proc"
+sudo mount -t devpts devpts "$jail_dir/dev/pts"
+
+sudo chroot $jail_dir /etc/init.d/ssh start
+sudo chroot $jail_dir /etc/init.d/mysql start
+sudo chroot $jail_dir /bin/bash --login
+sudo chroot $jail_dir /etc/init.d/ssh stop
+sudo chroot $jail_dir /etc/init.d/mysql stop
+
+sudo umount "$jail_dir/dev/pts"
+sudo umount "$jail_dir/proc"
