@@ -22,6 +22,7 @@ if [ -d "$HOME/bin" ] ; then
 fi
 
 export JDK_HOME=/usr/local/jdk_1_6
+export JAVA_HOME=/usr/local/jdk_1_6
 export PATH=$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR='emacs -nw -q'
