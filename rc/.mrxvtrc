@@ -83,7 +83,7 @@ Mrxvt.macro.Ctrl+Shift+g:		MonitorTab AUTO
 # ---------------------- SCROLLING / SCROLLBAR OPTIONS ----------------------- #
 #
 
-Mrxvt.scrollBar:		true
+Mrxvt.scrollBar:		false
 Mrxvt.scrollbarRight:		true
 Mrxvt.scrollbarStyle:		rxvt
 
@@ -108,7 +108,7 @@ Mrxvt.troughColor:		#202020
 #
 
 # True translucency (using Xorg's composite extension).
-Mrxvt.opacity:		        15
+Mrxvt.opacity:		      14
 Mrxvt.opacityDegree:		0
 
 # Pseudo transparency. As long as you set the background using an esetroot

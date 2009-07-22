@@ -8,6 +8,8 @@
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
 
+export EDITOR='emacs -nw -q'
+
 # if running bash
 if [ -n "$BASH_VERSION" ]; then
     # include .bashrc if it exists
@@ -25,4 +27,5 @@ export JDK_HOME=/usr/local/jdk_1_6
 export JAVA_HOME=/usr/local/jdk_1_6
 export PATH=$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin
 export CDPATH=.:~:~/Desktop:~/projects
-export SVN_EDITOR='emacs -nw -q'
+export SVN_EDITOR=$EDITOR
+export PYTHONSTARTUP=~/bin/rc/pythonrc
