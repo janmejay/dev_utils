@@ -1,0 +1,15 @@
+section: screens
+	 left:
+	 main:
+	 right:
+end
+
+section: links
+	left:
+		right = main
+	main:
+		left = left
+		right = right
+	right:
+		left = main
+end

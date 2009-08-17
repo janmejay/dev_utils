@@ -106,3 +106,4 @@ alias e=$EDITOR
 alias emacs=$EDITOR
 alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
 alias term='mrxvt --fullscreen -e screen'
+alias syn='synergys --name left --daemon --config ~/.synergy_conf'
