@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+##############################################################################
+# findstr
+#
+# Search for files containing a specified string.  Show the file path,
+# line number, and the line itself containing a specified string.
+#
+# EXAMPLE:
+#
+# To search for all the files with the file extension .html containing
+# a string "body" under the current directory and all its
+# subdirectories, do:
+#
+#   $ findstr . "*.html" "body"
+#
+
+find $1 -name \*$2 -exec grep -nH --color=auto "$3" {} \;
