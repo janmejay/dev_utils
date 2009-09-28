@@ -1,0 +1,49 @@
+[ui]
+username = janmejay
+ignore = ~/.hgignore-global
+ssh = ssh -C
+merge=meld
+
+[diff]
+git=true
+
+[extensions]
+fetch =
+record =
+hgext.mq =
+hgext.purge =
+#pager =
+transplant =
+hgk =
+hgext.convert=
+hgext.graphlog=
+color=
+rebase=
+bookmarks=
+convert=
+
+[pager]
+pager = LESS='FSRX' less
+quiet = True
+
+[alias]
+#sin = in --no-merges --template "{rev}:{node|short} ({author})\t{desc|firstline}\n"
+sin = in --template "{rev}:{node|short} ({author})\t{desc|firstline}\n"
+sout = out --template "{rev}:{node|short} ({author})\t{desc|firstline}\n"
+slog = log --template "{rev}:{node|short} ({author})\t{desc|firstline}\n"
+bglog = glog --template "\t{rev}:{node|short} -- ({author|person}) {desc|firstline}\n\t\t{branches}\n\n"
+personal = push -f personal-build
+
+[defaults]
+revert = --no-backup
+glog = --template "\t{rev}:{node|short} -- ({author|person}) {desc|firstline}\n"
+qnew = -D
+qrefresh = -D
+qfold = -e
+qseries = -s
+#branches = --active
+addremove = -s 50
+
+[web]
+style=coal
+allow_archive = gz

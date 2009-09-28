@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<keymap version="1" name="better_emacs" parent="Emacs">
+  <action id="$Undo">
+    <keyboard-shortcut first-keystroke="shift control MINUS" />
+    <keyboard-shortcut first-keystroke="control SLASH" />
+  </action>
+  <action id="Back">
+    <keyboard-shortcut first-keystroke="control alt LEFT" />
+    <keyboard-shortcut first-keystroke="shift alt 8" />
+  </action>
+  <action id="CommentByBlockComment">
+    <keyboard-shortcut first-keystroke="control alt SEMICOLON" />
+  </action>
+  <action id="CommentByLineComment">
+    <keyboard-shortcut first-keystroke="control SEMICOLON" />
+  </action>
+  <action id="Diff.FocusOppositePane" />
+  <action id="Editor Undo">
+    <keyboard-shortcut first-keystroke="control SLASH" />
+  </action>
+  <action id="EditorPageUp">
+    <keyboard-shortcut first-keystroke="PAGE_UP" />
+    <keyboard-shortcut first-keystroke="alt V" />
+  </action>
+  <action id="GotoImplementation">
+    <keyboard-shortcut first-keystroke="shift control alt I" />
+  </action>
+  <action id="GuiDesigner.ExpandSelection">
+    <keyboard-shortcut first-keystroke="control alt Z" />
+  </action>
+  <action id="Images.Editor.ActualSize">
+    <keyboard-shortcut first-keystroke="control DIVIDE" />
+  </action>
+  <action id="NextSplitter" />
+  <action id="RecentFiles">
+    <keyboard-shortcut first-keystroke="control X" second-keystroke="B" />
+  </action>
+  <action id="ReformatCode">
+    <keyboard-shortcut first-keystroke="control alt BACK_SLASH" />
+  </action>
+</keymap>
+
