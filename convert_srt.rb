@@ -1,8 +1,8 @@
 #!/usr/bin/env ruby
 
-raise "missing if=/foo/bar.srt for using bar.srt as input srt file" unless (in_file = ENV['if']) && File.exist?(in_file)
-
-contents = File.read(in_file)
+def executing?
+  ENV['_'] =~ /convert_srt\.rb$/
+end
 
 module Converter
   module Number
@@ -24,11 +24,13 @@ module Converter
 
   module HMS #hour min sec
     def convert(count, start_time, end_time)
-      count = count.to_i + count_start;
-      start_time = convert_time(start_time)
-      end_time = convert_time(end_time)
+      count, start_time, end_time = convert_values(count, start_time, end_time)
       "#{count}
 #{start_time} --> #{end_time}"
+    end
+
+    def convert_values count, start_time, end_time
+      return count.to_i + count_start, convert_time(start_time), convert_time(end_time)
     end
 
     def convert_time time
@@ -57,24 +59,38 @@ module Converter
       raise "provide hour_start=HH min_start=MM sec_start=SS mills_start=mmm count_start=C for this strategy"
     end
   end
+
+  module Formula
+    include HMS
+
+  end
 end
 
-raise "missing strategy='Converter::HMS' or 'Converter::Number' to use choose convertor" unless (strategy = ENV['strategy'])
+def processor
+  raise "missing strategy='Converter::HMS' or 'Converter::Number' to use choose convertor" unless (strategy = ENV['strategy'])
 
-convertor = Kernel.eval(strategy, binding, __FILE__, __LINE__)
+  convertor = Kernel.eval(strategy, binding, __FILE__, __LINE__)
 
-offset = Class.new do
-  include convertor
+  Class.new do
+    include convertor
 
-  def initialize
-    check_sanity
-  end
+    def initialize
+      check_sanity
+    end
 
-  def method_missing method
-    (val = ENV[method.to_s]) && val.to_i
-  end
-end.new
+    def method_missing method
+      (val = ENV[method.to_s]) && val.to_i
+    end
+  end.new
+end
 
-raise "missing of=/foo/bar.srt for using bar.srt as output srt file" unless (out_file = ENV['of'])
+#untested
+if executing?
 
-File.open(out_file, "w") { |h| h.write(offset.process(contents)) }
+  raise "missing if=/foo/bar.srt for using bar.srt as input srt file" unless (in_file = ENV['if']) && File.exist?(in_file)
+  contents = File.read(in_file)
+
+  raise "missing of=/foo/bar.srt for using bar.srt as output srt file" unless (out_file = ENV['of'])
+
+  File.open(out_file, "w") { |h| h.write(processor.process(contents)) }
+end
