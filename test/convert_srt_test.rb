@@ -5,6 +5,13 @@ require File.join(File.dirname(__FILE__), "..", "convert_srt")
 
 class ConverterTest < Test::Unit::TestCase
   context Converter::HMS do
+
+    formula_before = proc do
+      ENV['strategy'] = 'Converter::Formula'
+      ENV['formula'] = "x + 5"
+      @processor = processor
+    end
+
     setup do
       ENV['hour_start'] = '1'
       ENV['min_start'] = '40'
@@ -14,6 +21,19 @@ class ConverterTest < Test::Unit::TestCase
       ENV['strategy'] = 'Converter::HMS'
       @processor = processor
     end
+
+    context Converter::Formula do
+      setup &formula_before
+
+      should "convert values adds offsets up with overflow for time parts" do
+        hr, min, sec, mills = @processor.convert_time_parts "01:20:12,400"
+        assert_equal(3, hr)
+        assert_equal(1, min)
+        assert_equal(8, sec)
+        assert_equal(100, mills)
+      end
+    end
+
 
     should "convert values adds offsets up when no overflow" do
       count_processed, start_processed, end_processed = @processor.convert_values 1, "01:01:01,100", "02:02:02:200"
@@ -25,6 +45,14 @@ class ConverterTest < Test::Unit::TestCase
     should "convert values adds offsets up with overflow" do
       processed = @processor.convert_time "01:20:12,400"
       assert_equal("03:01:03,100", processed)
+    end
+
+    should "convert values adds offsets up with overflow for time parts" do
+      hr, min, sec, mills = @processor.convert_time_parts "01:20:12,400"
+      assert_equal(3, hr)
+      assert_equal(1, min)
+      assert_equal(3, sec)
+      assert_equal(100, mills)
     end
 
     should "convert should generate replacement in correct format" do
@@ -64,12 +92,28 @@ OUT
     end
 
     context "with incomplete env setup" do
+
+      setup do
+        $expected_error = "provide hour_start=HH min_start=MM sec_start=SS mills_start=mmm count_start=C for this strategy"
+      end
+
       teardown do
         begin
           @processor.check_sanity
           fail "sanity check should have failed."
         rescue
-          assert_equal("provide hour_start=HH min_start=MM sec_start=SS mills_start=mmm count_start=C for this strategy", $!.message)
+          assert_equal($expected_error, $!.message)
+        end
+      end
+
+      context Converter::Formula do
+        setup do
+          instance_eval &formula_before
+          $expected_error = "provide formula=(2*x + 1) for this strategy in addition to HMS start params"
+        end
+
+        should "fail for missing formula" do
+          ENV.delete('formula')
         end
       end
 

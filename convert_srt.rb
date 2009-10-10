@@ -34,17 +34,25 @@ module Converter
     end
 
     def convert_time time
+      "%02d:%02d:%02d,%03d" % convert_time_parts(time)
+    end
+
+    def convert_time_parts time
       hr = time[0,2].to_i + hour_start;
       min = time[3,5].to_i + min_start;
       sec = time[6,8].to_i + sec_start;
       mills = time[9,12].to_i + mills_start;
+      return balance_parts_out(hr, min, sec, mills)
+    end
+
+    def balance_parts_out hr, min, sec, mills
       sec += mills/1000;
       mills %= 1000;
       min += sec/60;
       sec %= 60;
       hr += min/60;
       min %= 60;
-      "%02d:%02d:%02d,%03d" % [hr, min, sec, mills];
+      return hr, min, sec, mills
     end
 
     def process contents
@@ -62,6 +70,22 @@ module Converter
 
   module Formula
     include HMS
+
+    alias_method :hms_check_sanity, :check_sanity
+
+    def check_sanity
+      hms_check_sanity
+      raise "provide formula=(2*x + 1) for this strategy in addition to HMS start params"  unless ENV.key?('formula')
+    end
+
+    alias_method :hmt_convert_time_parts, :convert_time_parts
+
+    def convert_time_parts time
+      hr, min, sec, mills = hmt_convert_time_parts(time)
+      x = hr*60*60 + min*60 + sec
+      x = Kernel.eval ENV['formula'], binding, __FILE__, __LINE__
+      return balance_parts_out(0, 0, x, mills)
+    end
 
   end
 end
