@@ -86,11 +86,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
 # sources /etc/bash.bashrc).
@@ -98,12 +93,3 @@ if [ -f /etc/bash_completion ]; then
     . /etc/bash_completion
 fi
 
-alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
-alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
-alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
-alias sql='~/.sq_client/squirrel-sql.sh'
-alias e=$EDITOR
-alias emacs=$EDITOR
-alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
-alias term='mrxvt --fullscreen -e screen'
-alias syn='synergys --name left --daemon --config ~/.synergy_conf'
