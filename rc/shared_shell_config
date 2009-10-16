@@ -12,9 +12,7 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 
-export JDK_HOME=/usr/local/jdk_1_6
-export JAVA_HOME=/usr/local/jdk_1_6
-export PATH=$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin
+export PATH=$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
