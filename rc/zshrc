@@ -39,6 +39,8 @@ SAVEHIST=1000
 HOSTNAME="`hostname`"
 PAGER='less'
 EDITOR='emacs'
+WORDCHARS='*?_[]~=&;!#$%^(){}'
+
 autoload colors zsh/terminfo
 if [[ "$terminfo[colors]" -ge 8 ]]; then
    colors
@@ -66,6 +68,12 @@ alias man='LC_ALL=C LANG=C man'
 alias f=finger
 alias ll='ls -al'
 alias ls='ls --color=auto '
+
+tcsh-backward-word() {
+  local WORDCHARS="${WORDCHARS:s@/@}"
+  zle backward-word
+}
+zle -N tcsh-backward-word
 
 autoload -U compinit
 compinit
