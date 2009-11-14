@@ -17,5 +17,6 @@ export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
 export TZ='America/Los_Angeles'
+export JAVA_OPTS='-Xmx1536m -Xms500m'
 
 export EDITOR='emacs -nw -q'

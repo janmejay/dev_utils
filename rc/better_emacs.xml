@@ -18,6 +18,10 @@
   <action id="Editor Undo">
     <keyboard-shortcut first-keystroke="control SLASH" />
   </action>
+  <action id="EditorEscape">
+    <keyboard-shortcut first-keystroke="ESCAPE" second-keystroke="ESCAPE" />
+    <keyboard-shortcut first-keystroke="control G" />
+  </action>
   <action id="EditorPageUp">
     <keyboard-shortcut first-keystroke="PAGE_UP" />
     <keyboard-shortcut first-keystroke="alt V" />
@@ -26,11 +30,16 @@
     <keyboard-shortcut first-keystroke="control alt RIGHT" />
     <keyboard-shortcut first-keystroke="shift alt 9" />
   </action>
+  <action id="GotoBookmark0" />
+  <action id="GotoBookmark9" />
   <action id="GotoImplementation">
     <keyboard-shortcut first-keystroke="control alt PERIOD" />
   </action>
   <action id="Images.Editor.ActualSize">
     <keyboard-shortcut first-keystroke="control DIVIDE" />
+  </action>
+  <action id="IntroduceField">
+    <keyboard-shortcut first-keystroke="shift alt 2" />
   </action>
   <action id="NextSplitter" />
   <action id="RecentFiles">
@@ -38,6 +47,13 @@
   </action>
   <action id="ReformatCode">
     <keyboard-shortcut first-keystroke="control alt BACK_SLASH" />
+  </action>
+  <action id="Unsplit" />
+  <action id="intellij.mark.ExchangePointAndMarkAction">
+    <keyboard-shortcut first-keystroke="control 0" />
+  </action>
+  <action id="intellij.mark.SetMarkAction">
+    <keyboard-shortcut first-keystroke="control 9" />
   </action>
 </keymap>
 
