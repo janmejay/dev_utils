@@ -165,3 +165,5 @@ zstyle ':completion:*:ssh:*' group-order \
    hosts-domain hosts-host users hosts-ipaddr
 zstyle '*' single-ignored show
 
+unalias f
+f() { find . -iname "*$1*" }

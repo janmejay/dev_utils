@@ -11,8 +11,9 @@ alias syn='synergys --name left --daemon --config ~/.synergy_conf'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+alias spaz='/opt/adobe-air/bin/adl -nodebug /opt/air-apps/Spaz/META-INF/AIR/application.xml /opt/air-apps/Spaz'
 
-export PATH=$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin
+export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
