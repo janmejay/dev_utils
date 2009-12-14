@@ -1,4 +1,5 @@
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
+alias py_tags="find . -name '*.py\' | etags --output TAGS -"
 alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
 alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
 alias sql='~/.sq_client/squirrel-sql.sh'

@@ -5,3 +5,4 @@ escape ^Jj
 startup_message off
 defscrollback 30000
 vbell off
+defutf8 on
