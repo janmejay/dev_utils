@@ -6,6 +6,10 @@ source ~/bin/rc/shared_shell_config
 
 setopt INC_APPEND_HISTORY SHARE_HISTORY
 setopt APPEND_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_NO_STORE
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_ALL_DUPS
 # setopt AUTO_LIST		# these two should be turned off
 # setopt AUTO_REMOVE_SLASH
 # setopt AUTO_RESUME		# tries to resume command of same name    

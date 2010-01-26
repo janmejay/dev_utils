@@ -64,7 +64,7 @@ module Converter
 
     def check_sanity
       hour_start && min_start && sec_start && mills_start && count_start && return
-      raise "provide hour_start=HH min_start=MM sec_start=SS mills_start=mmm count_start=C for this strategy"
+      raise "provide hour_start=HH min_start=MM sec_start=SS mills_start=mmm count_start=C for this strategy [given hour_start=#{hour_start} min_start=#{min_start} sec_start=#{sec_start} mills_start=#{mills_start} count_start=#{count_start} '#{hour_start && min_start && sec_start && mills_start && count_start}']"
     end
   end
 
