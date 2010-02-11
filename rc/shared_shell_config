@@ -13,7 +13,7 @@ alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
 
-export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin
+export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin:~/.gem/ruby/1.8/bin
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
