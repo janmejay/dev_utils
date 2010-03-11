@@ -17,6 +17,6 @@ export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jru
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
-export TZ='America/Los_Angeles'
+export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
