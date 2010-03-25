@@ -12,6 +12,7 @@ alias syn='synergys --name left --daemon --config ~/.synergy_conf'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
+alias x='xclip -selection c.'
 
 export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:/opt/idea/bin:~/.gem/ruby/1.8/bin
 export CDPATH=.:~:~/Desktop:~/projects
