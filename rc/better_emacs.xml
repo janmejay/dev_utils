@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <keymap version="1" name="BetterEmacs" parent="Emacs">
+  <action id="$Cut">
+    <keyboard-shortcut first-keystroke="shift DELETE" />
+    <keyboard-shortcut first-keystroke="control W" />
+  </action>
   <action id="$Undo">
     <keyboard-shortcut first-keystroke="shift control MINUS" />
     <keyboard-shortcut first-keystroke="control SLASH" />
@@ -18,6 +22,10 @@
   <action id="Editor Undo">
     <keyboard-shortcut first-keystroke="control SLASH" />
   </action>
+  <action id="EditorCut">
+    <keyboard-shortcut first-keystroke="shift DELETE" />
+    <keyboard-shortcut first-keystroke="control W" />
+  </action>
   <action id="EditorEscape">
     <keyboard-shortcut first-keystroke="ESCAPE" second-keystroke="ESCAPE" />
     <keyboard-shortcut first-keystroke="control G" />
@@ -29,6 +37,9 @@
   <action id="Forward">
     <keyboard-shortcut first-keystroke="control alt RIGHT" />
     <keyboard-shortcut first-keystroke="shift alt 9" />
+  </action>
+  <action id="GotoAction">
+    <keyboard-shortcut first-keystroke="alt X" />
   </action>
   <action id="GotoBookmark0" />
   <action id="GotoBookmark9" />
@@ -42,6 +53,11 @@
     <keyboard-shortcut first-keystroke="shift alt 2" />
   </action>
   <action id="NextSplitter" />
+  <action id="PasteMultiple">
+    <keyboard-shortcut first-keystroke="shift control V" />
+    <keyboard-shortcut first-keystroke="shift control INSERT" />
+    <keyboard-shortcut first-keystroke="alt Y" />
+  </action>
   <action id="RecentFiles">
     <keyboard-shortcut first-keystroke="control X" second-keystroke="B" />
   </action>
