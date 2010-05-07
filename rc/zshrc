@@ -180,3 +180,4 @@ zstyle '*' single-ignored show
 unalias f
 f() { find . -iname "*$1*" }
 
+x() { echo $* | xclip -selection c. }

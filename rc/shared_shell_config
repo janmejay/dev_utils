@@ -12,7 +12,6 @@ alias syn='synergys --name left --daemon --config ~/.synergy_conf'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
-alias x='xclip -selection c.'
 alias idea9='/opt/idea9/bin/idea.sh'
 alias idea8='/opt/idea8/bin/idea.sh'
 
