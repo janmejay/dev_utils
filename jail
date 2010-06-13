@@ -1,16 +1,24 @@
 #!/bin/bash
 
-# script assumes jail in projects/jail
-jail_dir=~/projects/jail
+function mount_if_not_mounted() {
+    mount | grep -q $1
+    if [ $? -eq 0 ] ; then
+        echo "$1 is already mounted, not mounting $2 at $1"
+    else
+        sudo mount -t $2 $2 $1
+    fi
+}
 
-sudo mount -t proc proc "$jail_dir/proc"
-sudo mount -t devpts devpts "$jail_dir/dev/pts"
+if [[ -d $jaildir ]] ; then 
+    echo "jaildir set to $jaildir, chrooting now.";
+    mount_if_not_mounted "$jaildir/proc" proc
+    mount_if_not_mounted "$jaildir/dev/pts" devpts
 
-sudo chroot $jail_dir /etc/init.d/ssh start
-sudo chroot $jail_dir /etc/init.d/mysql start
-sudo chroot $jail_dir /bin/bash --login
-sudo chroot $jail_dir /etc/init.d/ssh stop
-sudo chroot $jail_dir /etc/init.d/mysql stop
+    sudo chroot $jaildir /bin/bash --login
 
-sudo umount "$jail_dir/dev/pts" -l
-sudo umount "$jail_dir/proc"
+    sudo umount "$jaildir/dev/pts" -l
+    sudo umount "$jaildir/proc"
+else
+    echo "jaildir must be set, exiting."
+fi
+
