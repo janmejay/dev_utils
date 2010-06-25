@@ -1,0 +1,20 @@
+[user]
+	name = Janmejay Singh
+	email = singh.janmejay@gmail.com
+[color]
+	ui = auto
+[alias]
+	ci = commit
+	co = checkout
+	st = status
+	ls = branch -a
+	cp = cherry-pick
+  remove-deleted = !git ls-files -d | xargs git rm
+  add-untracked = !git ls-files -o --exclude-standard | xargs git add -v
+  addremove = !git remove-deleted && git add-untracked
+  purge = !git clean -f
+  slog = log --pretty=oneline --abbrev-commit --graph
+[core]
+	editor = emacs -q -nw
+[push]
+	default = matching

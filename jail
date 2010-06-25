@@ -1,5 +1,7 @@
 #!/bin/bash
 
+jaildir=${jaildir:-$1}
+
 function mount_if_not_mounted() {
     mount | grep -q $1
     if [ $? -eq 0 ] ; then
