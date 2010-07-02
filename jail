@@ -7,18 +7,30 @@ function mount_if_not_mounted() {
     if [ $? -eq 0 ] ; then
         echo "$1 is already mounted, not mounting $2 at $1"
     else
-        sudo mount -t $2 $2 $1
+        if [[ ${2:0:1} == '/' ]] ; then
+            command "sudo mount -o bind $2 $1"
+        else
+            command "sudo mount -t $2 $2 $1"
+        fi
     fi
+}
+
+function command() {
+    echo "executing: " $*
+    $*
 }
 
 if [[ -d $jaildir ]] ; then 
     echo "jaildir set to $jaildir, chrooting now.";
     mount_if_not_mounted "$jaildir/proc" proc
-    mount_if_not_mounted "$jaildir/dev/pts" devpts
+    mount_if_not_mounted "$jaildir/dev" "/dev"
+    mount_if_not_mounted "$jaildir/sys" sysfs
+    sudo /bin/bash -c "echo nameserver 8.8.8.8 > $jaildir/etc/resolv.conf"
 
     sudo chroot $jaildir /bin/bash --login
 
-    sudo umount "$jaildir/dev/pts" -l
+    sudo umount "$jaildir/sys" -l
+    sudo umount "$jaildir/dev" -l
     sudo umount "$jaildir/proc"
 else
     echo "jaildir must be set, exiting."
