@@ -1,6 +1,7 @@
 #!/bin/bash
 
 jaildir=${jaildir:-$1}
+as_user=`whoami`
 
 function mount_if_not_mounted() {
     mount | grep -q $1
@@ -21,13 +22,31 @@ function command() {
 }
 
 if [[ -d $jaildir ]] ; then 
-    echo "jaildir set to $jaildir, chrooting now.";
+    echo "jaildir set to $jaildir, chrooting now as $as_user.";
     mount_if_not_mounted "$jaildir/proc" proc
     mount_if_not_mounted "$jaildir/dev" "/dev"
     mount_if_not_mounted "$jaildir/sys" sysfs
+
+    projects_dir="$jaildir/home/$as_user/projects"
+    project_dir_mounted=no
+    if [ `ls $projects_dir | wc -l` -eq 0 ] ;
+    then
+        mount_if_not_mounted $projects_dir "/home/$as_user/projects"
+        project_dir_mounted=yes
+    else 
+        echo "not mounting $projects_dir, as it has some files"
+    fi
+
     sudo /bin/bash -c "echo nameserver 8.8.8.8 > $jaildir/etc/resolv.conf"
 
-    sudo chroot $jaildir /bin/bash --login
+    sudo chroot $jaildir su - $as_user
+    
+    if [ "$project_dir_mounted" = "yes" ] ;
+    then
+        sudo umount "$jaildir/home/$as_user/projects" -l
+    else
+        echo "not unmounting $projects_dir, as it was not mounted"
+    fi
 
     sudo umount "$jaildir/sys" -l
     sudo umount "$jaildir/dev" -l
