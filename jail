@@ -26,6 +26,7 @@ if [[ -d $jaildir ]] ; then
     mount_if_not_mounted "$jaildir/proc" proc
     mount_if_not_mounted "$jaildir/dev" "/dev"
     mount_if_not_mounted "$jaildir/sys" sysfs
+    mount_if_not_mounted "$jaildir/boot" "/boot"
 
     projects_dir="$jaildir/home/$as_user/projects"
     project_dir_mounted=no
@@ -37,7 +38,8 @@ if [[ -d $jaildir ]] ; then
         echo "not mounting $projects_dir, as it has some files"
     fi
 
-    sudo /bin/bash -c "echo nameserver 8.8.8.8 > $jaildir/etc/resolv.conf"
+    #command sudo /bin/bash -c "cat /etc/resolv.conf > $jaildir/etc/resolv.conf"
+    #command sudo /bin/bash -c "echo nameserver 8.8.8.8 >> $jaildir/etc/resolv.conf"
 
     sudo chroot $jaildir su - $as_user
     

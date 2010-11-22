@@ -1,0 +1,11 @@
+#!/bin/bash
+
+file_name=~/tmp/$1
+
+if [ -d $file_name ] ; then
+    rm .gem
+    ln -s $file_name ~/.gem
+    echo "switched .gem to $file_name"
+else 
+    echo "it seems directory: $file_name does not exist"
+fi

@@ -87,8 +87,9 @@ tcsh-backward-word() {
 }
 zle -N tcsh-backward-word
 
-autoload -U compinit
+autoload -U compinit promptinit
 compinit
+promptinit
 bindkey "^?" backward-delete-char
 bindkey '^[OH' beginning-of-line
 bindkey '^[OF' end-of-line
