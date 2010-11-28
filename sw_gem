@@ -1,11 +1,12 @@
 #!/bin/bash
 
-file_name=~/tmp/$1
+file_name=~/tmp/gem_set/$1
+link_location=~/.gem
 
 if [ -d $file_name ] ; then
-    rm .gem
-    ln -s $file_name ~/.gem
-    echo "switched .gem to $file_name"
+    rm $link_location
+    ln -s $file_name $link_location
+    echo "switched $link_location to $file_name"
 else 
     echo "it seems directory: $file_name does not exist"
 fi
