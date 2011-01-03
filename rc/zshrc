@@ -182,3 +182,5 @@ unalias f
 f() { find . -iname "*$1*" }
 
 x() { echo $* | xclip -selection c. }
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
