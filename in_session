@@ -1,0 +1,14 @@
+#!/bin/bash
+function run_bg {
+    $* &
+    disown
+}
+
+run_bg /usr/bin/compiz-manager
+run_bg /usr/bin/emerald --replace
+run_bg gwibber
+run_bg gnome-do
+run_bg pidgin
+sleep 10
+run_bg ggl-gtk
+
