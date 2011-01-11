@@ -1,0 +1,4 @@
+#!/bin/bash
+OUTPUT_FILE=output.ogv
+echo "will use  to $OUTPUT_FILE to dump result of join"
+ffmpeg -i $1 -i $2 -acodec copy -vcodec copy -f ogg $OUTPUT_FILE
