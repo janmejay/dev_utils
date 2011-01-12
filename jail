@@ -38,7 +38,7 @@ if [[ -d $jaildir ]] ; then
         echo "not mounting $projects_dir, as it has some files"
     fi
 
-    #command sudo /bin/bash -c "cat /etc/resolv.conf > $jaildir/etc/resolv.conf"
+    command sudo cp /etc/resolv.conf $jaildir/etc/resolv.conf
     #command sudo /bin/bash -c "echo nameserver 8.8.8.8 >> $jaildir/etc/resolv.conf"
 
     sudo chroot $jaildir su - $as_user
