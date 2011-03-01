@@ -16,6 +16,7 @@ alias idea='idea10&; disown'
 alias idea10='~/tools/idea10/bin/idea.sh'
 alias idea9='~/tools/idea9/bin/idea.sh'
 alias idea8='~/tools/idea8/bin/idea.sh'
+alias grep='grep --color=auto'
 
 export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin
 export CDPATH=.:~:~/Desktop:~/projects
