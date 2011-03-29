@@ -184,3 +184,17 @@ f() { find . -iname "*$1*" }
 x() { echo $* | xclip -selection c. }
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+export PYENV=~/.pyenv
+
+pyenv() { 
+    source $PYENV/$1/bin/activate 
+    export CUR_ENV=$1
+}
+
+venv() { virtualenv $PYENV/$1 --no-site-packages --distribute }
+
+pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
+
+car() { echo $* | awk '{print $1}' }
+cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }
