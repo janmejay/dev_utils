@@ -21,6 +21,8 @@ color=
 rebase=
 bookmarks=
 convert=
+forest=/home/janmejay/projects/hgforest-crew/forest.py
+prompt=/home/janmejay/projects/hg-prompt/prompt.py
 
 [pager]
 pager = LESS='FSRX' less

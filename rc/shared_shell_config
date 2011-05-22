@@ -14,6 +14,8 @@ alias la='ls -A'
 alias l='ls -CF'
 alias idea='idea10&; disown'
 alias idea10='~/tools/idea10/bin/idea.sh'
+alias idea10_prop='~/tools/idea10_propritory/bin/idea.sh'
+
 alias idea9='~/tools/idea9/bin/idea.sh'
 alias idea8='~/tools/idea8/bin/idea.sh'
 alias grep='grep --color=auto'
@@ -25,3 +27,23 @@ export PYTHONSTARTUP=~/bin/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
+
+f() { find . -iname "*$1*" }
+
+x() { echo $* | xclip -selection c. }
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+export PYENV=~/.pyenv
+
+pyenv() { 
+    source $PYENV/$1/bin/activate 
+    export CUR_ENV=$1
+}
+
+venv() { virtualenv $PYENV/$1 --no-site-packages --distribute }
+
+pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
+
+car() { echo $* | awk '{print $1}' }
+cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }

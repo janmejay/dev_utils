@@ -64,6 +64,18 @@
   <action id="ReformatCode">
     <keyboard-shortcut first-keystroke="control alt BACK_SLASH" />
   </action>
+  <action id="ReloadFromDisk">
+    <keyboard-shortcut first-keystroke="ESCAPE" second-keystroke="U" />
+  </action>
+  <action id="Tool_rspec_rspec-all">
+    <keyboard-shortcut first-keystroke="alt U" second-keystroke="A" />
+  </action>
+  <action id="Tool_rspec_rspec-file">
+    <keyboard-shortcut first-keystroke="alt U" second-keystroke="F" />
+  </action>
+  <action id="Tool_rspec_rspec-one-spec">
+    <keyboard-shortcut first-keystroke="alt U" second-keystroke="S" />
+  </action>
   <action id="Unsplit" />
   <action id="intellij.mark.ExchangePointAndMarkAction">
     <keyboard-shortcut first-keystroke="control 0" />
