@@ -1,25 +1,3 @@
-alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
-alias py_tags="find . -name '*.py' | etags --output TAGS -"
-alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
-alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
-alias sql='~/.sq_client/squirrel-sql.sh'
-alias e=$EDITOR
-alias emacs=$EDITOR
-alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
-alias term='mrxvt --fullscreen -e screen'
-alias syn='synergys --name left --daemon --config ~/.synergy_conf'
-# some more ls aliases
-alias ll='ls -l'
-alias la='ls -A'
-alias l='ls -CF'
-alias idea='idea10&; disown'
-alias idea10='~/tools/idea10/bin/idea.sh'
-alias idea10_prop='~/tools/idea10_propritory/bin/idea.sh'
-
-alias idea9='~/tools/idea9/bin/idea.sh'
-alias idea8='~/tools/idea8/bin/idea.sh'
-alias grep='grep --color=auto'
-
 export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
@@ -27,6 +5,25 @@ export PYTHONSTARTUP=~/bin/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
+
+alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
+alias py_tags="find . -name '*.py' | etags --output TAGS -"
+alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
+alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
+alias sql='~/.sq_client/squirrel-sql.sh'
+alias e=$EDITOR
+alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
+alias term='mrxvt --fullscreen -e screen'
+alias syn='synergys --name left --daemon --config ~/.synergy_conf'
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+alias idea='idea10&; disown'
+alias idea10='~/tools/idea10/bin/idea.sh'
+alias idea10_prop='~/tools/idea10_propritory/bin/idea.sh'
+alias idea9='~/tools/idea9/bin/idea.sh'
+alias idea8='~/tools/idea8/bin/idea.sh'
+alias grep='grep --color=auto'
 
 f() { find . -iname "*$1*" }
 
