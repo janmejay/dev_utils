@@ -6,7 +6,6 @@ function run_bg {
 
 run_bg /usr/bin/compiz-manager
 run_bg /usr/bin/emerald --replace
-run_bg gwibber
 run_bg gnome-do
 run_bg pidgin
 xbindkeys
