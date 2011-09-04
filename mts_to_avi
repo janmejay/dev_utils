@@ -1,0 +1,6 @@
+#!/bin/bash
+
+src=$1
+dest=`echo $1 | sed -e 's/MTS/avi/g'`
+
+ffmpeg -i $src -vcodec libx264 -crf 21 -r 30000/1001 -deinterlace -vpre lossless_medium -y -threads 0 -s 1024x768 -acodec copy -f avi $dest

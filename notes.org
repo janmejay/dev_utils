@@ -1,0 +1,4 @@
+* Patches from root, patch -p1
+
+* For Talks:
+** TODO Use talk_xdefault.patch for talks

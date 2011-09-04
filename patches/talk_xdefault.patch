@@ -1,0 +1,24 @@
+diff --git a/rc/Xdefaults b/rc/Xdefaults
+index 3600fa0..fec407e 100644
+--- a/rc/Xdefaults
++++ b/rc/Xdefaults
+@@ -7,15 +7,15 @@ URxvt.urlLauncher: chromium
+ URxvt.cursorBlink: true
+ URxvt.geometry: 93x26
+ URxvt.fading: 25%
+-urxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=10
+-urxvt.boldfont: xft:Bitstream Vera Sans Mono:bold:pixelsize=10
++urxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=20
++urxvt.boldfont: xft:Bitstream Vera Sans Mono:bold:pixelsize=20
+ urxvt.depth: 32
+-urxvt.background: rgba:0000/0000/0000/dddd
++urxvt.background: rgba:0000/0000/0000/efef
+ URxvt.foreground: grey80
+ URxvt.tintColor: #262626
+ URxvt.borderColor: #888888
+  
+-*foreground:     rgba:0000/0000/0000/dddd
++*foreground:     rgba:0000/0000/0000/efef
+ *background:     rgb:10/10/10
+ !black
+ *color0:         rgb:20/20/20
