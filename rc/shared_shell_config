@@ -27,7 +27,9 @@ alias grep='grep --color=auto'
 
 f() { find . -iname "*$1*" }
 
-x() { echo $* | xclip -selection c. }
+x() { echo $* | xs }
+
+alias xs='xclip -selection c.'
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
