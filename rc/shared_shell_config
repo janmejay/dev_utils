@@ -1,4 +1,4 @@
-export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin
+export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/
 export CDPATH=.:~:~/Desktop:~/projects
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
@@ -25,11 +25,11 @@ alias idea9='~/tools/idea9/bin/idea.sh'
 alias idea8='~/tools/idea8/bin/idea.sh'
 alias grep='grep --color=auto'
 
-f() { find . -iname "*$1*" }
-
-x() { echo $* | xs }
+f() { find . -iname "*$1*" | xclip -selection c. }
 
 alias xs='xclip -selection c.'
+
+x() { echo $* | xs }
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
