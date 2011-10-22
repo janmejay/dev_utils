@@ -1,3 +1,14 @@
+! !-- Xft settings -- !
+! Xft.dpi:        96
+! Xft.antialias:  true
+! Xft.rgba:       rgb
+! Xft.hinting:    true
+! Xft.hinstyle:   hintslight
+
+! ! ! -- Fonts -- !
+! ! URxvt.font:xft:droid sans mono slashed:medium:pixelsize=11
+! ! URxvt.boldFont:xft:droid sans mono slashed:medium:pixelsize=11
+
 URxvt.termName: rxvt
 URxvt.transparent: true
 URxvt.inheritPixmap: false
