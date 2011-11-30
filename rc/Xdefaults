@@ -18,8 +18,10 @@ URxvt.urlLauncher: chromium
 URxvt.cursorBlink: true
 URxvt.geometry: 93x26
 URxvt.fading: 25%
-urxvt.font: xft:Bitstream Vera Sans Mono:pixelsize=10
-urxvt.boldfont: xft:Bitstream Vera Sans Mono:bold:pixelsize=10
+URxvt.font:xft:ubuntu mono:regular:pixelsize=13:autohint=true
+URxvt.boldFont:xft:ubuntu mono:bold:pixelsize=13:autohint=true
+URxvt.italicFont:xft:ubuntu mono:italic:pixelsize=13:autohint=true
+URxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=13:autohint=true
 urxvt.depth: 32
 urxvt.background: rgba:0000/0000/0000/dddd
 URxvt.foreground: grey80
