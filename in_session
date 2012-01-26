@@ -4,6 +4,5 @@ function run_bg {
     disown
 }
 
-run_bg gnome-do
 run_bg pidgin
-xbindkeys
+xmodmap ~/.xmodmaprc

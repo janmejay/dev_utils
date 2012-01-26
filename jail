@@ -29,13 +29,15 @@ if [[ -d $jaildir ]] ; then
     mount_if_not_mounted "$jaildir/boot" "/boot"
 
     projects_dir="$jaildir/home/$as_user/projects"
-    project_dir_mounted=no
-    if [ `ls $projects_dir | wc -l` -eq 0 ] ;
-    then
-        mount_if_not_mounted $projects_dir "/home/$as_user/projects"
-        project_dir_mounted=yes
-    else 
-        echo "not mounting $projects_dir, as it has some files"
+    if [ -d $projects_dir ]; then
+        project_dir_mounted=no
+        if [ `ls $projects_dir | wc -l` -eq 0 ] ;
+        then
+            mount_if_not_mounted $projects_dir "/home/$as_user/projects"
+            project_dir_mounted=yes
+        else 
+            echo "not mounting $projects_dir, as it has some files"
+        fi
     fi
 
     command sudo cp /etc/resolv.conf $jaildir/etc/resolv.conf
@@ -53,6 +55,7 @@ if [[ -d $jaildir ]] ; then
     sudo umount "$jaildir/sys" -l
     sudo umount "$jaildir/dev" -l
     sudo umount "$jaildir/proc"
+    sudo umount "$jaildir/boot"
 else
     echo "jaildir must be set, exiting."
 fi
