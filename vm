@@ -1,0 +1,10 @@
+#!/bin/sh
+ssh_port=${ssh:-"5000"}
+extra_args=${args:-""}
+hd_name=$1
+name=`basename $hd_name`
+
+cmd="kvm -hda $hd_name -m 1024 -net nic,macaddr=00:00:00:00:00:00 -net user,hostfwd=tcp::$ssh_port-:22 -alt-grab -name $name -boot d -curses $extra_args"
+echo $cmd
+$cmd
+

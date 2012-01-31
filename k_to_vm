@@ -1,0 +1,37 @@
+#!/bin/sh
+
+function run {
+    echo $1
+    $1
+}
+
+function s_sh {
+    run "ssh -p $port $user_and_host $1"
+}
+
+function s_cp {
+    run "scp -P $port $1 $user_and_host:$2"
+}
+
+read -p "Port?: "
+port=$REPLY
+
+bzImage="boot/arch/x86/bzImage"
+modules_dir=~/projects/tmp/modules_install_dir
+expand_modules_in_vm_file=~/bin/expand_modules_inside_vm
+user_and_host="root@localhost"
+copied_modules_dir=copied_modules_dir
+
+modules_archive="modules.tar"
+
+s_cp $bzImage "/boot/"
+if [ $copy_modules = 'y' ]; then
+    run "sudo make INSTALL_MOD_PATH=$modules_dir modules_install"
+    run "tar -C $modules_dir/lib/modules -cvf $modules_archive ."
+    s_cp $modules_archive
+    s_sh "rm -rf copied_modules_directory"
+    s_sh "mkdir copied_modules_directory"
+    s_sh "tar -C copied_modules_directory -xvf $modules_archive"
+    s_sh "/bin/bash -c 'cp -ar copied_modules_directory/* /lib/modules/'"
+fi
+
