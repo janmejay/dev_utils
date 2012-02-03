@@ -4,7 +4,8 @@ extra_args=${args:-""}
 hd_name=$1
 name=`basename $hd_name`
 
-cmd="kvm -hda $hd_name -m 1024 -net nic,macaddr=00:00:00:00:00:00 -net user,hostfwd=tcp::$ssh_port-:22 -alt-grab -name $name -boot d -curses $extra_args"
+cmd="kvm -hda $hd_name -m 1024 -net nic,macaddr=00:00:00:00:00:00 -net user,hostfwd=tcp::$ssh_port-:22 -alt-grab -name $name -boot d $extra_args -serial stdio -serial pty"
 echo $cmd
+echo "Starting..."
 $cmd
 

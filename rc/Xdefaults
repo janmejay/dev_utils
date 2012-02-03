@@ -6,34 +6,32 @@
 ! Xft.hinstyle:   hintslight
 
 ! ! ! -- Fonts -- !
-! ! URxvt.font:xft:droid sans mono slashed:medium:pixelsize=11
-! ! URxvt.boldFont:xft:droid sans mono slashed:medium:pixelsize=11
-URxvt.termName: rxvt
-URxvt.transparent: false
-URxvt.inheritPixmap: false
-URxvt.scrollBar: false
-URxvt.savelines: 1000
-URxvt.urlLauncher: chromium
-URxvt.cursorBlink: false
-URxvt.cursorColor: orange
-URxvt.geometry: 93x26
-URxvt.fading: 25%
+! ! urxvt.font:xft:droid sans mono slashed:medium:pixelsize=11
+! ! urxvt.boldFont:xft:droid sans mono slashed:medium:pixelsize=11
+urxvt.termName: rxvt
+urxvt.transparent: false
+urxvt.inheritPixmap: false
+urxvt.scrollBar: false
+urxvt.savelines: 1000
+urxvt.urlLauncher: chromium
+urxvt.cursorBlink: false
+urxvt.cursorColor: orange
+urxvt.geometry: 93x26
+urxvt.fading: 25%
 Xft.antialias:  true
 Xft.hinstyle:   hintslight
 Xft.rgba:       rgb
-! URxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
-URxvt.font:xft:ubuntu mono:regular:pixelsize=13:autohint=true
-URxvt.boldFont:xft:ubuntu mono:bold:pixelsize=13:autohint=true
-URxvt.italicFont:xft:ubuntu mono:italic:pixelsize=13:autohint=true
-URxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=13:autohint=true
+! urxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
+urxvt.font:xft:ubuntu mono:regular:pixelsize=13:autohint=true
+urxvt.boldFont:xft:ubuntu mono:bold:pixelsize=13:autohint=true
+urxvt.italicFont:xft:ubuntu mono:italic:pixelsize=13:autohint=true
+urxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=13:autohint=true
 urxvt.depth: 32
-urxvt.background: rgba:0000/0000/0000/dddd
-URxvt.foreground: grey80
-URxvt.tintColor: #262626
-URxvt.borderColor: #888888
+urxvt.background: rgba:0010/0010/0010/dddd
+urxvt.foreground: grey80
+urxvt.tintColor: #262626
+urxvt.borderColor: #888888
  
-*foreground:     rgba:0000/0000/0000/dddd
-*background:     rgb:10/10/10
 !black
 *color0:         rgb:20/20/20
 *color8:         rgb:75/77/73
