@@ -95,7 +95,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_n     ), refresh)
 
     -- Move focus to the next window
-    , ((modm,               xK_Tab   ), windows W.focusDown)
+    , ((mod1Mask,               xK_Tab   ), windows W.focusDown)
 
     -- Move focus to the next window
     , ((modm,               xK_j     ), windows W.focusDown)
@@ -140,7 +140,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
 
     -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    , ((modm              , xK_q     ), spawn "/home/janmejay/bin/xmonad_restart")
     ]
     ++
 
@@ -300,7 +300,6 @@ main = do
     xmonad $ defaults
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig
-        ,  workspaces = ["1:browse","2:hack","3:mail","4:docs","5","6","7","8","9:VM"]
         ,  logHook = workspaceNamesPP defaultPP 
                                         { ppOutput = hPutStrLn xmproc
                                         , ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
