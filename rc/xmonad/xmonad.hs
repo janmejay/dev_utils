@@ -51,6 +51,7 @@ myBorderWidth   = 1
 -- "windows key" is usually mod4Mask.
 --
 myModMask       = mod4Mask
+altMask = mod1Mask
 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -95,7 +96,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm,               xK_n     ), refresh)
 
     -- Move focus to the next window
-    , ((mod1Mask,               xK_Tab   ), windows W.focusDown)
+    , ((altMask,               xK_Tab   ), windows W.focusDown)
 
     -- Move focus to the next window
     , ((modm,               xK_j     ), windows W.focusDown)
@@ -129,6 +130,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Deincrement the number of windows in the master area
     , ((modm              , xK_period), sendMessage (IncMasterN (-1)))
+
+    -- screen locking
+    , ((altMask .|. controlMask, xK_l), spawn "xscreensaver-command -lock")
 
     -- Toggle the status bar gap
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
@@ -258,6 +262,7 @@ myStartupHook = do
               setWMName "LG3D"              
               spawn "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x191970 --height 17"
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
+              spawn "xscreensaver"
               spawn "nm-applet --sm-disable"
 
 ------------------------------------------------------------------------

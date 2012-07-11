@@ -1,7 +1,11 @@
 #!/bin/bash
 
-pkill trayer
-pkill xmobar
 
 xmonad --recompile
-xmonad --restart
+if [ $? -eq 0 ]; then
+   pkill trayer
+   pkill xmobar
+   pkill xscreensaver
+
+   xmonad --restart
+fi
