@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo /bin/bash -c 'echo -n mem > /sys/power/state'

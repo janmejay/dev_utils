@@ -1,0 +1,7 @@
+#!/bin/bash
+
+pkill trayer
+pkill xmobar
+
+xmonad --recompile
+xmonad --restart
