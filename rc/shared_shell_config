@@ -1,5 +1,5 @@
 export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/
-export CDPATH=.:~:~/Desktop:~/projects
+export CDPATH=.:~:~/Desktop:~/projects:~/projects/flipkart
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
 export TZ='Asia/Calcutta'
@@ -19,7 +19,6 @@ alias syn='synergys --name left --daemon --config ~/.synergy_conf'
 alias ll='ls -l'
 alias la='ls -A'
 alias l='ls -CF'
-alias idea='idea10&; disown'
 alias idea10='~/tools/idea10/bin/idea.sh'
 alias idea10_prop='~/tools/idea10_propritory/bin/idea.sh'
 alias idea9='~/tools/idea9/bin/idea.sh'

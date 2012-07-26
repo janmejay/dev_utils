@@ -11,10 +11,12 @@
 	cp = cherry-pick
   remove-deleted = !git ls-files -d | xargs git rm
   add-untracked = !git ls-files -o --exclude-standard | xargs git add -v
-  addremove = !git remove-deleted && git add-untracked
-  purge = !git clean -f
-  slog = log --pretty=oneline --abbrev-commit --graph
+  add-remove = !git remove-deleted && git add-untracked
+  purge = !git clean -fdx
+	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 [core]
 	editor = emacs -q -nw
 [push]
 	default = matching
+[branch]
+  autosetupmerge = true

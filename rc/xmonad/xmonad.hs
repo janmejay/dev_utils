@@ -264,6 +264,7 @@ myStartupHook = do
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
               spawn "xscreensaver"
               spawn "nm-applet --sm-disable"
+              spawn "pidgin"
 
 ------------------------------------------------------------------------
 -- Now run xmonad with all the defaults we set up.
@@ -305,6 +306,7 @@ main = do
     xmonad $ defaults
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig
+        ,  workspaces = ["1:T","2:M+-","3:S+-","4:chrm","5:ff","6:mail","7:?:","8:?","9:VM/Torrents"]
         ,  logHook = workspaceNamesPP defaultPP 
                                         { ppOutput = hPutStrLn xmproc
                                         , ppCurrent = xmobarColor "yellow" "" . wrap "[" "]"
@@ -320,3 +322,4 @@ main = do
         , ((controlMask, xK_Print), spawn "sleep 0.2; scrot -s")
         , ((0, xK_Print), spawn "scrot")
         ]
+

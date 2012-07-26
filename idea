@@ -1,0 +1,4 @@
+#!/bin/bash
+
+/home/janmejay/tools/idea-IC-117.418/bin/idea.sh&
+disown
