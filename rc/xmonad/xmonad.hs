@@ -302,7 +302,7 @@ defaults = defaultConfig {
     }
 
 main = do
-    xmproc <- spawnPipe "/usr/bin/xmobar /home/janmejay/.xmonad/xmobarrc"
+    xmproc <- spawnPipe "/home/janmejay/bin/xmobar_launcher"
     xmonad $ defaults
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig

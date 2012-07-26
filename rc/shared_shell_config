@@ -46,3 +46,5 @@ pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
 
 car() { echo $* | awk '{print $1}' }
 cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }
+
+unset RUBYOPT
