@@ -260,7 +260,7 @@ myLogHook = takeTopFocus
 -- By default, do nothing.
 myStartupHook = do
               setWMName "LG3D"              
-              spawn "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 10 --transparent true --tint 0x191970 --height 17"
+              spawn "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 17"
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
               spawn "xscreensaver"
               spawn "nm-applet --sm-disable"
