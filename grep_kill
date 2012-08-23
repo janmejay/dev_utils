@@ -1,5 +1,17 @@
 #!/bin/bash
-echo "Processes to be killed are..."
-ps ax | grep $1 | grep -v grep
-read -p "Kill them??? (Y/n):"
-[ "$REPLY" == "n" ] || ps ax | grep $1 | grep -v grep | awk '{print $1}' | xargs kill -9
+if [ $# -eq 2 ]; then
+    match_str=$2
+elif [ $# -eq 1 ]; then
+    match_str=$1
+    prompt='y'
+else
+    echo "Bad arguments, use \"grep_kill [-y] <match_string>\""
+    exit 1
+fi
+
+if [ "$prompt" = 'y' ]; then
+    echo "Processes to be killed are..."
+    ps ax | grep $match_str | grep -v grep
+    read -p "Kill them??? (Y/n):"
+fi
+[ "$REPLY" == "n" ] || ps ax | grep $match_str | grep -v grep | awk '{print $1}' | xargs kill -9
