@@ -1,0 +1,9 @@
+#!/bin/bash
+
+case "$1" in
+    max) echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor ;;
+    min) echo powersave | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor ;;
+    *) echo "Available options are {max|min} for performance/powersave governor" && exit 1 ;;
+esac
+
+

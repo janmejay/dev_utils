@@ -48,3 +48,4 @@ car() { echo $* | awk '{print $1}' }
 cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }
 
 unset RUBYOPT
+alias mixer='xfce4-mixer'
