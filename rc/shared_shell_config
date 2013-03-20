@@ -49,3 +49,33 @@ cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }
 
 unset RUBYOPT
 alias mixer='xfce4-mixer'
+
+base_name=,
+base_dir='../'
+for i in `seq 1 10`; do
+    name=$name$base_name
+    dir=$dir$base_dir
+    alias $name="cd $dir"
+done
+
+alias mvn='/usr/bin/mvn -DdownloadSources=true -Dthrift.compiler=/home/janmejay/tools/thrift/bin/thrift'
+alias mi='mvn idea:clean idea:idea' 
+alias mci='mvn clean install -DskipTests=true'
+
+function scr() {
+    local screen_layouts=~/.screenlayout;
+    if [ $# -ne 1 ]; then
+        echo "Please identify configuration to use, possible options are:"
+        for i in find $screen_layouts -name '*.sh'; do
+            echo "- $i" | sed -e 's/\.sh//g'
+        done
+    else
+        local recipe=$screen_layouts/$1.sh
+        if [ -f $recipe ]; then
+            echo "Running $recipe"
+            $recipe
+        else 
+            echo "Recipe $recipe does not exist"
+        fi
+    fi
+}

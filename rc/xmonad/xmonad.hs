@@ -31,6 +31,7 @@ import XMonad.Hooks.ICCCMFocus
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import XMonad.Actions.WorkspaceNames
+import XMonad.Layout.MouseResizableTile
 
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
@@ -145,6 +146,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- Restart xmonad
     , ((modm              , xK_q     ), spawn "/home/janmejay/bin/xmonad_restart")
+
+    , ((modm,               xK_u), sendMessage ShrinkSlave)
+    , ((modm,               xK_i), sendMessage ExpandSlave)
     ]
     ++
 
@@ -196,7 +200,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- The available layouts.  Note that each layout is separated by |||,
 -- which denotes layout choice.
 --
-myLayout = tiled ||| Mirror tiled ||| Full
+myLayout = mouseResizableTile ||| tiled ||| Mirror tiled ||| Full
   where
      -- default tiling algorithm partitions the screen into two panes
      tiled   = Tall nmaster delta ratio
@@ -260,7 +264,7 @@ myLogHook = takeTopFocus
 -- By default, do nothing.
 myStartupHook = do
               setWMName "LG3D"              
-              spawn "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 17"
+              spawn "trayer-srg --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 17"
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
               spawn "xscreensaver"
               spawn "nm-applet --sm-disable"
