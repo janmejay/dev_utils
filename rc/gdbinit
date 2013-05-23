@@ -80,7 +80,7 @@ set $SHOWDATAWIN = 0
 # set to 0 to disable coloured display of changed registers
 set $SHOWREGCHANGES = 1
 # set to 1 to enable showing disassembly as part of context (default is 0)
-set $SHOW_DISASSEMBLY = 0
+set $SHOW_DISASSEMBLY = 1
 # set to 1 to enable code listing (default is 1)
 set $SHOW_CODE_LISTING = 1
 # set to 1 so skip command to execute the instruction at the new location
@@ -3042,7 +3042,7 @@ define hook-stop
   end
 
   # this makes 'context' be called at every BP/step
-  if ($SHOW_CONTEXT > 0)
+  if ($SHOW_CONTEXT > 0 && $_thread > 0)
     context
   end
   if ($SHOW_NEST_INSN > 0)
