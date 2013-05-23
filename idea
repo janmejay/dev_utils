@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/home/janmejay/tools/idea-IC-123.169/bin/idea.sh&
+/home/janmejay/tools/idea-IC-117.418/bin/idea.sh&
 disown

@@ -1,0 +1,3 @@
+[submodule "vendor_rc/gdbinit"]
+	path = vendor_rc/gdbinit
+	url = git://github.com/gdbinit/Gdbinit.git

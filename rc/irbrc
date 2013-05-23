@@ -21,59 +21,6 @@ class Object
   end
 end
 
-# Dynamic method finding; e.g., "hello".what? == 5 #=> ["length", "size"]
-begin
-#  require File::expand_path("~/.irb_lib/method_finder")
-  require 'rubygems'
-  require 'what_methods'
-rescue LoadError
-  puts "Error loading method_finder. Run 'sudo gem install what_methods' to enable Object#what? method finding."
-end
-
-# Colorize results
-begin
-  require 'rubygems'
-  require 'wirble'
-  Wirble.init
-  Wirble.colorize
-rescue LoadError
-  puts "Error loading Wirble. Run 'sudo gem install wirble' to enable colorized results."
-end
-
-# Inline colorized ri (override wirble's)
-RIARGS = ['-f', 'ansi']
-require 'rdoc/ri/ri_driver'
-class MyStupidRiDriver < RiDriver
-  def self.ri(*topics)
-    topics.map! { |topic| topic.to_s }
-    begin
-      MyStupidRiDriver.new(*topics).process_args
-    rescue => e
-      puts "Error processing ri request: #{e}"
-    end
-  end
-
-  def initialize(*topics)
-    @options = RI::Options.instance
-    args = RIARGS.dup + topics
-    @options.parse(args)
-    paths = RI::Paths::PATH
-    @ri_reader = RI::RiReader.new(RI::RiCache.new(paths))
-    @display   = @options.displayer
-  end
-end
-
-def Kernel.ri(*args)
-  less { MyStupidRiDriver.ri(*args) }
-end
-
-class Module
-  def ri(*args)
-    topics = args.map { |arg| arg = "#{self}##{arg}" }
-    less { MyStupidRiDriver.ri(*topics) }
-  end
-end
-
 # Copious output helper
 def less
   spool_output('less')
