@@ -102,6 +102,8 @@ set $NEXT_SHOULD_BE_NEXTI = 0
 set confirm off
 set verbose off
 
+set listsize 16
+
 set output-radix 0x10
 set input-radix 0x10
 
@@ -432,16 +434,14 @@ Print backtrace of the call stack, or innermost COUNT frames.
 Usage: stack <COUNT>
 end
 
-
-define frame
+define sf
   info frame
   info args
   info locals
 end
-document frame
+document sf
 Print stack frame.
 end
-
 
 define flagsarm
   # conditional flags are
@@ -1327,6 +1327,27 @@ Specify a SIGNAL as argument to print info on that signal only.
 Usage: sig <SIGNAL>
 end
 
+define m
+  if $argc == 0
+    help disable
+  else
+    disable $arg0
+  end
+end
+document m
+Mute a *-point
+end
+
+define um
+  if $argc == 0
+    help enable
+  else
+    enable $arg0
+  end
+end
+document um
+Un-mute a *-point
+end
 
 define threads
   info threads
@@ -2095,6 +2116,16 @@ define context
   if $SHOW_CODE_LISTING == 1
     show_code_listing
   end
+
+  color $COLOR_SEPARATOR
+  printf "----------------------------------------"
+  printf "----------------------------------------"
+  if (sizeof(void *) == 8)
+    printf "---------------------------------------------\n"
+	else
+	  printf "\n"
+	end
+  color_reset
 end
 document context
 Print context window, i.e. regs, stack, ds:esi and disassemble cs:eip.
@@ -2125,37 +2156,19 @@ define show_disassembly
     x /i
     set $context_i--
   end
-  color $COLOR_SEPARATOR
-  printf "----------------------------------------"
-  printf "----------------------------------------"
-  if (sizeof(void *) == 8)
-    printf "---------------------------------------------\n"
-	else
-	  printf "\n"
-	end
-  color_reset
 end
 
 define show_code_listing
   color $COLOR_SEPARATOR
-  printf "--------------------------------------------------------------------------"
+  printf "-----------------------------------------------------------------------------"
   if (sizeof(void *) == 8)
 	  printf "-------------------------------------------"
 	end
 	color $COLOR_SEPARATOR
 	color_bold
-  printf "[source]\n"
+  printf "[src]\n"
   color_reset
   list +0
-  color $COLOR_SEPARATOR
-  printf "----------------------------------------"
-  printf "----------------------------------------"
-  if (sizeof(void *) == 8)
-    printf "---------------------------------------------\n"
-	else
-	  printf "\n"
-	end
-  color_reset
 end
 document show_code_listing
 Print code listing, relative to current line
@@ -3512,8 +3525,6 @@ end
 if $COLOUREDPROMPT == 1 && $in_emacs == 0
 	set prompt \033[31m\033[1m(gdb) \033[0m
 end
-
-
 
 #EOF
 
