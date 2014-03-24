@@ -104,6 +104,8 @@ set verbose off
 
 set listsize 16
 
+set print pretty
+
 set output-radix 0x10
 set input-radix 0x10
 
@@ -3523,7 +3525,7 @@ end
 
 # can't use the color functions because we are using the set command
 if $COLOUREDPROMPT == 1 && $in_emacs == 0
-	set prompt \033[31m\033[1m(gdb) \033[0m
+	set prompt \033[1;34m {\033[31m\033[1m gdb\033[1;34m }\033[0m\n
 end
 
 #EOF
