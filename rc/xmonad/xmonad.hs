@@ -33,6 +33,8 @@ import qualified Data.Map        as M
 import XMonad.Actions.WorkspaceNames
 import XMonad.Layout.MouseResizableTile
 
+import qualified XMonad.Actions.FlexibleResize as Flex
+
 -- The preferred terminal program, which is used in a binding below and by
 -- certain contrib modules.
 --
@@ -40,7 +42,7 @@ myTerminal      = "rxvt"
 
 -- Whether focus follows the mouse pointer.
 myFocusFollowsMouse :: Bool
-myFocusFollowsMouse = True
+myFocusFollowsMouse = False
 
 -- Width of the window border in pixels.
 --
@@ -183,8 +185,7 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
 
     -- mod-button3, Set the window to floating mode and resize by dragging
-    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
-                                       >> windows W.shiftMaster))
+    , ((modm, button3), (\w -> focus w >> Flex.mouseResizeWindow w))
 
     -- you may also bind events to the mouse scroll wheel (button4 and button5)
     ]
@@ -267,6 +268,7 @@ myStartupHook = do
               spawn "trayer-srg --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 17"
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
               spawn "xscreensaver"
+              spawn "/usr/libexec/polkit-gnome-authentication-agent-1"
               spawn "nm-applet --sm-disable"
               spawn "pidgin"
 

@@ -1,10 +1,12 @@
-export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/
+export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/:~/tools/android-ndk-r9:~/tools/n7000-toolchain/bin:~/tools/thrift/bin:~/tools/mysql/bin
 export CDPATH=.:~:~/Desktop:~/projects:~/projects/flipkart
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/bin/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
+export MYSQL_HOME=~/tools/mysql
+alias emacs='/usr/local/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp"`'
@@ -60,10 +62,13 @@ for i in `seq 1 10`; do
     alias $name="cd $dir"
 done
 
-alias mvn='/usr/bin/mvn -DdownloadSources=true -Dthrift.compiler=/home/janmejay/tools/thrift/bin/thrift'
-alias mi='mvn idea:clean idea:idea' 
-alias mci='mvn clean install -DskipTests=true'
-alias mdt='mvn -Dmaven.surefire.debug="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=8000 -Xnoagent -Djava.compiler=NONE" test'
+mvn_cmd='/usr/bin/mvn -DdownloadSources=true -Dthrift.compiler=/home/janmejay/tools/thrift/bin/thrift'
+
+alias mvn="$mvn_cmd"
+alias mi="$mvn_cmd idea:clean idea:idea" 
+alias mci="$mvn_cmd clean install -DskipTests=true"
+alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
+alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
 
 function scr() {
     local screen_layouts=~/.screenlayout;
@@ -82,3 +87,7 @@ function scr() {
         fi
     fi
 }
+
+export PATH=~/tools/google-cloud-sdk/bin:$PATH
+alias clip='cat >> /tmp/clip'
+#alias clip='cat | xs'

@@ -22,10 +22,10 @@ Xft.antialias:  true
 Xft.hinstyle:   hintslight
 Xft.rgba:       rgb
 ! urxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
-urxvt.font:xft:ubuntu mono:regular:pixelsize=13:autohint=true
-urxvt.boldFont:xft:ubuntu mono:bold:pixelsize=13:autohint=true
-urxvt.italicFont:xft:ubuntu mono:italic:pixelsize=13:autohint=true
-urxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=13:autohint=true
+urxvt.font:xft:ubuntu mono:regular:pixelsize=16:autohint=true
+urxvt.boldFont:xft:ubuntu mono:bold:pixelsize=16:autohint=true
+urxvt.italicFont:xft:ubuntu mono:italic:pixelsize=16:autohint=true
+urxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=16:autohint=true
 urxvt.depth: 32
 urxvt.background: rgba:0010/0010/0010/dddd
 urxvt.foreground: grey80

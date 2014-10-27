@@ -3696,3 +3696,6 @@ end
 #
 #   Version 2
 #     Radix bugfix by elaine
+
+set history filename ~/.gdb_history
+set history save on

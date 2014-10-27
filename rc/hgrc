@@ -21,7 +21,7 @@ color=
 rebase=
 bookmarks=
 convert=
-forest=/home/janmejay/projects/hgforest-crew/forest.py
+#forest=/home/janmejay/projects/hgforest/forest.py #forest is not compatible beyond hg 2.3 (see https://bitbucket.org/gxti/hgforest/issue/3/hgforest-incompatible-w-mercurial-23)
 prompt=/home/janmejay/projects/hg-prompt/prompt.py
 
 [pager]

@@ -1,4 +1,7 @@
 #!/bin/bash
 
-/home/janmejay/tools/idea-IC-117.418/bin/idea.sh&
+#/home/janmejay/tools/idea-IC-117.418/bin/idea.sh&
+#/home/janmejay/tools/idea-IC-129.713/bin/idea.sh&
+export IDEA_JDK=/usr/lib/jvm/sun-jdk-1.6
+/home/janmejay/tools/idea-IC-133.193/bin/idea.sh&
 disown
