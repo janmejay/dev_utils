@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE repositories SYSTEM "/dtd/repositories.dtd">
+<repositories xmlns="" version="1.0">
+  <repo quality="experimental" status="unofficial">
+    <name><![CDATA[10c41-overlay]]></name>
+    <description lang="en"><![CDATA[local overlay, meant for private use]]></description>
+    <homepage>http://github.com/janmejay/10c41-overlay</homepage>
+    <owner type="person">
+      <email>janmejay.singh@gmail.com</email>
+      <name><![CDATA[Janmejay Singh]]></name>
+    </owner>
+    <source type="git">git://github.com/janmejay/10c41-overlay.git</source>
+    <feed>http://github.com/janmejay/10c41-overlay/commits/master.atom</feed>
+  </repo>
+</repositories>

@@ -2,6 +2,7 @@
 
 #/home/janmejay/tools/idea-IC-117.418/bin/idea.sh&
 #/home/janmejay/tools/idea-IC-129.713/bin/idea.sh&
-export IDEA_JDK=/usr/lib/jvm/sun-jdk-1.6
-/home/janmejay/tools/idea-IC-133.193/bin/idea.sh&
+export IDEA_JDK=/usr/lib/jvm/oracle-jdk-bin-1.8
+#/home/janmejay/tools/idea-IC-141.2735.5/bin/idea.sh&
+/home/janmejay/tools/idea-IC-143.2287.1/bin/idea.sh&
 disown

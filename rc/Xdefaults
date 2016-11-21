@@ -22,10 +22,8 @@ Xft.antialias:  true
 Xft.hinstyle:   hintslight
 Xft.rgba:       rgb
 ! urxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
-urxvt.font:xft:ubuntu mono:regular:pixelsize=16:autohint=true
-urxvt.boldFont:xft:ubuntu mono:bold:pixelsize=16:autohint=true
-urxvt.italicFont:xft:ubuntu mono:italic:pixelsize=16:autohint=true
-urxvt.boldItalicFont:xft:ubuntu mono:bold:italic:pixelsize=16:autohint=true
+urxvt.font:xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true
+! urxvt.font:xft:ubuntu mono:regular:pixelsize=16:autohint=true
 urxvt.depth: 32
 urxvt.background: rgba:0010/0010/0010/dddd
 urxvt.foreground: grey80
@@ -56,3 +54,8 @@ urxvt.borderColor: #888888
 !!white
 *color7:         rgb:d3/d7/cf
 *color15:        rgb:ee/ee/ec
+
+
+URxvt.colorIT:      #87af5f
+URxvt.colorBD:      #d7d7d7
+URxvt.colorUL:      #87afd7

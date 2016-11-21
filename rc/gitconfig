@@ -16,7 +16,11 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 [core]
 	editor = emacs -q -nw
+	pager = less -x4
 [push]
 	default = matching
 [branch]
   autosetupmerge = true
+[gui]
+	fontui = -family \"Ubuntu Mono\" -size 5 -weight normal -slant roman -underline 0 -overstrike 0
+	fontdiff = -family \"Ubuntu Mono\" -size 5 -weight normal -slant roman -underline 0 -overstrike 0
