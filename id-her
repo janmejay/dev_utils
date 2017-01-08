@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# this is called id-her because I wrote this to capture my daughters in action (they really like XF86PowerOff button :-)
+# comment out shutdown invocation and append "/home/janmejay/bin/id-her shut me down" to /etc/acpi/actions/powerbtn.sh (or whereever else acpi-shutdown handling is)
+# see /tmp/id.log to find the fiddlers
+
+
+f_name="Anonymous"
+
+if [ "x$(which avconv)" != "x" ]; then
+    f_name=$(tempfile -s '.jpg')
+    avconv -f video4linux2 -i /dev/video0 $f_name
+elif [ "x$(which ffmpeg)" != "x" ]; then
+    echo "Please help me, add ffmpeg support here!"
+fi
+
+echo "Ho Ho Ho! $f_name tried to $* at $(date)." >> /tmp/id.log
