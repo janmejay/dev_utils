@@ -1,0 +1,89 @@
+export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/:~/tools/android-ndk-r9:~/tools/n7000-toolchain/bin:~/tools/thrift/bin:~/tools/mysql/bin
+export CDPATH=.:~:~/Desktop:~/projects:~/projects/flipkart
+export SVN_EDITOR=$EDITOR
+export PYTHONSTARTUP=~/bin/rc/pythonrc
+export TZ='Asia/Calcutta'
+export JAVA_OPTS='-Xmx1536m -Xms500m'
+export EDITOR='emacs -nw -q'
+export MYSQL_HOME=~/tools/mysql
+alias emacs='/usr/local/bin/emacs -nw -q'
+
+alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
+alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp"`'
+alias py_tags="find . -name '*.py' | etags --output TAGS -"
+alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
+alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
+alias sql='~/.sq_client/squirrel-sql.sh'
+alias e=$EDITOR
+alias guest='qemu -hda /imp/debian.img -m 1024 -redir tcp:5022::22 -curses'
+alias term='mrxvt --fullscreen -e screen'
+alias syn='synergys --name left --daemon --config ~/.synergy_conf'
+alias ll='ls -l'
+alias la='ls -A'
+alias l='ls -CF'
+alias idea10='~/tools/idea10/bin/idea.sh'
+alias idea10_prop='~/tools/idea10_propritory/bin/idea.sh'
+alias idea9='~/tools/idea9/bin/idea.sh'
+alias idea8='~/tools/idea8/bin/idea.sh'
+alias grep='grep --color=auto'
+
+fx() { find . -iname "*$1*" | xclip -selection c. }
+
+f() { find . -iname "*$1*" }
+
+alias xs='xclip -selection c.'
+
+x() { echo $* | xs }
+
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
+export PYENV=~/.pyenv
+
+pyenv() { 
+    source $PYENV/$1/bin/activate 
+    export CUR_ENV=$1
+}
+
+venv() { virtualenv $PYENV/$1 --no-site-packages --distribute }
+
+pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
+
+car() { echo $* | awk '{print $1}' }
+cdr() { echo $* | awk '{ for (i = NR + 1; i <= NF; i++) print $i }' }
+
+unset RUBYOPT
+alias mixer='xfce4-mixer'
+
+base_name=,
+base_dir='../'
+for i in `seq 1 10`; do
+    name=$name$base_name
+    dir=$dir$base_dir
+    alias $name="cd $dir"
+done
+
+mvn_cmd='/usr/bin/mvn -DdownloadSources=true -Dthrift.compiler=/home/janmejay/tools/thrift/bin/thrift'
+
+alias mvn="$mvn_cmd"
+alias mi="$mvn_cmd idea:clean idea:idea" 
+alias mci="$mvn_cmd clean install -DskipTests=true"
+alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
+alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
+
+function scr() {
+    local screen_layouts=~/.screenlayout;
+    if [ $# -ne 1 ]; then
+        echo "Please identify configuration to use, possible options are:"
+        for i in find $screen_layouts -name '*.sh'; do
+            echo "- $i" | sed -e 's/\.sh//g'
+        done
+    else
+        local recipe=$screen_layouts/$1.sh
+        if [ -f $recipe ]; then
+            echo "Running $recipe"
+            $recipe
+        else 
+            echo "Recipe $recipe does not exist"
+        fi
+    fi
+}

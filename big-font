@@ -1,0 +1,7 @@
+#!/bin/bash
+if [ "$1x" == "x" ]; then
+    echo "Usage: big-font <size>"
+    exit 1
+fi
+
+printf '\33]50;%s%d\007' "xft:ubuntu mono:pixelsize=" $1

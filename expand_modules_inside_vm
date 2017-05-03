@@ -1,0 +1,11 @@
+#!/bin/sh
+modules_archive=~/modules.tar
+
+if [ ! -e $modules_archive ]; then
+    echo "No modules archive found, please ensure $modules_archive is present."
+fi
+
+rm -rf copied_modules_directory
+mkdir copied_modules_directory
+tar -xvf $modules_archive -C copied_modules_directory
+cp -ar copied_modules_directory/* /lib/modules/

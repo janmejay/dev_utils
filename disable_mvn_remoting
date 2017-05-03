@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+function block_repo() {
+    for hn in $*; do
+        local repo_ip=`nslookup $hn | grep Address | tail -1 | cut -d ' ' -f 2`
+        echo "\e[0;31m $hn \e[m -> $repo_ip is being blocked."
+        sudo iptables -A OUTPUT -d $repo_ip -p tcp -j REJECT --reject-with tcp-reset
+    done
+}
+
+block_repo artifactory.nm.flipkart.com repository.jboss.org repository.cloudera.com
+

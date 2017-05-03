@@ -10,7 +10,11 @@ export MYSQL_HOME=~/tools/mysql
 alias emacs='/usr/local/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
-alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp"`'
+alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp" -o -name "*.cc" -o -name "*.hh"`'
+function mkscope {
+    find . -type f -name '*.h' -o -name '*.c' -o -name '*.y' -o -name '*.l' -o -name '*.hpp' -o -name '*.cpp' -o -name '*.cc' -o -name '*.hh' > cscope.files
+    cscope -b -q
+}
 alias py_tags="find . -name '*.py' | etags --output TAGS -"
 alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
 alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
@@ -46,6 +50,8 @@ pyenv() {
 }
 
 venv() { virtualenv $PYENV/$1 --no-site-packages --distribute }
+
+venv3() { virtualenv $PYENV/$1 --no-site-packages --distribute -p python3 }
 
 pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
 

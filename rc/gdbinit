@@ -106,8 +106,8 @@ set listsize 16
 
 set print pretty
 
-set output-radix 0x10
-set input-radix 0x10
+set output-radix 0xA
+set input-radix 0xA
 
 # These make gdb never pause in its output
 set height 0
@@ -1350,14 +1350,6 @@ end
 document um
 Un-mute a *-point
 end
-
-define threads
-  info threads
-end
-document threads
-Print threads in target.
-end
-
 
 define dis
   if $argc == 0

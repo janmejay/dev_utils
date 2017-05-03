@@ -1,0 +1,51 @@
+#!/bin/bash
+if [ $# -lt 1 ] ; then
+  echo "expected at least one input file"
+  exit 1
+fi
+# Create FIFO to allow input from multiple MTS files at once
+TMPFILE=`mktemp /tmp/mts.XXXXXX` || exit 1
+rm $TMPFILE
+mkfifo $TMPFILE
+
+# Create tmp file for cat command
+CATTMP=`mktemp /tmp/cat.XXXXXX` || exit 1
+
+# set output filename to concatenation of input MTS streams
+# and build cat script as input to fifo
+MTS="`basename "$1"`"
+MTS="`echo "$MTS" | sed s,\.MTS,,g`"
+FILENAME="$MTS"
+echo "cat \"$1\" \\" > $CATTMP
+COUNTER=1
+ARGS=("$@")
+while [ "$COUNTER" -lt "$#" ] ; do
+  echo "\"${ARGS[$COUNTER]}\" \\" >> $CATTMP
+  MTS="`basename "${ARGS[$COUNTER]}"`"
+  MTS="`echo "$MTS" | sed s,\.MTS,,g`"
+  FILENAME="${FILENAME}-${MTS}"
+  COUNTER=$(($COUNTER + 1))
+done
+echo "> $TMPFILE &" >> $CATTMP
+chmod +x $CATTMP
+FILENAME="${FILENAME}.avi"
+
+# Concatenate MTS streams in TMPFILE / execute CATTMP
+$CATTMP
+
+# Encode with ffmpeg
+nice -n 19 ffmpeg \
+-i "$TMPFILE" \
+-acodec copy \
+-vcodec libx264 \
+-crf 21 \
+-r 30000/1001 \
+-deinterlace \
+-vpre lossless_medium \
+-y \
+-threads 0 \
+"$FILENAME"
+
+# delete temporary files/fifos
+rm $TMPFILE
+rm $CATTMP

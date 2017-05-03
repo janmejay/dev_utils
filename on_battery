@@ -1,0 +1,29 @@
+#!/bin/bash
+
+read -p 'introduce VM writeback delay??? (Y/n):'
+
+REPLY=${REPLY:-"y"}
+
+if [ $REPLY = y ]; then
+    sudo /bin/bash -c 'echo 1500 > /proc/sys/vm/dirty_writeback_centisecs'
+fi
+
+read -p 'turn off bluetooth??? (Y/n):'
+
+REPLY=${REPLY:-"y"}
+
+if [ $REPLY = y ]; then
+    sudo hciconfig hci0 down
+fi
+
+read -p 'turn off wifi??? (Y/n):'
+
+REPLY=${REPLY:-"y"}
+
+if [ $REPLY = y ]; then
+    sudo ifconfig wlan0 down
+fi
+
+
+
+

@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo ntpd -gq

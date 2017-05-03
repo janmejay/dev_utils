@@ -1,0 +1,34 @@
+#!/bin/bash
+
+awk -v b_start="${1}" -v b_end="${2}" -v b_match="${3}" '
+
+function print_frag() { 
+   if ( show == 1 ) for (i in a) print a[i];
+   delete a;
+}
+
+BEGIN { track = 0; show = 0; }
+
+{
+  if ( track == 1 ) {
+    if ( $0 ~ b_end ) {
+      track = 0;
+      print_frag();
+    } else {
+      a[NR] = $0;
+      if ( $0 ~ b_match ) {
+        show = 1;
+      }
+    }
+  }
+  if ( track == 0 ) {
+    if ( $0 ~ b_start ) {
+      track = 1;
+      show = 0;
+      a[0]=$0;
+    }
+  }
+}
+
+END { print_frag(); }
+'

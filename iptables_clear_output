@@ -1,0 +1,8 @@
+#!/bin/sh
+
+rule_count=`sudo iptables -L OUTPUT | tail -n +3 | wc -l`
+
+while [ $rule_count -gt 0 ]; do
+      sudo iptables -D OUTPUT $rule_count
+      rule_count=`expr "$rule_count" '-' '1'`
+done
