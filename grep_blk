@@ -1,13 +1,29 @@
 #!/bin/bash
 
-awk -v b_start="${1}" -v b_end="${2}" -v b_match="${3}" '
+exclude="n"
 
-function print_frag() { 
-   if ( show == 1 ) for (i in a) print a[i];
+if [ "x$4" != "x" ]; then
+  exclude=$4
+fi
+
+awk -v b_start="${1}" -v b_end="${2}" -v b_match="${3}" -v b_exclude_matched="${exclude}" '
+
+function print_frag() {
+   if ( ( (matched == 1) && (b_exclude_matched == "n") ) ||
+        ( (matched == 0) && (b_exclude_matched == "y") ) ) {
+     for (i in a) print a[i];
+   }
    delete a;
 }
 
-BEGIN { track = 0; show = 0; }
+BEGIN {
+  track = 0;
+  matched = 0;
+  if ( (b_exclude_matched != "n")  && (b_exclude_matched != "y") ) {
+    print "Exclude arg must either be y or n (found: " b_exclude_matched ")";
+    exit 1;
+  }
+}
 
 {
   if ( track == 1 ) {
@@ -17,14 +33,14 @@ BEGIN { track = 0; show = 0; }
     } else {
       a[NR] = $0;
       if ( $0 ~ b_match ) {
-        show = 1;
+        matched = 1;
       }
     }
   }
   if ( track == 0 ) {
     if ( $0 ~ b_start ) {
       track = 1;
-      show = 0;
+      matched = 0;
       a[0]=$0;
     }
   }

@@ -3692,6 +3692,16 @@ end
 set history filename ~/.gdb_history
 set history save on
 
+define attach_pattern
+  shell ps -ef | grep -v grep | grep $arg0 | awk '{print $2}' | head -1 | xargs echo attach > /tmp/gdb.in
+  source /tmp/gdb.in
+end
+
+define jvm_mode
+  handle SIGSEGV nostop noprint pass #safepoint mgmt
+  set pagination off
+end
+
 define pstr
   p es_str2cstr($arg0, NULL)
 end
