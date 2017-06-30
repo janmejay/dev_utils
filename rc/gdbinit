@@ -3698,7 +3698,7 @@ define attach_pattern
 end
 
 define jvm_mode
-  handle SIGSEGV nostop noprint pass #safepoint mgmt
+  handle SIGSEGV nostop noprint pass
   set pagination off
 end
 
@@ -3709,3 +3709,11 @@ document pstr
 print es_str_t
 end
 
+define silence
+  set $COLOUREDPROMPT = 1
+  set $SHOWCPUREGISTERS = 0
+  set $SHOWDATAWIN = 0
+  set $SHOWREGCHANGES = 0
+  set $SHOW_DISASSEMBLY = 0
+  set $SHOW_CODE_LISTING = 0
+end
