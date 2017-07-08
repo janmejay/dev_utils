@@ -1,0 +1,1 @@
+export PATH=~/.dev_utils:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:~/.gem/bin:~/tools/mysql/bin

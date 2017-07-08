@@ -6,8 +6,8 @@
 ! Xft.hinstyle:   hintslight
 
 ! ! ! -- Fonts -- !
-! ! urxvt.font:xft:droid sans mono slashed:medium:pixelsize=11
-! ! urxvt.boldFont:xft:droid sans mono slashed:medium:pixelsize=11
+! urxvt.font:xft:droid sans mono slashed:medium:pixelsize=11
+! urxvt.boldFont:xft:droid sans mono slashed:medium:pixelsize=11
 urxvt.termName: rxvt
 urxvt.transparent: false
 urxvt.inheritPixmap: false
@@ -22,8 +22,8 @@ Xft.antialias:  true
 Xft.hinstyle:   hintslight
 Xft.rgba:       rgb
 ! urxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
-urxvt.font:xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true
-! urxvt.font:xft:ubuntu mono:regular:pixelsize=16:autohint=true
+urxvt.font:xft:DejaVu Sans Mono:pixelsize=12:antialias=true:hinting=true
+! urxvt.font:xft:ubuntu mono:regular:pixelsize=14:autohint=true
 urxvt.depth: 32
 urxvt.background: rgba:0010/0010/0010/dddd
 urxvt.foreground: grey80

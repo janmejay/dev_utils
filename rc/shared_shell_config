@@ -1,8 +1,9 @@
-export PATH=~/bin:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:/usr/local/jruby-1.2.0/bin:~/.gem/bin:~/tools/android-sdk-linux_x86/tools/:~/tools/android-sdk-linux_x86/platform-tools/:~/tools/android-ndk-r9:~/tools/n7000-toolchain/bin:~/tools/mysql/bin
+. $(dirname $0)/set_path
+
 #removed :~/tools/thrift/bin because installed thrift-0.9.2 in /usr/local
 export CDPATH=.:~:~/Desktop:~/projects:~/projects/flipkart
 export SVN_EDITOR=$EDITOR
-export PYTHONSTARTUP=~/bin/rc/pythonrc
+export PYTHONSTARTUP=~/.dev_utils/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'

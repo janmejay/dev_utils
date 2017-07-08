@@ -81,7 +81,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- launch dmenu
-    , ((modm,               xK_p     ), spawn "dmenu_run -fn '*-5' -p '>>>' -nb '#DDD' -sb '#004' -nf '#000' -l 10")
+    , ((modm,               xK_p     ), spawn "/home/janmejay/.dev_utils/mymenu")
 
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
@@ -308,7 +308,7 @@ defaults = defaultConfig {
     }
 
 main = do
-    xmproc <- spawnPipe "/home/janmejay/bin/xmobar_launcher"
+    xmproc <- spawnPipe "/home/janmejay/.dev_utils/xmobar_launcher"
     xmonad $ defaults
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts  $  layoutHook defaultConfig

@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+export LC_CTYPE='en_US.UTF-8'
+
+urxvt -e tmux

@@ -20,4 +20,4 @@ plugins=(git ruby ssh-agent)
 
 source $ZSH/oh-my-zsh.sh
 
-source ~/bin/rc/shared_shell_config
+source ~/.dev_utils/rc/shared_shell_config

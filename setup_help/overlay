@@ -1,0 +1,3 @@
+run this to add overlay:
+
+sudo layman -o https://raw.githubusercontent.com/janmejay/dev_utils/master/rc/10c41-overlay-repositories.xml -f -a 10c41-overlay
