@@ -12,6 +12,7 @@ alias emacs='/usr/local/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp" -o -name "*.cc" -o -name "*.hh"`'
+alias gotags='etags `find . -name "*.go"`'
 function mkscope {
     find . -type f -name '*.h' -o -name '*.c' -o -name '*.y' -o -name '*.l' -o -name '*.hpp' -o -name '*.cpp' -o -name '*.cc' -o -name '*.hh' > cscope.files
     cscope -b -q
@@ -70,13 +71,18 @@ for i in `seq 1 10`; do
     alias $name="cd $dir"
 done
 
-mvn_cmd='/usr/bin/mvn -DdownloadSources=true -Dthrift.compiler=/home/janmejay/tools/thrift/bin/thrift'
+MVN_HOME=/home/janmejay/tools/apache-maven-3.5.0
+export PATH=$MVN_HOME/bin:$PATH
+mvn_cmd="${MVN_HOME}/bin/mvn -DdownloadSources=true"
 
 alias mvn="$mvn_cmd"
 alias mi="$mvn_cmd idea:clean idea:idea" 
 alias mci="$mvn_cmd clean install -DskipTests=true"
 alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
 alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
+
+export SCALA_HOME=/home/janmejay/tools/scala-2.12.2
+export PATH=$PATH:$SCALA_HOME/bin
 
 function scr() {
     local screen_layouts=~/.screenlayout;
