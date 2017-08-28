@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function mkscope {
+    find . -type f -name '*.h' -o -name '*.c' -o -name '*.y' -o -name '*.l' \
+         -o -name '*.hpp' -o -name '*.cpp' -o -name '*.cc' -o -name '*.hh'  \
+         > cscope.files
+    local exclude_string
+    while true; do
+        echo -n "Exclude pattern: "
+        read exclude_string
+        if [ "x${exclude_string}" == "x" ]; then
+           break
+        fi
+        local tmp=$(mktemp --suffix .cscope)
+        cat cscope.files | grep -vF $exclude_string > $tmp
+        local orig_count=$(wc -l cscope.files)
+        local new_count=$(wc -l $tmp)
+        echo "Reduction: ${orig_count} -> ${new_count}"
+        mv $tmp cscope.files
+    done
+    cscope -b -q
+}
+
+mkscope

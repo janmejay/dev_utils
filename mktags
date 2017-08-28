@@ -1,0 +1,24 @@
+#!/bin/bash
+
+function mktags {
+  find . -name "*.[h|c]" -o -name "*.cpp" -o -name "*.cc" \
+    -o -name "*.hh" > etag.in
+  local exclude_string
+  while true; do
+    echo -n "Exclude pattern: "
+    read exclude_string
+    if [ "x${exclude_string}" == "x" ]; then
+       break
+    fi
+    local tmp=$(mktemp --suffix .etag.in)
+    cat etag.in | grep -vF $exclude_string > $tmp
+    local orig_count=$(wc -l etag.in)
+    local new_count=$(wc -l $tmp)
+    echo "Reduction: ${orig_count} -> ${new_count}"
+    mv $tmp etag.in
+  done
+  etags `cat etag.in`
+  rm etag.in
+}
+
+mktags

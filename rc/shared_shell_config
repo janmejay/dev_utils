@@ -1,7 +1,7 @@
 . $(dirname $0)/set_path
 
 #removed :~/tools/thrift/bin because installed thrift-0.9.2 in /usr/local
-export CDPATH=.:~:~/Desktop:~/projects:~/projects/flipkart
+export CDPATH=.:~:~/Desktop:~/projects:~/projects/rubrik
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/.dev_utils/rc/pythonrc
 export TZ='Asia/Calcutta'
@@ -11,12 +11,7 @@ export MYSQL_HOME=~/tools/mysql
 alias emacs='/usr/local/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
-alias mktags='etags `find . -name "*.[h|c]" -o -name "*.cpp" -o -name "*.cc" -o -name "*.hh"`'
 alias gotags='etags `find . -name "*.go"`'
-function mkscope {
-    find . -type f -name '*.h' -o -name '*.c' -o -name '*.y' -o -name '*.l' -o -name '*.hpp' -o -name '*.cpp' -o -name '*.cc' -o -name '*.hh' > cscope.files
-    cscope -b -q
-}
 alias py_tags="find . -name '*.py' | etags --output TAGS -"
 alias js_tags="/usr/bin/ctags -e -a --languages=js -o TAGS -R ."
 alias notes='wine "C:\Program Files\lotus\notes\notes.exe"'
