@@ -22,7 +22,7 @@ Xft.antialias:  true
 Xft.hinstyle:   hintslight
 Xft.rgba:       rgb
 ! urxvt.font:-*-Terminus-medium-*-*-*-14-*-*-*-*-*-*-r
-urxvt.font:xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true
+urxvt.font:xft:DejaVu Sans Mono:pixelsize=18:antialias=true:hinting=true
 ! urxvt.font:xft:ubuntu mono:regular:pixelsize=14:autohint=true
 urxvt.depth: 32
 urxvt.background: rgba:0010/0010/0010/dddd
