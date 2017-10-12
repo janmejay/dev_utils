@@ -10,21 +10,21 @@
 import XMonad
 import Data.Monoid
 import System.Exit
-import XMonad.Config.Azerty  
-import XMonad.Hooks.DynamicLog  
-import XMonad.Hooks.ManageDocks  
-import XMonad.Util.Run(spawnPipe)  
-import XMonad.Util.EZConfig  
-import Graphics.X11.ExtraTypes.XF86  
-import XMonad.Layout.Spacing  
-import XMonad.Layout.NoBorders(smartBorders)  
-import XMonad.Layout.PerWorkspace  
-import XMonad.Layout.IM  
-import XMonad.Layout.Grid  
---import XMonad.Actions.GridSelect  
-import Data.Ratio ((%))  
-import XMonad.Actions.CycleWS  
-import qualified XMonad.StackSet as W  
+import XMonad.Config.Azerty
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.ManageDocks
+import XMonad.Util.Run(spawnPipe)
+import XMonad.Util.EZConfig
+import Graphics.X11.ExtraTypes.XF86
+import XMonad.Layout.Spacing
+import XMonad.Layout.NoBorders(smartBorders)
+import XMonad.Layout.PerWorkspace
+import XMonad.Layout.IM
+import XMonad.Layout.Grid
+--import XMonad.Actions.GridSelect
+import Data.Ratio ((%))
+import XMonad.Actions.CycleWS
+import qualified XMonad.StackSet as W
 import System.IO
 import XMonad.Hooks.SetWMName
 import XMonad.Hooks.ICCCMFocus
@@ -264,8 +264,8 @@ myLogHook = takeTopFocus
 --
 -- By default, do nothing.
 myStartupHook = do
-              setWMName "LG3D"              
-              spawn "trayer-srg --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 17"
+              setWMName "LG3D"
+              spawn "trayer-srg --edge top --align left --SetDockType true --SetPartialStrut true --expand true --width 4 --transparent true --tint 0x191970 --height 24"
               spawn "xmodmap /home/janmejay/.xmodmaprc'"
               spawn "xscreensaver"
               spawn "/usr/libexec/polkit-gnome-authentication-agent-1"

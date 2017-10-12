@@ -2,6 +2,7 @@
 
 export IDEA_JDK=/usr/lib/jvm/oracle-jdk-bin-1.8
 #/home/janmejay/tools/idea-IC-163.9166.29/bin/idea.sh&
-/home/janmejay/tools/idea-IC-171.4694.70/bin/idea.sh&
+#/home/janmejay/tools/idea-IC-171.4694.70/bin/idea.sh&
+/home/janmejay/tools/idea-IC-172.4155.36/bin/idea.sh&
 
 disown
