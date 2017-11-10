@@ -1,3 +1,6 @@
 [submodule "vendor_rc/gdbinit"]
 	path = vendor_rc/gdbinit
 	url = git://github.com/gdbinit/Gdbinit.git
+[submodule "find-cursor"]
+	path = find-cursor
+	url = git://github.com/Carpetsmoker/find-cursor.git

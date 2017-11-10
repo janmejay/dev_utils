@@ -83,6 +83,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- launch dmenu
     , ((modm,               xK_p     ), spawn "/home/janmejay/.dev_utils/mymenu")
 
+    -- locate mouse pointer
+    , ((modm,               xK_x     ), spawn "/home/janmejay/.dev_utils/cursor")
+
     -- launch gmrun
     , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
 
