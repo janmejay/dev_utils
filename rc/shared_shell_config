@@ -71,7 +71,7 @@ export PATH=$MVN_HOME/bin:$PATH
 mvn_cmd="${MVN_HOME}/bin/mvn -DdownloadSources=true"
 
 alias mvn="$mvn_cmd"
-alias mi="$mvn_cmd idea:clean idea:idea" 
+alias mi="$mvn_cmd idea:clean idea:idea"
 alias mci="$mvn_cmd clean install -DskipTests=true"
 alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
 alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
@@ -91,14 +91,25 @@ function scr() {
         if [ -f $recipe ]; then
             echo "Running $recipe"
             $recipe
-        else 
+        else
             echo "Recipe $recipe does not exist"
         fi
     fi
 }
 
 export PATH=~/tools/google-cloud-sdk/bin:$PATH
-alias clip='cat >> /tmp/clip'
+# alias clip='cat >> /tmp/clip'
+function clip() {
+    echo '' >> /tmp/clip
+    local lines_before=$(wc -l /tmp/clip | awk '{print $1}')
+    local chars_before=$(wc -c /tmp/clip | awk '{print $1}')
+    tmux saveb -a /tmp/clip
+    local lines_after=$(wc -l /tmp/clip | awk '{print $1}')
+    local chars_after=$(wc -c /tmp/clip | awk '{print $1}')
+    local lines_copied=$(expr $lines_after - $lines_before)
+    local chars_copied=$(expr $chars_after - $chars_before)
+    echo "Copied $chars_copied chars across $lines_copied lines"
+}
 #alias clip='cat | xs'
 
 man() {
