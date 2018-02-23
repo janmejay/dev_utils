@@ -25,9 +25,12 @@ Xft.rgba:       rgb
 
 ! my regular working font
 urxvt.font:xft:DejaVu Sans Mono:pixelsize=18:antialias=true:hinting=true
+! ishi
+! urxvt.font:xft:DejaVu Sans Mono:pixelsize=36:antialias=true:hinting=true
 
 ! pairing font
 ! urxvt.font:xft:DejaVu Sans Mono:pixelsize=22:antialias=true:hinting=true
+
 
 ! urxvt.font:xft:ubuntu mono:regular:pixelsize=14:autohint=true
 urxvt.depth: 32
