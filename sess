@@ -12,7 +12,7 @@ synclient AccelFactor=0.1
 synclient TapButton3=2 #middle click
 synclient HorizTwoFingerScroll=1
 
-syndaemon -i 0.4s -K -R -d
+syndaemon -i .6s -K -R -d
 
 wicd-client -t >/dev/null 2>&1 &
 

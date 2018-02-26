@@ -1,0 +1,178 @@
+#!/usr/bin/env python
+
+import os
+import json
+import re
+import subprocess
+import sys
+
+class CpuStats:
+    SC_CLK_TCK = os.sysconf_names['SC_CLK_TCK']
+    user_hz = os.sysconf(SC_CLK_TCK)
+    def __init__(self):
+        self.user_old = 0
+        self.unice_old = 0
+        self.system_old = 0
+        self.idle_old = 0
+        self.iowait_old = 0
+        self.irq_old = 0
+        self.softirq_old = 0
+        self.steal_old = 0
+        self.guest_old = 0
+        self.guestnice_old = 0
+        self.pattern = re.compile("^cpu +(?P<user>[0-9]+) "
+                                  "(?P<unice>[0-9]+) "
+                                  "(?P<system>[0-9]+) "
+                                  "(?P<idle>[0-9]+) "
+                                  "(?P<iowait>[0-9]+) "
+                                  "(?P<irq>[0-9]+) "
+                                  "(?P<softirq>[0-9]+) "
+                                  "(?P<steal>[0-9]+) "
+                                  "(?P<guest>[0-9]+) "
+                                  "(?P<guestnice>[0-9]+)\n$")
+
+
+    def read(self):
+        with open("/proc/stat", 'r') as f:
+            util_text = f.readline()
+        match = self.pattern.search(util_text)
+
+        total_new = 0
+        user_new = int(match.group("user"))
+        total_new += user_new
+        unice_new = int(match.group("unice"))
+        total_new += unice_new
+        system_new = int(match.group("system"))
+        total_new += system_new
+        idle_new = int(match.group("idle"))
+        total_new += idle_new
+        iowait_new = int(match.group("iowait"))
+        total_new += iowait_new
+        irq_new = int(match.group("irq"))
+        total_new += irq_new
+        softirq_new = int(match.group("softirq"))
+        total_new += softirq_new
+        steal_new = int(match.group("steal"))
+        total_new += steal_new
+        guest_new = int(match.group("guest"))
+        total_new += guest_new
+        guestnice_new = int(match.group("guestnice"))
+        total_new += guestnice_new
+
+        total_old = \
+                    self.user_old + \
+                    self.unice_old + \
+                    self.system_old + \
+                    self.idle_old + \
+                    self.iowait_old + \
+                    self.irq_old + \
+                    self.softirq_old + \
+                    self.steal_old + \
+                    self.guest_old + \
+                    self.guestnice_old
+
+        base = total_new - total_old
+
+        used_pct = \
+                   (((user_new + unice_new + system_new + \
+                      guest_new + guestnice_new) \
+                     - \
+                     (self.user_old + self.unice_old + self.system_old + \
+                      self.guest_old + self.guestnice_old))
+                    * 100) / base
+        steal_pct = ((steal_new - self.steal_old) * 100) / base
+        interrupt_pct = \
+                        (((irq_new + softirq_new) \
+                          - \
+                          (self.irq_old + self.softirq_old))
+                         * 100) / base
+        iowait_pct = ((iowait_new - self.iowait_old) * 100) / base
+
+        self.user_old = user_new
+        self.unice_old = unice_new
+        self.system_old = system_new
+        self.idle_old = idle_new
+        self.iowait_old = iowait_new
+        self.irq_old = irq_new
+        self.softirq_old = softirq_new
+        self.steal_old = steal_new
+        self.guest_old = guest_new
+        self.guestnice_old = guestnice_new
+
+        all_good = (iowait_pct < 5) and \
+                   (used_pct < 80) and \
+                   (steal_pct < 0.1)
+
+        color = "00FF00" if all_good else "FF0000"
+
+        msg = ("use: %.1f%%, wa: %.1f%%, int: %.1f%%, st: %.1f%%" %
+               (used_pct, iowait_pct, interrupt_pct, steal_pct))
+
+        return {"color": color,
+                "name": "cpu",
+                "markup": "none",
+                "full_text": msg,
+                "instance": "cpu"}
+
+own_path=os.path.realpath(__file__)
+
+i3status_cfg_path=("%s/rc/i3status.conf" % os.path.dirname(own_path))
+
+i3status_cmd=("i3status -c %s" % i3status_cfg_path)
+
+stdout = os.fdopen(sys.stdout.fileno(), 'wb', 0)
+
+p = subprocess.Popen(
+    i3status_cmd,
+    shell=True,
+    bufsize=-1,
+    stdin=subprocess.PIPE,
+    stdout=subprocess.PIPE,
+    stderr=subprocess.STDOUT,
+    close_fds=True)
+
+p.stdin.close()
+
+raw_bytes = p.stdout.readline()
+line = raw_bytes.decode('utf-8')
+data = json.loads(line)
+assert data["version"] == 1
+
+stdout.write(raw_bytes)
+
+
+raw_bytes = p.stdout.readline()
+line = raw_bytes.decode('utf-8')
+assert str.strip(line) == '['
+
+stdout.write(raw_bytes)
+
+cpu_stats_reader = CpuStats()
+
+while True:
+    raw_bytes = p.stdout.readline()
+    if not raw_bytes:
+        print("Aborting, i3status died???")
+        p.terminate()
+        p.wait()
+        exit(1)
+    line = raw_bytes.decode('utf-8')
+
+    if line[0] == ",":
+        data_str = line[1:]
+        prepend_comma = True
+    else:
+        data_str = line
+        prepend_comma = False
+
+    cpu_stats = cpu_stats_reader.read()
+    data = json.loads(data_str)
+    data.insert(0, cpu_stats)
+    data_str = json.dumps(data)
+
+    if prepend_comma:
+        msg = (",%s\n" % data_str)
+    else:
+        msg = ("%s\n" % data_str)
+
+    stdout.write(msg.encode('utf-8'))

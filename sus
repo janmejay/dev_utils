@@ -1,7 +1,7 @@
 #!/bin/bash
 
-sudo /bin/bash -c 'echo -n mem > /sys/power/state'
+sudo /bin/bash -c 'xautolock -locknow && echo -n mem > /sys/power/state'
 
-sleep 2
+# sleep 2
 
-kill_xmobar
+# kill_xmobar
