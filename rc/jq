@@ -1,0 +1,23 @@
+# intersect 2 sets, passed as 2 members of an array eg.
+#  input:
+#   $ echo '[[1, 2, 3, 4], [5, 6, 4, 1]]' | jq '. | intersect'
+#  output:
+#  [1, 4]
+def intersect:
+    (.[0] | unique) + (.[1] | unique) | sort as $s
+    | reduce range(1; $s|length) as $i
+        ([]; if $s[$i-1]  == $s[$i] then (. + [$s[$i]]) else . end);
+
+# merge multiple maps in an array into 1 big map
+#  input:
+#   $ echo '[{"foo": 1}, {"bar": 2}]' | jq '. | merge'
+#  output:
+#   {"foo": 1, "bar": 2}
+def merge: reduce .[] as $sub_map ({}; . + $sub_map);
+
+# make a map with some given value with keys from given array
+#  input:
+#   $ echo '["foo", "bar"]' | jq '. | mapify(5)'
+#  output:
+#   {"foo": 5, "bar": 5}
+def mapify(v): reduce .[] as $str ({}; . + {($str): v});

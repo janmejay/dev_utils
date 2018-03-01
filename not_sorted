@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+import fileinput
+from collections import deque
+
+ctx_len = 2
+
+ctx_queue=deque(maxlen=ctx_len)
+print_lines = 0
+prev_value = ""
+
+def print_open():
+    print("---------vvv----------")
+
+def print_close():
+    print("---------^^^----------")
+
+for l in fileinput.input():
+    l = l.strip()
+    if l < prev_value:
+        if print_lines == 0:
+            print_open()
+        print_lines = ctx_len
+        for ctx_l in ctx_queue:
+            print(ctx_l)
+        ctx_queue.clear()
+        print("%s \t\t<<<---- len = %d" % (l, len(l)))
+    else:
+        if print_lines > 0:
+            print(l)
+            print_lines -= 1
+            if print_lines == 0:
+                print_close()
+        else:
+            ctx_queue.append(l)
+    prev_value = l
+
+if print_lines > 0:
+    print_close()
