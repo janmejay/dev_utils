@@ -1,0 +1,116 @@
+#!/usr/bin/env python
+
+import binascii
+from enum import IntEnum
+import json
+import socket
+import struct
+import subprocess
+import sys
+
+class Cmd(IntEnum):
+    RUN_CMD = 0
+    GET_TREE = 4
+
+hdr = "i3-ipc"
+
+len_hdr = len(hdr)
+len_int = 4
+response_envelop_len = len_hdr + len_int + len_int #magic + len + cmd
+pack_format = "<II"
+
+def send(sock, cmd, payload = ""):
+    payload_bytes = payload.encode('utf-8')
+    length = len(payload_bytes)
+    buff = hdr.encode('utf-8') + \
+           struct.pack(pack_format, length, cmd) + \
+           payload_bytes
+    sock.sendall(buff)
+
+def recv(sock, expected_cmd):
+    resp_envelop = sock.recv(response_envelop_len)
+    actual_hdr = resp_envelop[0:len_hdr]
+    if actual_hdr.decode('utf-8') != hdr:
+        raise Exception("invalid reply envelop(no magic seq): " + \
+                        str(binascii.hexlify(resp_envelop)))
+    length, actual_cmd  = struct.unpack(pack_format, resp_envelop[len_hdr:])
+    if actual_cmd != expected_cmd:
+        raise Exception("invalid reply envelop(unexpected cmd): " +
+                        str(binascii.hexlify(resp_envelop)) + \
+                        " which is not " + expected_cmd)
+    return sock.recv(length).decode('utf-8')
+
+def collect_windows(tree, ws_id, ws_windows):
+    if tree['window'] and tree['nodes'] == [] and ws_id:
+        if ws_id in ws_windows:
+            ws_windows[ws_id].append(tree)
+        else:
+            ws_windows[ws_id] = [tree]
+    else:
+        for node in tree['nodes']:
+            if tree['type'] == 'workspace':
+                ws_id = tree['id']
+            collect_windows(node, ws_id, ws_windows)
+
+def windows(tree):
+    windows_by_wsid = {}
+    collect_windows(tree, None, windows_by_wsid)
+    return windows_by_wsid
+
+def alt_tab(sock):
+    curr_ws_id = None
+    send(sock, Cmd.GET_TREE)
+    tree_json = recv(sock, Cmd.GET_TREE)
+    tree = json.loads(tree_json)
+    tree_rect = tree['rect']
+    max_x = tree_rect['width']
+    max_y = tree_rect['height']
+
+    all_windows = windows(tree)
+
+    for ws_id in all_windows:
+        ws_windows = all_windows[ws_id]
+        for w in ws_windows:
+            if w['focused']:
+                curr_ws_id = ws_id
+                break
+
+    curr_windows = all_windows[curr_ws_id]
+    curr_windows_with_pos = []
+    for w in curr_windows:
+        w_rect = w['rect']
+        x = w_rect['x']
+        y = w_rect['y']
+        pos_rank = x * max_y + y # we go column first
+        curr_windows_with_pos.append((pos_rank, w))
+
+    curr_windows_with_pos.sort(key = lambda e: e[0])
+
+    focus_idx = 0
+    for i, (_, w) in enumerate(curr_windows_with_pos):
+        if w['focused']:
+            focus_idx = i
+            break
+
+    curr_windows_len = len(curr_windows_with_pos)
+    focus_idx += 1
+    if focus_idx >= curr_windows_len:
+        focus_idx = focus_idx % curr_windows_len
+
+    _, focus_tgt_win = curr_windows_with_pos[focus_idx]
+    win_id = focus_tgt_win['id']
+
+    send(sock, Cmd.RUN_CMD, "[con_id=%s] focus" % win_id)
+    print(recv(sock, Cmd.RUN_CMD))
+
+
+server_addr = subprocess \
+              .check_output(['i3', '--get-socketpath'],
+                            close_fds=True,
+                            universal_newlines=True) \
+              .strip()
+
+sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+sock.connect(server_addr)
+
+alt_tab(sock)
