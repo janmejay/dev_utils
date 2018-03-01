@@ -112,5 +112,5 @@ server_addr = subprocess \
 
 sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
 sock.connect(server_addr)
-
 alt_tab(sock)
+sock.close()
