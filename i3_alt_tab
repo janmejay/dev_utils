@@ -47,10 +47,12 @@ def collect_windows(tree, ws_id, ws_windows):
         else:
             ws_windows[ws_id] = [tree]
     else:
-        for node in tree['nodes']:
+        nodes = tree['nodes'] + tree['floating_nodes']
+        for node in nodes:
+            curr_ws_id = ws_id
             if tree['type'] == 'workspace':
-                ws_id = tree['id']
-            collect_windows(node, ws_id, ws_windows)
+                curr_ws_id = tree['id']
+            collect_windows(node, curr_ws_id, ws_windows)
 
 def windows(tree):
     windows_by_wsid = {}
