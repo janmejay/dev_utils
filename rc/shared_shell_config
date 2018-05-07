@@ -67,7 +67,7 @@ for i in `seq 1 10`; do
 done
 
 MVN_HOME=/home/janmejay/tools/apache-maven-3.5.0
-export PATH=$MVN_HOME/bin:$PATH
+export PATH=$MVN_HOME/bin:$PATH:/home/janmejay/tools/gcloud/bin
 mvn_cmd="${MVN_HOME}/bin/mvn -DdownloadSources=true"
 
 alias mvn="$mvn_cmd"

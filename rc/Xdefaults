@@ -25,6 +25,8 @@ Xft.rgba:       rgb
 
 ! my regular working font
 urxvt.font:xft:DejaVu Sans Mono:pixelsize=18:antialias=true:hinting=true
+xterm*font:     *-fixed-*-*-*-18-*
+
 ! ishi
 ! urxvt.font:xft:DejaVu Sans Mono:pixelsize=36:antialias=true:hinting=true
 

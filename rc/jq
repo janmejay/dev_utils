@@ -21,3 +21,10 @@ def merge: reduce .[] as $sub_map ({}; . + $sub_map);
 #  output:
 #   {"foo": 5, "bar": 5}
 def mapify(v): reduce .[] as $str ({}; . + {($str): v});
+
+# find value of a key recursively
+#  input:
+#   $ echo '[{"a": {"b" : 4}}, {"c" : {"d": 16}}]' | jq '. | find(.d)'
+#  output:
+#   16
+def find(f): .. | select(type=="object" and f) | f;
