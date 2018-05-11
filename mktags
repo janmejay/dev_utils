@@ -17,7 +17,8 @@ function mktags {
     echo "Reduction: ${orig_count} -> ${new_count}"
     mv $tmp etag.in
   done
-  etags `cat etag.in`
+  cat etag.in | xargs -n 1000 etags -a
+  # etags `cat etag.in`
   rm etag.in
 }
 
