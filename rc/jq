@@ -28,3 +28,42 @@ def mapify(v): reduce .[] as $str ({}; . + {($str): v});
 #  output:
 #   16
 def find(f): .. | select(type=="object" and f) | f;
+
+# pm_nice
+# makes a nice looking compact representation of patch_map
+def pm_nice:
+  (. | fromjson | to_entries
+     | map({key: .key | fromjson | .patchId, value: .value | fromjson})
+     | from_entries);
+
+# brm_nice
+# make a nice looking blob-representation-map
+def brm_nice:
+  (. | fromjson | to_entries[]
+     | {key: .key | fromjson, value: .value | fromjson}
+     | {csn: .value.contentSequenceNumber,
+        cid: .key.compositeContentId.contentId,
+        rsn: .key.representationSequenceNumber,
+        lsz: .value.logicalBytes,
+        r: [.value.references[].refType],
+        p: .value.patchId.patchId,
+        b: .value.baseRef});
+
+# brm_verbose
+# make a nice looking blob-representation-map
+def brm_verbose:
+  (. | fromjson | to_entries[]
+     | {key: .key | fromjson, value: .value | fromjson, ksn: .key});
+
+# given brm_verbose output
+def find_base(ksn):
+  map(. | select(.ksn == ksn));
+
+def find_base_rec(ksn):
+  (. as $brm | find_base(ksn) as $i
+             | if (($i | length) == 0) then
+                 []
+               else
+               $i + ($i | [map(. | .value.baseRef | tojson as $pksn
+                                 | $brm | find_base_rec($pksn))[][]])
+               end);

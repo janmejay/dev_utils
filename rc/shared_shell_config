@@ -100,15 +100,20 @@ function scr() {
 export PATH=~/tools/google-cloud-sdk/bin:$PATH
 # alias clip='cat >> /tmp/clip'
 function clip() {
-    echo '' >> /tmp/clip
-    local lines_before=$(wc -l /tmp/clip | awk '{print $1}')
-    local chars_before=$(wc -c /tmp/clip | awk '{print $1}')
-    tmux saveb -a /tmp/clip
-    local lines_after=$(wc -l /tmp/clip | awk '{print $1}')
-    local chars_after=$(wc -c /tmp/clip | awk '{print $1}')
+    suffix=''
+    if [ "x$1" != 'x' ]; then
+        suffix=".$1"
+    fi
+    clip_file="/tmp/clip$suffix"
+    echo '' >> $clip_file
+    local lines_before=$(wc -l $clip_file | awk '{print $1}')
+    local chars_before=$(wc -c $clip_file | awk '{print $1}')
+    tmux saveb -a $clip_file
+    local lines_after=$(wc -l $clip_file | awk '{print $1}')
+    local chars_after=$(wc -c $clip_file | awk '{print $1}')
     local lines_copied=$(expr $lines_after - $lines_before)
     local chars_copied=$(expr $chars_after - $chars_before)
-    echo "Copied $chars_copied chars across $lines_copied lines"
+    echo "Copied $chars_copied chars across $lines_copied lines to $clip_file"
 }
 #alias clip='cat | xs'
 
@@ -125,3 +130,9 @@ man() {
 }
 
 alias music=pragha
+
+function cjcat() {
+    cat $1 | sed -e 's/\\\\/\\/g'  -e 's/\\x00//g'
+}
+
+unsetopt correct_all

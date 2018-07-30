@@ -1,6 +1,8 @@
 #!/bin/bash
 
-sudo /bin/bash -c 'xautolock -locknow && echo -n mem > /sys/power/state'
+xautolock -enable
+
+sudo /bin/bash -c 'xautolock -locknow && sleep 1 && echo -n mem > /sys/power/state'
 
 # sleep 2
 
