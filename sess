@@ -16,5 +16,16 @@ syndaemon -i .6s -K -R -d
 
 wicd-client -t >/dev/null 2>&1 &
 
-disown
+if [ -e /dev/rt/swap ]; then
+  sudo swapon /dev/rt/swap
+fi
 
+first_file_in_projects=$(find ~/projects -type f | head -1)
+
+if [ "x$first_file_in_projects" = 'x' ]; then
+  sudo mount -o bind /mnt/work/projects ~/projects
+fi
+
+xset -dpms
+
+disown

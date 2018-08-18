@@ -1,0 +1,12 @@
+#!/bin/bash
+
+f=/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness
+curr=$(sudo cat $f)
+
+if [ "x$1" == "x-" ]; then
+    op='/'
+else
+    op='*'
+fi
+new_val=$(echo "$curr $op 2" | bc)
+sudo /bin/bash -c "echo $new_val > $f"

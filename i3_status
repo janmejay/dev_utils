@@ -114,6 +114,72 @@ class CpuStats:
                 "full_text": msg,
                 "instance": "cpu"}
 
+class MemMatcher:
+    def __init__(self, name):
+        self.name = name
+        self.re = re.compile("^%s:\s+([0-9]+) kB$" % name)
+
+class MemStats:
+    def __init__(self):
+        self.matchers = [
+            MemMatcher("MemTotal"),
+            MemMatcher("MemFree"),
+            MemMatcher("Buffers"),
+            MemMatcher("Cached"),
+            MemMatcher("Unevictable"),
+            MemMatcher("SwapTotal"),
+            MemMatcher("SwapFree"),
+            MemMatcher("Dirty")]
+
+    def read(self):
+        values = {}
+        matcher_idx = 0
+        with open("/proc/meminfo", 'r') as f:
+            for line in f:
+                for i in range(matcher_idx, len(self.matchers)):
+                    entry = self.matchers[i]
+                    match = entry.re.search(line)
+                    if match != None:
+                        values[entry.name] = int(match.group(1))
+                        matcher_idx = i
+                        break
+        free = values["MemFree"]
+        total = values["MemTotal"]
+        buffers = values["Buffers"]
+        cached = values["Cached"]
+        pinned = values["Unevictable"]
+        swap_total = values["SwapTotal"]
+        swap_free = values["SwapFree"]
+        dirty = values["Dirty"]
+
+        free_pct = (free*100)/total
+        buff_cache = (buffers + cached)
+        cache_pct = (buff_cache*100)/total
+        if swap_total == 0:
+            swap_free_pct = 0
+        else:
+            swap_free_pct = (swap_free*100)/swap_total
+
+        all_good = (free_pct < 2) or \
+                   ((cache_pct + free_pct) < 10) or \
+                   (pinned > 10) or \
+                   (dirty > 10)
+
+        color = "00FF00" if all_good else "FF0000"
+
+        msg_format = "rfree: %d (%0.1f%%), " + \
+                     "cache: %d (%0.1f%%), " + \
+                     "sfree: %d (%0.1f%%), " + \
+                     "dirty: %0.2f, " + \
+                     "pin: %0.2f"
+        msg =  msg_format % (free / 1024, free_pct, buff_cache / 1024, cache_pct, swap_free / 1024, swap_free_pct, dirty / 1024, pinned / 1024)
+
+        return {"color": color,
+                "name": "mem",
+                "markup": "none",
+                "full_text": msg,
+                "instance": "mem"}
+
 own_path=os.path.realpath(__file__)
 
 i3status_cfg_path=("%s/rc/i3status.conf" % os.path.dirname(own_path))
@@ -148,6 +214,7 @@ assert str.strip(line) == '['
 stdout.write(raw_bytes)
 
 cpu_stats_reader = CpuStats()
+mem_stats_reader = MemStats()
 
 while True:
     raw_bytes = p.stdout.readline()
@@ -166,7 +233,9 @@ while True:
         prepend_comma = False
 
     cpu_stats = cpu_stats_reader.read()
+    mem_stats = mem_stats_reader.read()
     data = json.loads(data_str)
+    data.insert(0, mem_stats)
     data.insert(0, cpu_stats)
     data_str = json.dumps(data)
 
