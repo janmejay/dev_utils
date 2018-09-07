@@ -2,17 +2,7 @@
 
 xmm
 
-synclient ClickFinger2=0
-synclient ClickFinger3=3 #because thumb becomes the 3rd finger touches down on a clickpad
-synclient RightButtonAreaLeft=0
-synclient RightButtonAreaTop=0
-synclient MaxSpeed=8
-synclient MinSpeed=1
-synclient AccelFactor=0.1
-synclient TapButton3=2 #middle click
-synclient HorizTwoFingerScroll=1
-
-syndaemon -i .6s -K -R -d
+touchpad-reset
 
 wicd-client -t >/dev/null 2>&1 &
 

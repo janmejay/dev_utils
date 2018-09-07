@@ -99,7 +99,7 @@ function scr() {
 
 export PATH=~/tools/google-cloud-sdk/bin:$PATH
 # alias clip='cat >> /tmp/clip'
-function clip() {
+function clipa() {
     suffix=''
     if [ "x$1" != 'x' ]; then
         suffix=".$1"
@@ -114,6 +114,14 @@ function clip() {
     local lines_copied=$(expr $lines_after - $lines_before)
     local chars_copied=$(expr $chars_after - $chars_before)
     echo "Copied $chars_copied chars across $lines_copied lines to $clip_file"
+}
+function clip() {
+    suffix=''
+    if [ "x$1" != 'x' ]; then
+        suffix=".$1"
+    fi
+    rm "/tmp/clip$suffix"
+    clipa $*
 }
 #alias clip='cat | xs'
 
