@@ -67,3 +67,31 @@ def find_base_rec(ksn):
                $i + ($i | [map(. | .value.baseRef | tojson as $pksn
                                  | $brm | find_base_rec($pksn))[][]])
                end);
+
+# maddr
+# map add recursively
+#  input:
+#   $ echo '[{"foo": 10, "bar": {"a": 1}},
+#            {"foo": 4, "quux": 1, "bar": {"a": 2}}]' | jq '. | maddr'
+#  output:
+#   {"bar": {"a": 3}, "foo": 14, "quux": 1}
+def maddr:
+  reduce .[] as $m (
+    {};
+    . as $i | ($i + $m) as $u
+            | $u
+            | keys
+            | map(. as $k | $k
+                          | $u[.]
+                          | (if (type == "object") then
+                               [$i[$k], $m[$k]] | maddr
+                             elif (type == "number") then
+                               ($i[$k] // 0) + ($m[$k] // 0)
+                             elif (type == "array") then
+                               [$i + $m] | flatten(1)
+                             else
+                               error("maddr does not support this type")
+                             end) as $v
+                          | {key: $k, value: $v})
+            | from_entries);
+
