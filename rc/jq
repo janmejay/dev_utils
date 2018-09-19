@@ -95,3 +95,11 @@ def maddr:
                           | {key: $k, value: $v})
             | from_entries);
 
+
+# load_dcbs_csv
+# invoke as in $ cat dcbs.csv | qcsv 2 10 15 | jq '. | dcbs_csv_cols'
+def load_dcbs_csv:
+  . | {
+      brm: .[0] | fromjson,
+      hm:  .[1] | fromjson,
+      pm:  .[2] | fromjson};

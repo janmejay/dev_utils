@@ -94,12 +94,21 @@ void print_rows(const std::vector<std::uint32_t>& cols_of_interest) {
     rapidjson::StringBuffer sb;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
     writer.StartArray();
-    for (auto icols : cols_of_interest) {
-      auto offset = col_offsets[icols];
-      auto str = row
-        .Substring(offset.first, offset.second - offset.first)
-        .ToString();
-      writer.String(str);
+    for (auto icol : cols_of_interest) {
+      if (icol < col_offsets.size()) {
+        auto offset = col_offsets[icol];
+        auto len = offset.second - offset.first;
+        if (len > 0) {
+          auto str = row
+            .Substring(offset.first, offset.second - offset.first)
+            .ToString();
+          writer.String(str);
+        } else {
+          writer.String("");
+        }
+      } else {
+        writer.Null();
+      }
     }
     writer.EndArray();
     std::puts(sb.GetString());
