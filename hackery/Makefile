@@ -1,5 +1,5 @@
 .PHONY: all install
-install: xmobar_launcher prlimit qcsv
+install: xmobar_launcher prlimit qcsv hash_join
 	cp xmobar_launcher ..
 	cp prlimit ..
 	cp qcsv ..
@@ -12,3 +12,6 @@ prlimit: prlimit.c
 
 qcsv: qcsv.cc
 	g++ -std=c++11 -Wall -g3 -ggdb -o qcsv qcsv.cc -l UTF8Strings-1
+
+hash_join: hash_join.cc
+	g++ -std=c++11 -O3 -o hash_join hash_join.cc

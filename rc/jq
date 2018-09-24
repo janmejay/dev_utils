@@ -103,3 +103,6 @@ def load_dcbs_csv:
       brm: .[0] | fromjson,
       hm:  .[1] | fromjson,
       pm:  .[2] | fromjson};
+
+def grpid_s:
+  . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
