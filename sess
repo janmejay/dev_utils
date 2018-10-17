@@ -18,4 +18,6 @@ fi
 
 xset -dpms
 
+parcellite
+
 disown

@@ -104,5 +104,26 @@ def load_dcbs_csv:
       hm:  .[1] | fromjson,
       pm:  .[2] | fromjson};
 
+# grpid_s
+# generates group-id string from groupId
 def grpid_s:
   . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
+
+# tib
+def tib:
+  ./1024/1024/1024/1024;
+
+# tb
+def tb:
+  ./1000/1000/1000/1000;
+
+# verbose representation of sharded-group
+def scg_verbose:
+  .
+  | .content_map=(
+        .content_map
+        | fromjson
+        | with_entries({
+          key: .key | fromjson | .id,
+          value: .value | fromjson}))
+  | del(.recent_unique_strings);

@@ -22,7 +22,6 @@ std::runtime_error mk_error(std::string&& str) {
 
 std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
   const UTF8::String& row,
-  const std::vector<std::uint32_t>& cols_of_interest,
   std::uint32_t row_num) {
 
   bool quote_on = false;
@@ -82,14 +81,20 @@ std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
   return col_offsets;
 }
 
-void print_rows(const std::vector<std::uint32_t>& cols_of_interest) {
+void print_rows(std::vector<std::uint32_t>&& cols_of_interest) {
   std::uint32_t row_num = 0;
   std::string raw_chars;
 
   while (std::getline(std::cin, raw_chars)) {
     UTF8::String row(raw_chars);
-    auto col_offsets = parse_row(row, cols_of_interest, row_num);
+    auto col_offsets = parse_row(row, row_num);
     row_num++;
+
+    if (cols_of_interest.empty()) {
+      for (std::uint32_t i = 0; i < col_offsets.size(); i++) {
+        cols_of_interest.push_back(i);
+      }
+    }
 
     rapidjson::StringBuffer sb;
     rapidjson::PrettyWriter<rapidjson::StringBuffer> writer(sb);
@@ -117,17 +122,12 @@ void print_rows(const std::vector<std::uint32_t>& cols_of_interest) {
 
 int main(int argc, char** argv) {
   try {
-    if (argc == 1) {
-      throw mk_error(
-        std::string("No columns-of-interest given. ") +
-        "Please use ./qcsv 2 3 7 ...");
-    }
     std::vector<std::uint32_t> cols_of_interest;
     for (int i = 1; i < argc; i++) {
       auto col = std::stoul(argv[i]);
       cols_of_interest.push_back(col);
     }
-    print_rows(cols_of_interest);
+    print_rows(std::move(cols_of_interest));
   } catch (const std::exception& e) {
     std::cerr << "Error: " << e.what() << "\n";
     return 1;

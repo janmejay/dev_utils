@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+pkill syndaemon
+
 synclient ClickFinger2=0
 synclient ClickFinger3=3 #because thumb becomes the 3rd finger touches down on a clickpad
 synclient RightButtonAreaLeft=0
