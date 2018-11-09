@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <cstdint>
-#include <UTF8Strings-1/String.h>
+#include <vector>
 #define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/prettywriter.h>
 
@@ -21,31 +21,28 @@ std::runtime_error mk_error(std::string&& str) {
 }
 
 std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
-  const UTF8::String& row,
+  const std::string& row,
   std::uint32_t row_num) {
 
   bool quote_on = false;
   bool escape_on = false;
   std::uint32_t col_start = 0;
-  UTF8::String prev_ch, next_ch, curr_ch;
+  char prev_ch, next_ch = 0, curr_ch;
   std::vector<std::pair<std::uint32_t, std::uint32_t>> col_offsets;
-  for (std::uint32_t i = 0; i < row.Length(); i++) {
+  auto row_len = row.length();
+  for (std::uint32_t i = 0; i < row_len; i++) {
     if (i > 0) {
       prev_ch = curr_ch;
     }
-    if (next_ch.Length() == 1) {
-      curr_ch = next_ch;
-    } else {
-      curr_ch = row[i];
-    }
-    if (i + 1 < row.Length()) {
+    curr_ch = row[i];
+    if (i + 1 < row_len) {
       next_ch = row[i + 1];
     }
-    if (! quote_on && curr_ch.CharacterIsOneOfThese(",")) {
+    if (! quote_on && curr_ch == ',') {
       col_offsets.push_back({col_start, i});
       col_start = i + 1;
     }
-    if (curr_ch.CharacterIsOneOfThese("\\")) {
+    if (curr_ch == '\\') {
       escape_on = !escape_on;
       continue;
     }
@@ -53,19 +50,19 @@ std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
       escape_on = false;
       continue;
     }
-    if (quote_on && curr_ch.CharacterIsOneOfThese("\"")) {
-      if (next_ch.CharacterIsOneOfThese(",")) {
+    if (quote_on && curr_ch == '"') {
+      if (next_ch == ',') {
         quote_on = false;
         continue;
       } else {
         throw mk_error(
           "Invalid data @ row: " + std::to_string(row_num) +
           " and char " + std::to_string(i) +
-          " expected ',' found '" + next_ch.ToString() + "'");
+          " expected ',' found '" + next_ch + "'");
       }
     }
-    if (! quote_on && curr_ch.CharacterIsOneOfThese("\"")) {
-      if (i > 0 && ! prev_ch.CharacterIsOneOfThese(",")) {
+    if (! quote_on && curr_ch == '"') {
+      if (i > 0 && prev_ch != ',') {
         throw mk_error(
           "Invalid data @ row: " + std::to_string(row_num) +
           " and char " + std::to_string(i) +
@@ -74,8 +71,8 @@ std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
       quote_on = true;
     }
   }
-  if (col_start < row.Length()) {
-    col_offsets.push_back({col_start, row.Length()});
+  if (col_start < row_len) {
+    col_offsets.push_back({col_start, row_len});
   }
 
   return col_offsets;
@@ -83,10 +80,18 @@ std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
 
 void print_rows(std::vector<std::uint32_t>&& cols_of_interest) {
   std::uint32_t row_num = 0;
-  std::string raw_chars;
+  std::string row;
 
-  while (std::getline(std::cin, raw_chars)) {
-    UTF8::String row(raw_chars);
+  while (std::getline(std::cin, row)) {
+    // looking for comma is ok because a utf8 code-pt is encoded as
+    // 0*******             for U+0000 - U+007F so each byte is [0, 0x7F]
+    // 110*****, 10******   for U+0080 - U+07FF
+    //    so each byte is [0xC0, 0xDF] U [0x80, 0xBF] which implies >= 0x80
+    // 1110****, 10******x2 for U+0800 - U+FFFF
+    //    so each byte is [0xE0, 0xEF] U [0x80, 0xBF] which implies >= 0x80
+    // 11110***, 10******x3 for U+10000 - U+10FFFF
+    //    so each byte is [0xF0, 0xF7] U [0x80, 0xBF] which implies >= 0x80
+    // and comma ',' is '0x2C', '\' is 0x5C and '"' is 0x22, so all are < 0x80
     auto col_offsets = parse_row(row, row_num);
     row_num++;
 
@@ -104,10 +109,10 @@ void print_rows(std::vector<std::uint32_t>&& cols_of_interest) {
         auto offset = col_offsets[icol];
         auto len = offset.second - offset.first;
         if (len > 0) {
-          auto str = row
-            .Substring(offset.first, offset.second - offset.first)
-            .ToString();
-          writer.String(str);
+          writer.String(
+            row.c_str() + offset.first,
+            offset.second - offset.first,
+            false);
         } else {
           writer.String("");
         }

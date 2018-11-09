@@ -18,6 +18,6 @@ fi
 
 xset -dpms
 
-parcellite
+~/projects/CopyQ/build/copyq &
 
 disown

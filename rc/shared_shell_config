@@ -139,8 +139,15 @@ function man() {
 
 alias music=pragha
 
+# cassandra json cat (cat with workarounds for correcting invalid json
+# that cqlsh generates
 function cjcat() {
     cat $1 | sed -e 's/\\\\/\\/g'  -e 's/\\x00//g'
+}
+
+# cjcat for cqlsh ... "select json ..." dump (filters out non-data lines)
+function cqcat() {
+    cjcat $1 | tail -n+5 | head -n-1
 }
 
 unsetopt correct_all

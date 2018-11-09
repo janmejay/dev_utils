@@ -7,5 +7,7 @@ export IDEA_JDK=/usr/lib/jvm/oracle-jdk-bin-1.8
 #/home/janmejay/tools/idea-IC-173.3727.127/bin/idea.sh&
 #/home/janmejay/tools/idea-IC-181.5281.24/bin/idea.sh&
 /home/janmejay/tools/idea-IC-181.5540.7/bin/idea.sh &
+#/home/janmejay/tools/idea-IC-182.4892.20/bin/idea.sh & # does not accept Set(classOf[TransactionRaceLostException]) for Class[_ <: Throwable] => Boolean
+
 
 disown
