@@ -10,7 +10,7 @@ git branch -vv | jq -Rs \
      def _downstream(curr):
        (. as $m
         | $m[curr]
-        | select(.)
+        | if . then . else [] end
         | map(
             if . then . as $e | [.] + ($m | _downstream($e))
             else
@@ -23,6 +23,10 @@ git branch -vv | jq -Rs \
       | from_entries as $m
       | $m
       | _downstream(curr));
+   def flatten_singles:
+     if (type == "array") then
+       map(flatten_singles) | if (length == 1) then .[] else . end
+     else . end;
    (. | split("\n")
       | map({raw: . | gsub(" +"; " ") | split(" ")})
       | map({
@@ -33,7 +37,7 @@ git branch -vv | jq -Rs \
       | from_entries as $brs
       | $brs[]
       | select(.current) as $curr
-      | $brs | upstream($curr.branch) as $ups
-      | $brs | downstream($curr.branch) as $dwns
-      | {"UP": $ups, "DOWN": $dwns})'
+      | $curr
+      | { "UP": $brs | upstream($curr.branch),
+          "DOWN": ($brs | downstream($curr.branch) | map(flatten | flatten_singles))})'
 
