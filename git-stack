@@ -12,7 +12,7 @@ git branch -vv | jq -Rs \
         | $m[curr]
         | if . then . else [] end
         | map(
-            if . then . as $e | [.] + ($m | _downstream($e))
+            if . then . as $e | {key: $e, value : ($m | _downstream($e))}
             else
               []
             end));
@@ -24,9 +24,11 @@ git branch -vv | jq -Rs \
       | $m
       | _downstream(curr));
    def flatten_singles:
-     if (type == "array") then
-       map(flatten_singles) | if (length == 1) then .[] else . end
-     else . end;
+     (.
+      | if (type == "array") then . | map(flatten_singles) else . end
+      | if (type == "array") and (length == 1) then .[0] else . end
+      | if (type == "object") and ((.value | length) == 0) then .key else . end
+      | if (type == "object") then [{key: .key, value: .value | flatten_singles}] | from_entries else . end);
    (. | split("\n")
       | map({raw: . | gsub(" +"; " ") | split(" ")})
       | map({
@@ -39,5 +41,4 @@ git branch -vv | jq -Rs \
       | select(.current) as $curr
       | $curr
       | { "UP": $brs | upstream($curr.branch),
-          "DOWN": ($brs | downstream($curr.branch) | map(flatten | flatten_singles))})'
-
+          "DOWN": ($brs | downstream($curr.branch) | map(flatten_singles))})'
