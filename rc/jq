@@ -127,3 +127,9 @@ def scg_verbose:
           key: .key | fromjson | .id,
           value: .value | fromjson}))
   | del(.recent_unique_strings);
+
+def sq2d:
+  . | gsub("'"; "\"");
+
+def ne_json(expr):
+    if (. == null or . == "" or (. | fromjson | length) == 0) then . else (. | fromjson | expr) end;

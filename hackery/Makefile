@@ -3,6 +3,7 @@ install: xmobar_launcher prlimit qcsv hash_join
 	cp xmobar_launcher ..
 	cp prlimit ..
 	cp qcsv ..
+  cp hash_join ..
 
 xmobar_launcher: xmobar_launcher.c Makefile
 	gcc -o xmobar_launcher xmobar_launcher.c

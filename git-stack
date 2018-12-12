@@ -1,0 +1,39 @@
+#!/bin/bash
+
+git branch -vv | jq -Rs \
+  'def upstream(curr):
+     (. as $m
+      | $m[curr]
+      | if . then . as $e | $e | [.upstream] + ($m | upstream($e.upstream))
+        else [] end);
+   def downstream(curr):
+     def _downstream(curr):
+       (. as $m
+        | $m[curr]
+        | select(.)
+        | map(
+            if . then . as $e | [.] + ($m | _downstream($e))
+            else
+              []
+            end));
+     (.
+      | [.[]]
+      | group_by(.upstream)
+      | map({key: .[0].upstream, value: . | map(.branch)})
+      | from_entries as $m
+      | $m
+      | _downstream(curr));
+   (. | split("\n")
+      | map({raw: . | gsub(" +"; " ") | split(" ")})
+      | map({
+        current: (. | .raw[0] == "*"),
+        branch: .raw[1],
+        upstream: (.raw[3][1:][:-1])})
+      | map({key: .branch, value: .} | select(.key))
+      | from_entries as $brs
+      | $brs[]
+      | select(.current) as $curr
+      | $brs | upstream($curr.branch) as $ups
+      | $brs | downstream($curr.branch) as $dwns
+      | {"UP": $ups, "DOWN": $dwns})'
+

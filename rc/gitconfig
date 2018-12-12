@@ -9,6 +9,7 @@
 	st = status
 	ls = branch -a
 	cp = cherry-pick
+  stack = git-stack
   remove-deleted = !git ls-files -d | xargs git rm
   add-untracked = !git ls-files -o --exclude-standard | xargs git add -v
   add-remove = !git remove-deleted && git add-untracked
