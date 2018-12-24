@@ -27,8 +27,17 @@ git branch -vv | jq -Rs \
      (.
       | if (type == "array") then . | map(flatten_singles) else . end
       | if (type == "array") and (length == 1) then .[0] else . end
-      | if (type == "object") and ((.value | length) == 0) then .key else . end
-      | if (type == "object") then [{key: .key, value: .value | flatten_singles}] | from_entries else . end);
+      | if (type == "object") then
+          [{key: .key, value: .value | map(flatten_singles)}] | from_entries
+        else . end
+      | if (type == "object") and
+           (length == 1) and
+           ([.[]] | flatten | length == 0) then keys[0] else . end
+      | if (type == "object") then
+          with_entries({
+            key: .key,
+            value: (if (.value | length == 1) then .value[0] else .value end)})
+        else . end);
    (. | split("\n")
       | map({raw: . | gsub(" +"; " ") | split(" ")})
       | map({

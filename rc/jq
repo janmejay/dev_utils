@@ -133,3 +133,23 @@ def sq2d:
 
 def ne_json(expr):
     if (. == null or . == "" or (. | fromjson | length) == 0) then . else (. | fromjson | expr) end;
+
+def cm_nice:
+  .
+  | with_entries({key: .key | fromjson.id, value: .value | fromjson});
+
+
+def dq2s:
+  . | gsub("\""; "'");
+
+
+def paren_array:
+  . | @text "\(.)" | gsub("\\["; "(") | gsub("\\]"; ")");
+
+def find_rsn_base_rec(rsn):
+  . as $bv
+  | $bv
+  | map(select(.key.representationSequenceNumber == rsn))
+  | .[0].ksn as $ksn
+  | $bv
+  | find_base_rec($ksn);
