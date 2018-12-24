@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git branch -vv | jq -rRs \
+   '. | split("\n")
+      | map({raw: . | gsub(" +"; " ") | split(" ")})
+      | map({
+        current: (. | .raw[0] == "*"),
+        branch: .raw[1],
+        upstream: (.raw[3][1:][:-1])})
+      | .[]
+      | select(.current)
+      | @text "rebase --onto \(.upstream) \(.branch)~1 \(.branch)"' | xargs git
