@@ -54,6 +54,9 @@ std::vector<std::pair<std::uint32_t, std::uint32_t>> parse_row(
       if (next_ch == ',') {
         quote_on = false;
         continue;
+      } else if (next_ch == '\r') {
+        quote_on = false;
+        break;
       } else {
         throw mk_error(
           "Invalid data @ row: " + std::to_string(row_num) +

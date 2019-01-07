@@ -36,18 +36,37 @@ def pm_nice:
      | map({key: .key | fromjson | .patchId, value: .value | fromjson})
      | from_entries);
 
+# grpid_s
+# generates group-id string from groupId
+def grpid_s:
+  . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
+
+# pretty brm
+def pretty_brm:
+  (.
+   | {csn: .value.contentSequenceNumber,
+      cid: .key.compositeContentId.contentId,
+      rsn: .key.representationSequenceNumber,
+      lsz: .value.logicalBytes,
+      r: [.value.references[].refType],
+      p: .value.patchId.patchId,
+      b:
+        (if (.value.baseRef) then
+          .value.baseRef
+          | {rsn: .representationSequenceNumber,
+             c: (.compositeContentId
+                 | {cid: .contentId,
+                    g: (.groupId | grpid_s)})}
+        else
+          null
+        end)});
+
 # brm_nice
 # make a nice looking blob-representation-map
 def brm_nice:
   (. | fromjson | to_entries[]
      | {key: .key | fromjson, value: .value | fromjson}
-     | {csn: .value.contentSequenceNumber,
-        cid: .key.compositeContentId.contentId,
-        rsn: .key.representationSequenceNumber,
-        lsz: .value.logicalBytes,
-        r: [.value.references[].refType],
-        p: .value.patchId.patchId,
-        b: .value.baseRef});
+     | pretty_brm);
 
 # brm_verbose
 # make a nice looking blob-representation-map
@@ -64,8 +83,9 @@ def find_base_rec(ksn):
              | if (($i | length) == 0) then
                  []
                else
-               $i + ($i | [map(. | .value.baseRef | tojson as $pksn
-                                 | $brm | find_base_rec($pksn))[][]])
+                 ($i | map(pretty_brm)) +
+                   ($i | [map(. | .value.baseRef | tojson as $pksn
+                                | $brm | find_base_rec($pksn))[][]])
                end);
 
 # maddr
@@ -103,11 +123,6 @@ def load_dcbs_csv:
       brm: .[0] | fromjson,
       hm:  .[1] | fromjson,
       pm:  .[2] | fromjson};
-
-# grpid_s
-# generates group-id string from groupId
-def grpid_s:
-  . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
 
 # tib
 def tib:
