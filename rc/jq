@@ -168,3 +168,9 @@ def find_rsn_base_rec(rsn):
   | .[0].ksn as $ksn
   | $bv
   | find_base_rec($ksn);
+
+
+def decode:
+    (. | "decode_decompress \(.[3:])" | qsh_text);
+
+
