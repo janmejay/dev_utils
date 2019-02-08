@@ -174,3 +174,78 @@ def decode:
     (. | "decode_decompress \(.[3:])" | qsh_text);
 
 
+def dcbs_row:
+  {id: .[0],
+   bg_job_cfg: .[1],
+   brm_s: .[2],
+   cons_s: .[3],
+   create_s: .[4],
+   cross_lnonce: .[5],
+   cross_lowner: .[6],
+   cross_spec: .[7],
+   del_cids: .[8],
+   del_pdir: .[9],
+   hm_s: .[10],
+   ts: .[11],
+   m_lnonce: .[12],
+   m_lowner: .[13],
+   min_valid_csn: .[14],
+   next_csn: .[15],
+   next_rsn: .[16],
+   pm_s: .[17],
+   runiq_strs: .[18],
+   rev_specs: .[19],
+   schema_ver: .[20],
+   seq_no: .[21],
+   state_uuid: .[22]};
+
+def dcbs_row_50:
+  {id: .[0],
+   bg_job_cfg: .[1],
+   brm_s: .[2],
+   cons_s: .[3],
+   create_s: .[4],
+   cross_lnonce: .[5],
+   cross_lowner: .[6],
+   cross_spec: .[7],
+   del_cids: .[8],
+   del_pdir: .[9],
+   hm_s: .[10],
+   ts: .[11],
+   dtbs_on: .[12],
+   m_lnonce: .[13],
+   m_lowner: .[14],
+   min_valid_csn: .[15],
+   next_csn: .[16],
+   next_rsn: .[17],
+   pm_s: .[18],
+   runiq_strs: .[19],
+   rev_specs: .[20],
+   schema_ver: .[21],
+   seq_no: .[22],
+   state_uuid: .[23]};
+
+def parse_brm_verbose:
+  select(.brm_s != "{}")
+  | .brm=(.brm_s | fromjson | [brm_verbose])
+  | del(.brm_s);
+
+def parse_pm_verbose:
+  select(.pm_s != "{}")
+  | .pm=(.pm_s | fromjson | pm_nice)
+  | del(.pm_s);
+
+def sbs_row:
+  {id: .[0],
+   close_spec: .[1],
+   cm_s: .[2],
+   create_s: .[3],
+   del_s: .[4],
+   hm_s: .[5],
+   ts: .[6],
+   next_csn: .[7],
+   runiq_strs: .[8],
+   schema_ver: .[9],
+   seq_no: .[10],
+   shard_sz: .[11],
+   state_uuid: .[12]};
