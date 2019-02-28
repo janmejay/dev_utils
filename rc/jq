@@ -225,6 +225,32 @@ def dcbs_row_50:
    seq_no: .[22],
    state_uuid: .[23]};
 
+def dcbs_json_row_50:
+  {id: .group_id,
+   bg_job_cfg: .background_job_config,
+   brm_s: .blob_representation_map,
+   cons_s: .consolidate_specs,
+   create_s: .create_spec,
+   cross_lnonce: .cross_lock_nonce,
+   cross_lowner: .cross_lock_owner,
+   cross_spec: .cross_spec,
+   del_cids: .deleted_content_id_set,
+   del_pdir: .deleted_patch_dir_spec_set,
+   hm_s: .handle_map,
+   ts: .internal_timestamp,
+   dtbs_on: .is_diff_tree_enabled,
+   m_lnonce: .maintenance_lock_nonce,
+   m_lowner: .maintenance_lock_owner,
+   min_valid_csn: .min_valid_content_sequence_numner,
+   next_csn: .next_content_sequence_number,
+   next_rsn: .next_representation_sequence_number,
+   pm_s: .patch_map,
+   runiq_strs: .recent_unique_strings,
+   rev_specs: .reverse_specs,
+   schema_ver: .schema_version,
+   seq_no: .sequence_number,
+   state_uuid: .state_uuid};
+
 def parse_brm_verbose:
   select(.brm_s != "{}")
   | .brm=(.brm_s | fromjson | [brm_verbose])
@@ -249,3 +275,28 @@ def sbs_row:
    seq_no: .[10],
    shard_sz: .[11],
    state_uuid: .[12]};
+
+def sbs_row_50:
+  {id: .[0],
+   close_spec: .[1],
+   cm_s: .[2],
+   create_s: .[3],
+   del_s: .[4],
+   hm_s: .[5],
+   ts: .[6],
+   dtbs_on: .[7],
+   next_csn: .[8],
+   runiq_strs: .[9],
+   schema_ver: .[10],
+   seq_no: .[11],
+   shard_sz: .[12],
+   state_uuid: .[13]};
+
+def scgid:
+    gsub("_[0-9]+_[0-9]+$";"");
+
+def grp_storage:
+    .
+    | to_entries
+    | map(.key = (.key | fromjson | join("/")))
+    | from_entries;
