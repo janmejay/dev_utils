@@ -8,3 +8,4 @@ errno
 qcsv
 prlimit
 hash_join
+/jq

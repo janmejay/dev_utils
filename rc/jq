@@ -320,7 +320,7 @@ def draw_brm(grp_id):
         if . == "" then "" else . + ";" end;
     .
     | [brm_nice]
-    | sort_by(.csn) as $brm
+    | sort_by([.csn, .rsn]) as $brm
     | $brm
     | map({key: (.rsn | tostring), value: .csn})
     | from_entries as $csn_for
