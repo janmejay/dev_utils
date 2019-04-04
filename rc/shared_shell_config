@@ -153,3 +153,7 @@ function cqcat() {
 unsetopt correct_all
 
 export RANGER_LOAD_DEFAULT_RC=FALSE
+
+function diff_url() {
+    git log $1 -1 | grep -F 'Differential Revision:' | awk '{print $NF}' | xclip -selection c.
+}

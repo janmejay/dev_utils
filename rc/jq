@@ -49,6 +49,7 @@ def pretty_brm:
       rsn: .key.representationSequenceNumber,
       lsz: .value.logicalBytes,
       r: [.value.references[].refType],
+      t: (.value.blobRepresentationTimestamp/1000 | todate),
       p: .value.patchId.patchId,
       b:
         (if (.value.baseRef) then
@@ -300,3 +301,66 @@ def grp_storage:
     | to_entries
     | map(.key = (.key | fromjson | join("/")))
     | from_entries;
+
+# generates graphviz spec for brm, used to render a graph for it
+# usage:
+#  $ cat /tmp/clip.g | jq -r '. as $g | .blob_representation_map | draw_brm($g.group_id)' > /tmp/g.dot
+#  $ dot -Tsvg g.dot -o g.svg
+#
+# legend:
+#   inverted-house     => pinned rep
+#   solid oval         => rep with content-ref
+#   dashed oval        => rep without content-ref
+#   light-blue node    => full rep
+#   white node         => inc rep
+#   node label         => "rsn / csn"
+#   tooltip            => rep time
+def draw_brm(grp_id):
+    .
+    | [brm_nice] as $brm
+    | $brm
+    | map({key: (.rsn | tostring), value: .csn})
+    | from_entries as $csn_for
+    | $brm
+    | map(
+      .
+      | select(.b)
+      | .b_csn = $csn_for[.b.rsn | tostring]
+      | .b_str = "\(.b.rsn) / \(.b_csn)"
+      | .c_str = "\(.rsn) / \(.csn)"
+      | .clr_wrt_b = if .b_csn < .csn then "lightblue" else "pink" end
+      | .e_clr = if .b.c.g == grp_id then .clr_wrt_b else "red" end
+      | .style = "[style=filled,color=\(.e_clr)]"
+      | "\"\(.c_str)\" -> \"\(.b_str)\" \(.style)")
+    | join(";") as $edge_str
+    | $brm
+    | map(
+      .
+      | .ttip = .t
+      | .is_c = (.r | map(. == "CONTENT") | any)
+      | .pinned = (
+        .
+        | .r
+        | map(select(. == "CONTENT" or . == "INCREMENTAL" | not))
+        | length > 0)
+      | .brd = (
+          if .is_c then
+            "solid"
+          else
+            if .pinned then
+              "dashed"
+            else
+            "dotted"
+          end
+        end)
+      | .shp = if .pinned then "invhouse" else "oval" end
+      | .styl = "[tooltip=\"\(.ttip)\",style=\(.brd),shape=\(.shp)]"
+      | "\"\(.rsn) / \(.csn)\" \(.styl)")
+    | join(";") as $node_tip
+    | $brm
+    | map(
+      .
+      | select(.b | not)
+      | "\"\(.rsn) / \(.csn)\" [style=filled,color=lightblue]")
+    | join(";") as $full_str
+    | @text "digraph \"\(grp_id)\" {\($edge_str);\($node_tip);\($full_str)}";
