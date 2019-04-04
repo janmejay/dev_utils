@@ -341,7 +341,10 @@ def draw_brm(grp_id):
       | .pinned = (
         .
         | .r
-        | map(select(. == "CONTENT" or . == "INCREMENTAL" | not))
+        | map(select(
+            . == "CONTENT" or
+            . == "INCREMENTAL" or
+            . == "CROSS" | not))
         | length > 0)
       | .brd = (
           if .is_c then
