@@ -319,7 +319,8 @@ def draw_brm(grp_id):
     def suffix_semi:
         if . == "" then "" else . + ";" end;
     .
-    | [brm_nice] as $brm
+    | [brm_nice]
+    | sort_by(.csn) as $brm
     | $brm
     | map({key: (.rsn | tostring), value: .csn})
     | from_entries as $csn_for
