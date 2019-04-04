@@ -316,6 +316,8 @@ def grp_storage:
 #   node label         => "rsn / csn"
 #   tooltip            => rep time
 def draw_brm(grp_id):
+    def suffix_semi:
+        if . == "" then "" else . + ";" end;
     .
     | [brm_nice] as $brm
     | $brm
@@ -332,7 +334,8 @@ def draw_brm(grp_id):
       | .e_clr = if .b.c.g == grp_id then .clr_wrt_b else "red" end
       | .style = "[style=filled,color=\(.e_clr)]"
       | "\"\(.c_str)\" -> \"\(.b_str)\" \(.style)")
-    | join(";") as $edge_str
+    | join(";")
+    | suffix_semi as $edge_str
     | $brm
     | map(
       .
@@ -359,11 +362,12 @@ def draw_brm(grp_id):
       | .shp = if .pinned then "invhouse" else "oval" end
       | .styl = "[tooltip=\"\(.ttip)\",style=\(.brd),shape=\(.shp)]"
       | "\"\(.rsn) / \(.csn)\" \(.styl)")
-    | join(";") as $node_tip
+    | join(";")
+    | suffix_semi as $node_tip
     | $brm
     | map(
       .
       | select(.b | not)
       | "\"\(.rsn) / \(.csn)\" [style=filled,color=lightblue]")
     | join(";") as $full_str
-    | @text "digraph \"\(grp_id)\" {\($edge_str);\($node_tip);\($full_str)}";
+    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($full_str)}";
