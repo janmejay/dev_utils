@@ -328,7 +328,14 @@ def size_h:
 
 # generates graphviz spec for group, used to render a graph for it
 # usage:
-#  $ cat /tmp/clip.g | jq -r '. as $g | .blob_representation_map | draw_brm($g.group_id)' > /tmp/g.dot
+#  $ cat /tmp/clip.g | jq -r '
+#     . as $gd
+#     | $gd
+#     | draw_grp(
+#         $gd | .group_id;
+#         "blob_representation_map";
+#         "patch_map";
+#         false)' > /tmp/g.dot
 #  $ dot -Tsvg g.dot -o g.svg
 #
 # legend:
@@ -337,6 +344,7 @@ def size_h:
 #   dashed oval        => rep without content-ref
 #   light-blue node    => full rep
 #   white node         => inc rep
+#   rounded rect-node  => patch
 #   node label         => "rsn / csn"
 #   tooltip            => rep time
 def draw_grp(grp_id; brm_s_key; pm_s_key; show_patches):
