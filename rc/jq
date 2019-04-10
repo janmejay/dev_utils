@@ -372,3 +372,5 @@ def draw_brm(grp_id):
       | "\"\(.rsn) / \(.csn)\" [style=filled,color=lightblue]")
     | join(";") as $full_str
     | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($full_str)}";
+def expand:
+    . | to_entries[] | {key: .key|fromjson, value: .value| fromjson};
