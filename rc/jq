@@ -304,7 +304,7 @@ def grp_storage:
 
 # generates graphviz spec for brm, used to render a graph for it
 # usage:
-#  $ cat /tmp/clip.g | jq -r '. as $g | .blob_representation_map | draw_brm($g.group_id)' > /tmp/g.dot
+#  $ cat /tmp/clip.g | jq -r '. as $g | draw_grp($gd | .group_id; "blob_representation_map"; "patch_map")' > /tmp/g.dot
 #  $ dot -Tsvg g.dot -o g.svg
 #
 # legend:
@@ -314,7 +314,7 @@ def grp_storage:
 #   light-blue node    => full rep
 #   white node         => inc rep
 #   node label         => "rsn / csn"
-#   tooltip            => rep time
+#   rounded-rectangle  => patch (with size)
 def draw_brm(grp_id):
     def suffix_semi:
         if . == "" then "" else . + ";" end;
@@ -372,3 +372,149 @@ def draw_brm(grp_id):
       | "\"\(.rsn) / \(.csn)\" [style=filled,color=lightblue]")
     | join(";") as $full_str
     | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($full_str)}";
+
+def size_h:
+  def u_str:
+    .
+    | . as $u
+    | ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
+    | if $u > (. | length) then
+        error
+      else
+        .[$u]
+      end;
+
+  def r_size_h(u):
+    if . < 1024 or u == 6 then
+      .
+      | {i: . | floor, f: ((. - (. | floor)) * 100 | floor), u: u | u_str}
+      | if .f == 0 then "\(.i) \(.u)" else "\(.i).\(.f) \(.u)" end
+    else
+      .
+      | . / 1024
+      | r_size_h(u + 1)
+    end;
+
+  . | r_size_h(0);
+
+# generates graphviz spec for group, used to render a graph for it
+# usage:
+#  $ cat /tmp/clip.g | jq -r '. as $g | .blob_representation_map | draw_brm($g.group_id)' > /tmp/g.dot
+#  $ dot -Tsvg g.dot -o g.svg
+#
+# legend:
+#   inverted-house     => pinned rep
+#   solid oval         => rep with content-ref
+#   dashed oval        => rep without content-ref
+#   light-blue node    => full rep
+#   white node         => inc rep
+#   node label         => "rsn / csn"
+#   tooltip            => rep time
+def draw_grp(grp_id; brm_s_key; pm_s_key):
+    def suffix_semi:
+        if . == "" then "" else . + ";" end;
+    . as $g
+    | $g
+    | $g[brm_s_key]
+    | [brm_nice]
+    | sort_by([.csn, .rsn]) as $brm
+    | $g[pm_s_key]
+    | pm_nice
+    | to_entries
+    | map(
+        .
+        | {
+          p: .key,
+          lbl: (
+            .
+            | .value
+            | .internalPatchFileStats.physicalBytes
+            | size_h
+            | "\"\(.)\"")}
+        | "\"\(.p)\" [color=grey,style=filled,label=\(.lbl),shape=box,style=rounded]")
+    | join(";")
+    | suffix_semi as $pm_str
+    | $brm
+    | map({key: (.rsn | tostring), value: .csn})
+    | from_entries as $csn_for
+    | $brm
+    | map(
+      .
+      | select(.b)
+      | .b_csn = $csn_for[.b.rsn | tostring]
+      | .b_str = "\(.b.c.g)/\(.b.rsn)"
+      | .c_str = "\(grp_id)/\(.rsn)"
+      | .clr_wrt_b = if .b_csn < .csn then "lightblue" else "pink" end
+      | .e_clr = if .b.c.g == grp_id then .clr_wrt_b else "red" end
+      | .style = "[style=filled,color=\(.e_clr)]"
+      | "\"\(.c_str)\" -> \"\(.b_str)\" \(.style)")
+    | join(";")
+    | suffix_semi as $edge_str
+    | $brm
+    | map(
+      .
+      | .ttip = "\"\(.t)\""
+      | .is_c = (.r | map(. == "CONTENT") | any)
+      | .pinned = (
+        .
+        | .r
+        | map(select(
+            . == "CONTENT" or
+            . == "INCREMENTAL" or
+            . == "CROSS" | not))
+        | length > 0)
+      | .brd = (
+          if .is_c then
+            "solid"
+          else
+            if .pinned then
+              "dashed"
+            else
+            "dotted"
+          end
+        end)
+      | .shp = if .pinned then "invhouse" else "oval" end
+      | .lbl = "\"\(.rsn) / \(.csn)\""
+      | .styl = "[tooltip=\(.ttip),style=\(.brd),shape=\(.shp),label=\(.lbl)]"
+      | .node_id = "\(grp_id)/\(.rsn)"
+      | "\"\(.node_id)\" \(.styl)")
+    | join(";")
+    | suffix_semi as $node_tip
+    | $brm
+    | map(
+      .
+      | .b
+      | select(.)
+      | select(.c.g != grp_id)
+      | .node_id = "\"\(.c.g)/\(.rsn)\""
+      | .ttip = "\"\(.c.g)\""
+      | .lbl = "\"CROSS-BASE \(.rsn)\""
+      | "\(.node_id) [tooltip=\(.ttip),label=\(.lbl),color=red]")
+    | join(";")
+    | suffix_semi as $crsb_str
+    | $brm
+    | map(
+      .
+      | .brm_id = "\"\(grp_id)/\(.rsn)\""
+      | .pm_id = "\"\(.p)\""
+      | "\(.brm_id) -> \(.pm_id) [color=grey]")
+    | join(";")
+    | suffix_semi as $p_ref_str
+    | $brm
+    | map(
+      .
+      | select(.b | not)
+      | "\"\(grp_id)/\(.rsn)\" [style=filled,color=lightblue]")
+    | join(";") as $full_str
+    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($crsb_str)\($full_str)\($p_ref_str)\($pm_str)}";
+
+# generates graphviz spec for group, used to render a graph for it
+# usage:
+#  $ cat /tmp/clip.g | jq -r 'draw_dumped_grp' > /tmp/g.dot
+#  $ dot -Tsvg g.dot -o g.svg
+#
+# legend same as draw_grp above
+def draw_dumped_grp:
+    . as $gd
+    | $gd
+    | draw_grp($gd | .group_id; "blob_representation_map"; "patch_map");
