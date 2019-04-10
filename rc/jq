@@ -410,7 +410,7 @@ def size_h:
 #   white node         => inc rep
 #   node label         => "rsn / csn"
 #   tooltip            => rep time
-def draw_grp(grp_id; brm_s_key; pm_s_key):
+def draw_grp(grp_id; brm_s_key; pm_s_key; show_patches):
     def suffix_semi:
         if . == "" then "" else . + ";" end;
     . as $g
@@ -506,15 +506,17 @@ def draw_grp(grp_id; brm_s_key; pm_s_key):
       | select(.b | not)
       | "\"\(grp_id)/\(.rsn)\" [style=filled,color=lightblue]")
     | join(";") as $full_str
-    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($crsb_str)\($full_str)\($p_ref_str)\($pm_str)}";
+    | if show_patches then "\($pm_str)\($p_ref_str)" else "" end
+    | . as $pstr
+    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($crsb_str)\($pstr)\($full_str)}";
 
 # generates graphviz spec for group, used to render a graph for it
 # usage:
-#  $ cat /tmp/clip.g | jq -r 'draw_dumped_grp' > /tmp/g.dot
+#  $ cat /tmp/clip.g | jq -r 'draw_dumped_grp(true)' > /tmp/g.dot
 #  $ dot -Tsvg g.dot -o g.svg
 #
 # legend same as draw_grp above
-def draw_dumped_grp:
+def draw_dumped_grp(show_patches):
     . as $gd
     | $gd
-    | draw_grp($gd | .group_id; "blob_representation_map"; "patch_map");
+    | draw_grp($gd | .group_id; "blob_representation_map"; "patch_map"; show_patches);
