@@ -157,3 +157,5 @@ export RANGER_LOAD_DEFAULT_RC=FALSE
 function diff_url() {
     git log $1 -1 | grep -F 'Differential Revision:' | awk '{print $NF}' | xclip -selection c.
 }
+
+export BC_ENV_ARGS="-ql $HOME/.dev_utils/rc/bc.rc"

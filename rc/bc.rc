@@ -1,0 +1,59 @@
+define fact(n) {
+  auto s, m
+  if (n <= 0) {
+    "Invalid input: "
+    n
+    return(-1)
+  }
+  s = scale
+  scale = 0
+  m = n / 1
+  scale = s
+  if (n != m) {
+    "Invalid input: "
+    n
+    return(-1)
+  }
+  if (n < 2) return(1)
+  return(n * fact(n - 1))
+}
+
+# ctx: blobstore-random-ops-test
+# running time of single blobstore-random-op (on my laptop)
+# can be used as `nCr * r! * (r + f) * bs_random_op_runtime_sec`
+# where r is number of randomly chosen ops and f is number of
+# fixed ops
+bs_random_op_runtime_sec=.07430555555555555555
+
+define flr(x) {
+  auto s
+  s = scale
+  scale = 0
+  x /= 1   /* round x down */
+  scale = s
+  return (x)
+}
+
+define ceil(x) {
+  auto s, y
+  s = scale
+  scale = 0
+  y = x / 1
+  scale = s
+  if (y < x) {
+     return(y + 1)
+  }
+  return(y)
+}
+
+define mod(x, y) {
+  auto q
+  q = flr(x / y)
+  return(x - q * y)
+}
+
+define min_sec(sec) {
+  auto m, s
+  m = flr(sec / 60)
+  print m, "m ", mod(sec, 60), "s\n"
+}
