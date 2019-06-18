@@ -127,7 +127,7 @@ class CpuStats:
         core_tmp = self.get_temp()
         avg_mhz = self.avg_freq()
 
-        msg = ("%.2f °C, %s MHz, use: %.1f%%, wa: %.1f%%, int: %.1f%%, st: %.1f%%" %
+        msg = ("%.1f °C, %s MHz, Use: %.1f%%, Wa: %.1f%%, Int: %.1f%%, St: %.1f%%" %
                (core_tmp, avg_mhz, used_pct, iowait_pct, interrupt_pct, steal_pct))
 
         return {"color": color,
