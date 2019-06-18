@@ -5,10 +5,19 @@ import json
 import re
 import subprocess
 import sys
+import glob
+
+def rd_file(path):
+    with open(path, 'r') as f:
+        return f.read()
+
+CPU_THERM = "x86_pkg_temp\n"
+CPU_MHZ_RE = re.compile(r'^cpu MHz\t{2}: (\d+\.\d+)+$')
 
 class CpuStats:
     SC_CLK_TCK = os.sysconf_names['SC_CLK_TCK']
     user_hz = os.sysconf(SC_CLK_TCK)
+
     def __init__(self):
         self.user_old = 0
         self.unice_old = 0
@@ -31,6 +40,16 @@ class CpuStats:
                                   "(?P<guest>[0-9]+) "
                                   "(?P<guestnice>[0-9]+)\n$")
 
+    def get_temp(self):
+        tz_dirs = glob.glob("/sys/class/thermal/thermal_zone*")
+        pkg_dir = [d for d in tz_dirs if rd_file(d + "/type") == CPU_THERM][0]
+        return (int(rd_file(pkg_dir + "/temp")) / 1000)
+
+    def avg_freq(self):
+        cpu_data = rd_file("/proc/cpuinfo")
+        matches = [CPU_MHZ_RE.match(l) for l in cpu_data.split('\n')]
+        freqs = [float(m.group(1)) for m in matches if m]
+        return "%.2f" % (sum(freqs) / len(freqs))
 
     def read(self):
         with open("/proc/stat", 'r') as f:
@@ -105,8 +124,11 @@ class CpuStats:
 
         color = "00FF00" if all_good else "FF0000"
 
-        msg = ("use: %.1f%%, wa: %.1f%%, int: %.1f%%, st: %.1f%%" %
-               (used_pct, iowait_pct, interrupt_pct, steal_pct))
+        core_tmp = self.get_temp()
+        avg_mhz = self.avg_freq()
+
+        msg = ("%.2f °C, %s MHz, use: %.1f%%, wa: %.1f%%, int: %.1f%%, st: %.1f%%" %
+               (core_tmp, avg_mhz, used_pct, iowait_pct, interrupt_pct, steal_pct))
 
         return {"color": color,
                 "name": "cpu",
@@ -167,11 +189,11 @@ class MemStats:
 
         color = "00FF00" if all_good else "FF0000"
 
-        msg_format = "rfree: %d (%0.1f%%), " + \
-                     "cache: %d (%0.1f%%), " + \
-                     "sfree: %d (%0.1f%%), " + \
-                     "dirty: %0.2f, " + \
-                     "pin: %0.2f"
+        msg_format = "Rfr: %d (%0.1f%%), " + \
+                     "Csh: %d (%0.1f%%), " + \
+                     "Sfr: %d (%0.1f%%), " + \
+                     "Drt: %0.2f, " + \
+                     "Pin: %0.2f"
         msg =  msg_format % (free / 1024, free_pct, buff_cache / 1024, cache_pct, swap_free / 1024, swap_free_pct, dirty / 1024, pinned / 1024)
 
         return {"color": color,

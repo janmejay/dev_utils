@@ -104,7 +104,16 @@ function clipa() {
     if [ "x$1" != 'x' ]; then
         suffix=".$1"
     fi
-    clip_file="/tmp/clip$suffix"
+    clip_file="clip$suffix"
+    if [ $clip_file != "clip" ]; then
+        pwd | grep -Eq '^/tmp/'
+        if [ $? -ne 0 ]; then
+          clip_file="/tmp/${clip_file}"
+        fi
+    else
+        clip_file="/tmp/${clip_file}"
+    fi
+
     echo '' >> $clip_file
     local lines_before=$(wc -l $clip_file | awk '{print $1}')
     local chars_before=$(wc -c $clip_file | awk '{print $1}')
@@ -120,7 +129,16 @@ function clip() {
     if [ "x$1" != 'x' ]; then
         suffix=".$1"
     fi
-    rm "/tmp/clip$suffix"
+    clip_file="clip$suffix"
+    if [ $clip_file != "clip" ]; then
+        pwd | grep -Eq '^/tmp/'
+        if [ $? -ne 0 ]; then
+          clip_file="/tmp/${clip_file}"
+        fi
+    else
+        clip_file="/tmp/${clip_file}"
+    fi
+    rm $clip_file
     clipa $*
 }
 #alias clip='cat | xs'

@@ -252,6 +252,32 @@ def dcbs_json_row_50:
    seq_no: .sequence_number,
    state_uuid: .state_uuid};
 
+def dcbs_row_42:
+  {id: .group_id,
+   bg_job_cfg: .background_job_config,
+   brm_s: .blob_representation_map,
+   cons_s: .consolidate_specs,
+   create_s: .create_spec,
+   cross_lnonce: .cross_lock_nonce,
+   cross_lowner: .cross_lock_owner,
+   cross_spec: .cross_spec,
+   del_cids: .deleted_content_id_set,
+   del_pdir: .deleted_patch_dir_spec_set,
+   hm_s: .handle_map,
+   ts: .internal_timestamp,
+   dtbs_on: .is_diff_tree_enabled,
+   m_lnonce: .maintenance_lock_nonce,
+   m_lowner: .maintenance_lock_owner,
+   min_valid_csn: .min_valid_content_sequence_numner,
+   next_csn: .next_content_sequence_number,
+   next_rsn: .next_representation_sequence_number,
+   pm_s: .patch_map,
+   runiq_strs: .recent_unique_strings,
+   rev_specs: .reverse_specs,
+   schema_ver: .schema_version,
+   seq_no: .sequence_number,
+   state_uuid: .state_uuid};
+
 def parse_brm_verbose:
   select(.brm_s != "{}")
   | .brm=(.brm_s | fromjson | [brm_verbose])
@@ -292,6 +318,22 @@ def sbs_row_50:
    seq_no: .[11],
    shard_sz: .[12],
    state_uuid: .[13]};
+
+def sbs_json_row_50:
+  {id: .group_id,
+   close_spec: .close_spec,
+   cm_s: .content_map,
+   create_s: .create_spec,
+   del_s: .delete_spec,
+   hm_s: .handle_map,
+   ts: .internal_timestamp,
+   dtbs_on: .is_diff_tree_enabled,
+   next_csn: .next_content_sequence_number,
+   runiq_strs: .recent_unique_strings,
+   schema_ver: .schema_version,
+   seq_no: .sequence_number,
+   shard_sz: .shard_size_in_bytes,
+   state_uuid: .state_uuid};
 
 def scgid:
     gsub("_[0-9]+_[0-9]+$";"");
@@ -457,3 +499,11 @@ def draw_dumped_grp(show_patches):
     . as $gd
     | $gd
     | draw_grp($gd | .group_id; "blob_representation_map"; "patch_map"; show_patches);
+
+def hm_nice:
+  .
+  | fromjson
+  | with_entries(
+     {key: (.key | fromjson.handleId),
+      value: (.value | fromjson)});
+

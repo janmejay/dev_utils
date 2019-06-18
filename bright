@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 f=/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness
 curr=$(sudo cat $f)
 
