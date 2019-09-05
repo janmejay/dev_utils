@@ -125,9 +125,12 @@ def load_dcbs_csv:
       hm:  .[1] | fromjson,
       pm:  .[2] | fromjson};
 
+def gib:
+  ./1024/1024/1024;
+
 # tib
 def tib:
-  ./1024/1024/1024/1024;
+  (. | gib)/1024;
 
 # tb
 def tb:
@@ -152,6 +155,7 @@ def ne_json(expr):
 
 def cm_nice:
   .
+  | fromjson
   | with_entries({key: .key | fromjson.id, value: .value | fromjson});
 
 
@@ -172,7 +176,7 @@ def find_rsn_base_rec(rsn):
 
 
 def decode:
-    (. | "decode_decompress \(.[3:])" | qsh_text);
+    if (. | test("^#*#")) then ("decode_decompress \(.[3:])" | qsh_text) else . end;
 
 
 def dcbs_row:
@@ -506,4 +510,37 @@ def hm_nice:
   | with_entries(
      {key: (.key | fromjson.handleId),
       value: (.value | fromjson)});
+
+def storage_by_grp(loc_map):
+  .
+  | dcbs_json_row_50
+  | select(.id | split("/")[0] | in(loc_map))
+  | .brm = (.brm_s | [brm_nice])
+  | .pm = (.pm_s | pm_nice)
+  | {key: .id,
+     value: (.pm
+             | map(.internalPatchFileStats.physicalBytes)
+             | add )}
+  | .value = (if .value then .value else 0 end);
+
+# find-du data to (content, patch, base-content) ids,
+#  to be used on input given with '-Rs'
+def find_du_pdata:
+  .
+  | split("\n")
+  | map(.
+        | select(test("^.+$"))
+        | gsub(" +"; " ")
+        | split(" ")[1]
+        | {d: split("/")}
+        | .c = .d[1]
+        | .bp = (.d[2] | split("_"))
+        | .p = .bp[1]
+        | .b = .bp[0]
+        | del(.d, .bp)
+        | if (.b == "EMPTY") then del(.b) else . end);
+
+def fs_storage_by_grp:
+  .
+  | with_entries(.key=(.key | fromjson | join("/")));
 

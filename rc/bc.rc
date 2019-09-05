@@ -101,3 +101,7 @@ define b2mb(x) {
 define b2kb(x) {
   return b2hu(x, 3, 10)
 }
+
+define tb2tib(x) {
+  return b2tib(x*1000*1000*1000*1000)
+}
