@@ -18,7 +18,7 @@
 	lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
 [core]
 	editor = emacs -q -nw
-	pager = less -x4
+	pager = less -F -x4
 [push]
 	default = matching
 [branch]

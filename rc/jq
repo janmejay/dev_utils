@@ -370,7 +370,7 @@ def size_h:
       | r_size_h(u + 1)
     end;
 
-  . | r_size_h(0);
+  . | if . then r_size_h(0) else . end;
 
 # generates graphviz spec for group, used to render a graph for it
 # usage:
@@ -511,6 +511,13 @@ def hm_nice:
      {key: (.key | fromjson.handleId),
       value: (.value | fromjson)});
 
+def sg_hm_nice:
+  .
+  | fromjson
+  | with_entries(
+     {key: (.key | fromjson.id),
+      value: (.value | fromjson)});
+
 def storage_by_grp(loc_map):
   .
   | dcbs_json_row_50
@@ -541,6 +548,36 @@ def find_du_pdata:
         | if (.b == "EMPTY") then del(.b) else . end);
 
 def fs_storage_by_grp:
-  .
-  | with_entries(.key=(.key | fromjson | join("/")));
+  . | with_entries(.key=(.key | fromjson | join("/")));
 
+def loc_id:
+  . | split("/")[0];
+
+def sup_grp_id:
+  . | split("/")[1];
+
+def sub_grp_id:
+  . | split("/")[2];
+
+def change_grp_key_to_snappable(can_snap_id):
+  .
+  | .key = (.key | sup_grp_id)
+  | .key = (if can_snap_id[.key] then can_snap_id[.key] else .key end);
+
+
+def group_by_key_and_sum:
+  .
+  | group_by(.key)
+  | map({ key: .[0].key,
+          value: (map(.value) | add) })
+  | from_entries;
+
+def group_by_key_and_collect:
+  .
+  | group_by(.key)
+  | map({ key: .[0].key,
+          value: map(.value) })
+  | from_entries;
+
+def sbs_id:
+  gsub("_[0-9]+_[0-9]+$";"");

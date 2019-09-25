@@ -117,7 +117,11 @@ function clipa() {
     echo '' >> $clip_file
     local lines_before=$(wc -l $clip_file | awk '{print $1}')
     local chars_before=$(wc -c $clip_file | awk '{print $1}')
-    tmux saveb -a $clip_file
+    if [ "x$2" = 'xx' ]; then
+      copyq clipboard > $clip_file
+    else
+      tmux saveb -a $clip_file
+    fi
     local lines_after=$(wc -l $clip_file | awk '{print $1}')
     local chars_after=$(wc -c $clip_file | awk '{print $1}')
     local lines_copied=$(expr $lines_after - $lines_before)
