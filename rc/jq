@@ -581,3 +581,9 @@ def group_by_key_and_collect:
 
 def sbs_id:
   gsub("_[0-9]+_[0-9]+$";"");
+
+def histo:
+  .
+  | group_by(.)
+  | map({key: .[0], value: length})
+  | from_entries;

@@ -35,7 +35,7 @@ f() { find . -iname "*$1*" }
 
 alias xs='xclip -selection c.'
 
-x() { echo $* | xs }
+x() { echo -n $* | xs }
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 
