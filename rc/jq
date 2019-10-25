@@ -204,6 +204,31 @@ def dcbs_row:
    seq_no: .[21],
    state_uuid: .[22]};
 
+def dcbs_row_42_raw:
+  {group_id: .[0],
+   background_job_config: .[1],
+   blob_representation_map: .[2],
+   consolidate_specs: .[3],
+   create_spec: .[4],
+   cross_lock_nonce: .[5],
+   cross_lock_owner: .[6],
+   cross_spec: .[7],
+   deleted_content_id_set: .[8],
+   deleted_patch_dir_spec_set: .[9],
+   handle_map: .[10],
+   internal_timestamp: .[11],
+   maintenance_lock_nonce: .[12],
+   maintenance_lock_owner: .[13],
+   min_valid_content_sequence_numner: .[14],
+   next_content_sequence_number: .[15],
+   next_representation_sequence_number: .[16],
+   patch_map: .[17],
+   recent_unique_strings: .[18],
+   reverse_specs: .[19],
+   schema_version: .[20],
+   sequence_number: .[21],
+   state_uuid: .[22]};
+
 def dcbs_row_50:
   {id: .[0],
    bg_job_cfg: .[1],
@@ -371,6 +396,31 @@ def size_h:
     end;
 
   . | if . then r_size_h(0) else . end;
+
+def pow(b; e):
+  if (e == 0) then 1 else (b * pow(b; e - 1)) end;
+
+def kb2b:
+  . * pow(1000; 1);
+
+def mb2b:
+  . * pow(1000; 2);
+
+def gb2b:
+  . * pow(1000; 3);
+
+def tb2b:
+  . * pow(1000; 4);
+
+# input [10, "GB"] ... etc
+def size_inh:
+  . as $e_arr
+  | {"bytes": 1,
+     "KB": (1 | kb2b),
+     "MB": (1 | mb2b),
+     "GB": (1 | gb2b),
+     "TB": (1 | tb2b)} as $m
+  | $m[$e_arr[1]] * $e_arr[0];
 
 # generates graphviz spec for group, used to render a graph for it
 # usage:
