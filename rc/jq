@@ -544,12 +544,21 @@ def draw_grp(grp_id; brm_s_key; pm_s_key; show_patches):
             if .pinned then
               "dashed"
             else
-            "dotted"
-          end
-        end)
+              "dotted"
+            end
+          end)
+      | .fill = if (.b | not) then "lightblue" else "white" end
       | .shp = if .pinned then "invhouse" else "oval" end
       | .lbl = "\"\(.rsn) / \(.csn)\""
-      | .styl = "[tooltip=\(.ttip),style=\(.brd),shape=\(.shp),label=\(.lbl)]"
+      | .styl = (
+          .
+          | ["tooltip=\(.ttip)",
+             "style=\"filled,\(.brd)\"",
+             "fillcolor=\(.fill)",
+             "shape=\(.shp)",
+             "label=\(.lbl)"]
+          | join(",")
+          | "[\(.)]")
       | .node_id = "\(grp_id)/\(.rsn)"
       | "\"\(.node_id)\" \(.styl)")
     | join(";")
@@ -575,14 +584,9 @@ def draw_grp(grp_id; brm_s_key; pm_s_key; show_patches):
     | join(";")
     | suffix_semi as $p_ref_str
     | $brm
-    | map(
-      .
-      | select(.b | not)
-      | "\"\(grp_id)/\(.rsn)\" [style=filled,color=black,fillcolor=lightblue]")
-    | join(";") as $full_str
     | if show_patches then "\($pm_str)\($p_ref_str)" else "" end
     | . as $pstr
-    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($crsb_str)\($pstr)\($full_str)}";
+    | @text "digraph \"\(grp_id)\" {\($edge_str)\($node_tip)\($crsb_str)\($pstr)}";
 
 # generates graphviz spec for group, used to render a graph for it
 # usage:
@@ -678,3 +682,19 @@ def histo:
   | group_by(.)
   | map({key: .[0], value: length})
   | from_entries;
+
+def snapshot_of(rsn):
+  .
+  | .brm_s
+  | [brm_verbose]
+  | map(.
+        | select(.key.representationSequenceNumber == rsn)
+        | .value.debugInfo.externalId
+        | fromjson);
+
+def snap_nice:
+  .
+  | .lm = (.location_map | fromjson | with_entries(.value=(.value | fromjson)))
+  | del(.location_map)
+  | .gcm = (.group_id_to_content_id_map | fromjson)
+  | del(.group_id_to_content_id_map);
