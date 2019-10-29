@@ -204,6 +204,44 @@ def dcbs_row:
    seq_no: .[21],
    state_uuid: .[22]};
 
+def empty_string:
+    not or (length == 0);
+
+def pre_obj_json:
+    if (empty_string) then
+       .
+    elif (. | fromjson | type == "string") then
+       (. | fromjson)
+    else
+       .
+    end;
+
+def dcbs_row_42_pre_obj_corrected:
+  {id: .group_id,
+   bg_job_cfg: .background_job_config,
+   brm_s: (.blob_representation_map | pre_obj_json),
+   cons_s: (.consolidate_specs | pre_obj_json),
+   create_s: (.create_spec | pre_obj_json),
+   cross_lnonce: .cross_lock_nonce,
+   cross_lowner: .cross_lock_owner,
+   cross_spec: (.cross_spec | pre_obj_json),
+   del_cids: (.deleted_content_id_set | pre_obj_json),
+   del_pdir: (.deleted_patch_dir_spec_set | pre_obj_json),
+   hm_s: (.handle_map | pre_obj_json),
+   ts: .internal_timestamp,
+   dtbs_on: .is_diff_tree_enabled,
+   m_lnonce: .maintenance_lock_nonce,
+   m_lowner: .maintenance_lock_owner,
+   min_valid_csn: .min_valid_content_sequence_numner,
+   next_csn: .next_content_sequence_number,
+   next_rsn: .next_representation_sequence_number,
+   pm_s: (.patch_map | pre_obj_json),
+   runiq_strs: (.recent_unique_strings | pre_obj_json),
+   rev_specs: (.reverse_specs | pre_obj_json),
+   schema_ver: .schema_version,
+   seq_no: .sequence_number,
+   state_uuid: .state_uuid};
+
 def dcbs_row_42_raw:
   {group_id: .[0],
    background_job_config: .[1],
@@ -412,6 +450,9 @@ def gb2b:
 def tb2b:
   . * pow(1000; 4);
 
+def gib2b:
+  . * pow(1024; 3);
+
 # input [10, "GB"] ... etc
 def size_inh:
   . as $e_arr
@@ -537,7 +578,7 @@ def draw_grp(grp_id; brm_s_key; pm_s_key; show_patches):
     | map(
       .
       | select(.b | not)
-      | "\"\(grp_id)/\(.rsn)\" [style=filled,color=lightblue]")
+      | "\"\(grp_id)/\(.rsn)\" [style=filled,color=black,fillcolor=lightblue]")
     | join(";") as $full_str
     | if show_patches then "\($pm_str)\($p_ref_str)" else "" end
     | . as $pstr

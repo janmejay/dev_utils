@@ -113,8 +113,11 @@ function clipa() {
     else
         clip_file="/tmp/${clip_file}"
     fi
-
-    echo '' >> $clip_file
+    if [ -e $clip_file ]; then
+        echo '' >> $clip_file
+    else
+        touch $clip_file
+    fi
     local lines_before=$(wc -l $clip_file | awk '{print $1}')
     local chars_before=$(wc -c $clip_file | awk '{print $1}')
     if [ "x$2" = 'xx' ]; then
