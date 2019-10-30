@@ -13,8 +13,12 @@
 #include <iostream>
 #include <cstdint>
 #include <vector>
+#include <cstddef>
 #define RAPIDJSON_HAS_STDSTRING 1
 #include <rapidjson/prettywriter.h>
+#include <cstring>
+
+#define ssize_t std::int64_t
 
 std::runtime_error mk_error(std::string&& str) {
   return std::runtime_error(str);
@@ -112,10 +116,20 @@ void print_rows(std::vector<std::uint32_t>&& cols_of_interest) {
         auto offset = col_offsets[icol];
         auto len = offset.second - offset.first;
         if (len > 0) {
-          writer.String(
-            row.c_str() + offset.first,
-            offset.second - offset.first,
-            false);
+          const char* cstr_start = row.c_str() + offset.first;
+          char start_char = row.c_str()[offset.first];
+          ssize_t cstr_len = offset.second - offset.first;
+          bool write_quoted =
+            (start_char != '"' && row.find("\"", offset.first) < offset.second);
+          if (write_quoted) {
+            std::string cell =
+              std::string("\"") +
+              std::string(cstr_start, cstr_len) +
+              '\"';
+            writer.String(cell);
+          } else {
+            writer.String(cstr_start, cstr_len, false);
+          }
         } else {
           writer.String("");
         }
