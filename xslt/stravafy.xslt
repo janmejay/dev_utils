@@ -4,7 +4,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   version="1.0">
 
-  <xsl:output omit-xml-declaration="no" indent="yes"/>
+  <xsl:output omit-xml-declaration="no" indent="no"/>
   <xsl:strip-space elements="*"/>
 
   <xsl:template match="node()|@*" name="identity">
