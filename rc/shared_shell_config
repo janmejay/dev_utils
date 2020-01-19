@@ -184,3 +184,34 @@ function diff_url() {
 }
 
 export BC_ENV_ARGS="-ql $HOME/.dev_utils/rc/bc.rc"
+
+function tunnel_host_fetch {
+    tun_alias=$1
+    file_path=$2
+    err_msg="Usage: tunnel_host_fetch <tunnel alias> <file path>"
+    if [ "x$tun_alias" = 'x' ]; then
+        echo $err_msg
+        exit 1
+    fi
+    if [ "x$file_path" = 'x' ]; then
+        echo $err_msg
+        exit 1
+    fi
+    tun_name=$(ssh st "/bin/zsh -c 'alias $tun_alias'" \
+                   | grep -Eo "'.[^']+'" \
+                   | sed -re "s/'//g" \
+                   | awk '{print $NF}')
+    echo "'sft scp $tun_name:$file_path .'"
+    ssh st "scp -o 'ProxyCommand sft proxycommand $tun_name' $tun_name:$file_path ."
+    scp st:$file_path .
+    ssh st "rm $file_path"
+}
+
+function un_b64 {
+    for f in $(find . -name '*.base64' -o -name '*.b64'); do
+        decoded_name=$(echo $f | sed -re 's/.b(ase)?64//g')
+        echo "Decoding $f => $decoded_name"
+        cat $f | base64 -d > $decoded_name
+        echo "Done."
+    done
+}

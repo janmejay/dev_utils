@@ -41,6 +41,9 @@ def pm_nice:
 def grpid_s:
   . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
 
+def ms_to_date:
+  ./1000 | todate;
+
 # pretty brm
 def pretty_brm:
   (.
@@ -48,8 +51,11 @@ def pretty_brm:
       cid: .key.compositeContentId.contentId,
       rsn: .key.representationSequenceNumber,
       lsz: .value.logicalBytes,
+      ib: .value.ingestedBytes,
+      hib: .value.historicIngestedBytes,
       r: [.value.references[].refType],
-      t: (.value.blobRepresentationTimestamp/1000 | todate),
+      t: (.value.blobRepresentationTimestamp | ms_to_date),
+      ct: (.value.contentTimestamp | ms_to_date),
       p: .value.patchId.patchId,
       b:
         (if (.value.baseRef) then
@@ -425,7 +431,7 @@ def size_h:
   def r_size_h(u):
     if . < 1024 or u == 6 then
       .
-      | {i: . | floor, f: ((. - (. | floor)) * 100 | floor), u: u | u_str}
+      | {i: . | floor, f: ((. - (. | floor)) | "\(.)" | .[2:4]), u: u | u_str}
       | if .f == 0 then "\(.i) \(.u)" else "\(.i).\(.f) \(.u)" end
     else
       .
@@ -604,7 +610,7 @@ def hm_nice:
   | fromjson
   | with_entries(
      {key: (.key | fromjson.handleId),
-      value: (.value | fromjson)});
+      value: (.value | fromjson | .h_ts=(.handleTimestamp | ms_to_date))});
 
 def sg_hm_nice:
   .
@@ -698,3 +704,20 @@ def snap_nice:
   | del(.location_map)
   | .gcm = (.group_id_to_content_id_map | fromjson)
   | del(.group_id_to_content_id_map);
+
+
+def apply_nested(fn; type_matcher):
+  .
+  | if (type == "array") then map(apply_nested(fn; type_matcher))
+    elif (type == "object") then map_values(apply_nested(fn; type_matcher))
+    else . end
+  | if (. | type_matcher) then (. | fn) else . end;
+
+def is_array:
+  (type == "array");
+
+def sort_all_arrays:
+  apply_nested(sort; is_array);
+
+def add_idx:
+  reduce .[] as $d ([]; . + [{data: $d, idx: (. | length)}]);
