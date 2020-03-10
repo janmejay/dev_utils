@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "x$0" == 'x' ]; then
+   echo "Usage: git mark-landed <branch_name>"
+   echo "Branch name not specified, aborting!"
+   exit 1
+fi
+
+git branch -m $0 LANDED_$0

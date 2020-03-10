@@ -721,3 +721,16 @@ def sort_all_arrays:
 
 def add_idx:
   reduce .[] as $d ([]; . + [{data: $d, idx: (. | length)}]);
+
+def pretty_repid:
+  {rsn: .representationSequenceNumber,
+   cid: .compositeContentId.contentId,
+   gid: (.compositeContentId.groupId | grpid_s)};
+
+def crs_ref_leak_nice:
+  .
+  | select(.crossRefLeakReport)
+  | .crossRefLeakReport.details
+  | map(.
+        | .baseRef |= pretty_repid
+        | .leakedCrossRefs |= map(pretty_repid));
