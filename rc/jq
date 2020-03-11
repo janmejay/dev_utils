@@ -432,7 +432,7 @@ def size_h:
     if . < 1024 or u == 6 then
       .
       | {i: . | floor, f: ((. - (. | floor)) | "\(.)" | .[2:4]), u: u | u_str}
-      | if .f == 0 then "\(.i) \(.u)" else "\(.i).\(.f) \(.u)" end
+      | if .f == "" then "\(.i) \(.u)" else "\(.i).\(.f) \(.u)" end
     else
       .
       | . / 1024
@@ -734,3 +734,8 @@ def crs_ref_leak_nice:
   | map(.
         | .baseRef |= pretty_repid
         | .leakedCrossRefs |= map(pretty_repid));
+
+def sliding(n):
+  . as $l
+  | [range(0;length - n + 1)]
+  | map($l[.:. + n]);
