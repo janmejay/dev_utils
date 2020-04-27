@@ -122,7 +122,7 @@ class CpuStats:
                    (used_pct < 80) and \
                    (steal_pct < 0.1)
 
-        color = "00FF00" if all_good else "FF0000"
+        color = "#00FF00" if all_good else "#FF0000"
 
         core_tmp = self.get_temp()
         avg_mhz = self.avg_freq()
@@ -187,7 +187,7 @@ class MemStats:
                    (pinned > 10) or \
                    (dirty > 10)
 
-        color = "00FF00" if all_good else "FF0000"
+        color = "#00FF00" if all_good else "#FF0000"
 
         msg_format = "Rfr: %d (%0.1f%%), " + \
                      "Csh: %d (%0.1f%%), " + \

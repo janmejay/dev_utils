@@ -1,4 +1,4 @@
-. $(dirname $0)/set_path
+. $(dirname $0)/xsessionrc
 
 #removed :~/tools/thrift/bin because installed thrift-0.9.2 in /usr/local
 export CDPATH=.:~:~/Desktop:~/projects:~/projects/rubrik
@@ -41,8 +41,8 @@ x() { echo -n $* | xs }
 
 export PYENV=~/.pyenv
 
-pyenv() { 
-    source $PYENV/$1/bin/activate 
+pyenv() {
+    source $PYENV/$1/bin/activate
     export CUR_ENV=$1
 }
 
@@ -75,9 +75,6 @@ alias mi="$mvn_cmd idea:clean idea:idea"
 alias mci="$mvn_cmd clean install -DskipTests=true"
 alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
 alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
-
-export SCALA_HOME=/home/janmejay/tools/scala-2.12.2
-export PATH=$PATH:$SCALA_HOME/bin
 
 function scr() {
     local screen_layouts=~/.screenlayout;
@@ -215,3 +212,10 @@ function un_b64 {
         echo "Done."
     done
 }
+
+function cdm_log {
+  sed -re 's/^[^{]+:\{/{/g' \
+    | jq 'cdm_log'
+}
+
+[[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return

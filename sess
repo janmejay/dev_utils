@@ -4,7 +4,7 @@ xmm
 
 touchpad-reset
 
-wicd-client -t >/dev/null 2>&1 &
+connman-gtk >/dev/null 2>&1 &
 
 if [ -e /dev/rt/swap ]; then
   sudo swapon /dev/rt/swap

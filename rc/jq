@@ -42,7 +42,11 @@ def grpid_s:
   . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
 
 def ms_to_date:
-  ./1000 | todate;
+  .
+  | {s: (. / 1000), ms: (. % 1000)}
+  | .sec_str = (.s | todate)
+  | .str_wo_z = (.sec_str | gsub("Z$";""))
+  | "\(.str_wo_z).\(.ms)";
 
 # pretty brm
 def pretty_brm:
@@ -739,3 +743,45 @@ def sliding(n):
   . as $l
   | [range(0;length - n + 1)]
   | map($l[.:. + n]);
+
+def cdm_instant_to_date:
+  .
+  | (.epochSecond * 1000 + (.nanoOfSecond / (1000 * 1000)))
+  | ms_to_date;
+
+def flr_to_sec: gsub("\\.[0-9]+";"");
+
+def flr_to_min: gsub(":[0-9.]+$";"");
+
+def flr_to_hr: gsub("(:[0-9.]+){2}$";"");
+
+def flr_to_day: gsub("T.+$";"");
+
+def cdm_log:
+  .
+  | .time = (
+      .
+      | .instant
+      | (.epochSecond * 1000 + (.nanoOfSecond / (1000 * 1000)))
+      | ms_to_date);
+
+def s_to_date:
+  (. * 1000) | ms_to_date;
+
+def remove_iso8601_ms:
+  .
+  | gsub("\\.[0-9]{3}\\+";"+")
+  | gsub("\\+0000";"Z");
+
+def simplify_snapapble_id:
+  if (.unlikely | length == 0) then
+    if (.likely | length == 1) then
+      .likely[0]
+    else
+      .likely
+    end
+  else
+    .
+  end;
+
+def sq2d: gsub("'";"\"");

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-. $(dirname $0)/rc/set_path
+. $(dirname $0)/rc/xsessionrc
 
 exec dmenu_run -fn 'xft:DejaVu Sans Mono:pixelsize=16:antialias=true:hinting=true' -p '>>>' -nb '#DDD' -sb '#004' -nf '#000' -l 10
