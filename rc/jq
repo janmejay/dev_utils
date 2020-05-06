@@ -785,3 +785,10 @@ def simplify_snapapble_id:
   end;
 
 def sq2d: gsub("'";"\"");
+
+def qtile(q):
+  .
+  | sort
+  | . as $s
+  | ((q*length)/100 | floor) as $q_idx
+  | $s[if $q_idx >= 1 then $q_idx - 1 else $q_idx end];
