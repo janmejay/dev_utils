@@ -792,3 +792,16 @@ def qtile(q):
   | . as $s
   | ((q*length)/100 | floor) as $q_idx
   | $s[if $q_idx >= 1 then $q_idx - 1 else $q_idx end];
+
+def mean: add / length;
+
+def variance:
+  .
+  | . as $a
+  | $a
+  | ($a | mean) as $m
+  | $a
+  | map(. - $m | . * .)
+  | add;
+
+def sd: variance | sqrt;
