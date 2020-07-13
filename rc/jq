@@ -41,12 +41,16 @@ def pm_nice:
 def grpid_s:
   . | @text "\(.locationId)/\(.superGroupId)/\(.subGroupId)";
 
-def ms_to_date:
+def ts_to_date(units_in_s):
   .
-  | {s: (. / 1000), ms: (. % 1000)}
+  | {s: (. / units_in_s), ms: (. % units_in_s)}
   | .sec_str = (.s | todate)
   | .str_wo_z = (.sec_str | gsub("Z$";""))
   | "\(.str_wo_z).\(.ms)";
+
+def us_to_date: ts_to_date(1000000);
+
+def ms_to_date: ts_to_date(1000);
 
 # pretty brm
 def pretty_brm:
@@ -463,6 +467,9 @@ def tb2b:
 def gib2b:
   . * pow(1024; 3);
 
+def mib2b:
+  . * pow(1024; 2);
+
 # input [10, "GB"] ... etc
 def size_inh:
   . as $e_arr
@@ -765,13 +772,17 @@ def cdm_log:
       | (.epochSecond * 1000 + (.nanoOfSecond / (1000 * 1000)))
       | ms_to_date);
 
-def s_to_date:
-  (. * 1000) | ms_to_date;
+def s_to_date: ts_to_date(1);
 
 def remove_iso8601_ms:
   .
   | gsub("\\.[0-9]{3}\\+";"+")
   | gsub("\\+0000";"Z");
+
+def iso8601_ts:
+  .
+  | strptime("%Y-%m-%dT%H:%M:%SZ")
+  | mktime;
 
 def simplify_snapapble_id:
   if (.unlikely | length == 0) then
@@ -793,6 +804,11 @@ def qtile(q):
   | ((q*length)/100 | floor) as $q_idx
   | $s[if $q_idx >= 1 then $q_idx - 1 else $q_idx end];
 
+def qtile_all(qs):
+  . as $a
+  | qs
+  | map(. as $q | "q\($q) -> \($a | qtile($q))");
+
 def mean: add / length;
 
 def variance:
@@ -805,3 +821,11 @@ def variance:
   | add;
 
 def sd: variance | sqrt;
+
+def batch_of(n):
+  . as $l
+  | [range(0;length/n) * n]
+  | map($l[.:. + n]);
+
+def s2h:
+  . / pow(60; 2);
