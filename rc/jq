@@ -776,6 +776,7 @@ def apply_nested(fn; type_matcher):
 def is_array:
   (type == "array");
 
+# to canonicalize json, use: `jq --sort-keys sort_all_arrays`
 def sort_all_arrays:
   apply_nested(sort; is_array);
 
