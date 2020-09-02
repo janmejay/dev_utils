@@ -53,9 +53,19 @@ define mod(x, y) {
 }
 
 define min_sec(sec) {
-  auto m, s
+  auto m
   m = flr(sec / 60)
   print m, "m ", mod(sec, 60), "s\n"
+}
+
+define mins(hrs, mins) {
+  return(mins + hrs * 60)
+}
+
+define hr_min(min) {
+  auto h
+  h = flr(min / 60)
+  print h, "h ", mod(min, 60), "m\n"
 }
 
 define b2hu(x, k, b) {

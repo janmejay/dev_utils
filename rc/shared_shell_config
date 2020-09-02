@@ -94,7 +94,7 @@ function scr() {
     fi
 }
 
-export PATH=~/tools/google-cloud-sdk/bin:$PATH
+export PATH=~/tools/google-cloud-sdk/bin:$PATH:~/.local/bin
 # alias clip='cat >> /tmp/clip'
 function clipa() {
     suffix=''

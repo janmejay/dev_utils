@@ -425,29 +425,78 @@ def grp_storage:
     | map(.key = (.key | fromjson | join("/")))
     | from_entries;
 
-def size_h:
+def humanize(u; d; uts):
   def u_str:
-    .
-    | . as $u
-    | ["B", "KiB", "MiB", "GiB", "TiB", "PiB", "EiB"]
-    | if $u > (. | length) then
-        error
-      else
-        .[$u]
-      end;
-
-  def r_size_h(u):
-    if . < 1024 or u == 6 then
-      .
-      | {i: . | floor, f: ((. - (. | floor)) | "\(.)" | .[2:4]), u: u | u_str}
-      | if .f == "" then "\(.i) \(.u)" else "\(.i).\(.f) \(.u)" end
+    if . > (uts | length) then
+      error
     else
-      .
-      | . / 1024
-      | r_size_h(u + 1)
+      uts[.].u
     end;
 
-  . | if . then r_size_h(0) else . end;
+  def render(i):
+    .
+    | {i: . | floor, f: ((. - (. | floor)) | "\(.)" | .[2:4]), u: i | u_str}
+    | if .f == "" then "\(.i)\(d)\(.u)" else "\(.i).\(.f)\(d)\(.u)" end;
+
+  def h(i):
+    if (. < uts[i].m) and (. >= 1)  then
+      render(i)
+    elif . < 1 then
+      if (i == 0) then
+        render(i)
+      else
+        . * uts[i - 1].m
+        | h(i - 1)
+      end
+    else
+      . / uts[i].m
+      | h(i + 1)
+    end;
+
+  . as $v
+  | (uts | map(.u == u) | indices(true)[0]) as $i
+  | $v
+  | if . then h($i) else . end;
+
+def size_h:
+  humanize(
+  "B";
+  " ";
+  [{u: "B", m: 1024},
+   {u: "KiB", m: 1024},
+   {u: "MiB", m: 1024},
+   {u: "GiB", m: 1024},
+   {u: "TiB", m: 1024},
+   {u: "PiB", m: 1024},
+   {u: "EiB", m: infinite}]);
+
+
+def count_h:
+  humanize(
+  "";
+  "";
+  [{u: "", m: 1000},
+   {u: "K", m: 1000},
+   {u: "M", m: 1000},
+   {u: "B", m: infinite}]);
+
+def time_h(u):
+  humanize(
+   u;
+   "";
+   [{u: "ns", m: 1000},
+    {u: "us", m: 1000},
+    {u: "ms", m: 1000},
+    {u: "s", m: 60},
+    {u: "m", m: 60},
+    {u: "h", m: 24},
+    {u: "d", m: infinite}]);
+
+def time_sh:
+  time_h("s");
+
+def time_nsh:
+  time_h("ns");
 
 def pow(b; e):
   if (e == 0) then 1 else (b * pow(b; e - 1)) end;
@@ -811,7 +860,7 @@ def qtile_all(qs):
 
 def mean: add / length;
 
-def variance:
+def sq_diff:
   .
   | . as $a
   | $a
@@ -819,6 +868,8 @@ def variance:
   | $a
   | map(. - $m | . * .)
   | add;
+
+def variance: sq_diff / length;
 
 def sd: variance | sqrt;
 
