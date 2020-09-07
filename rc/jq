@@ -48,6 +48,8 @@ def ts_to_date(units_in_s):
   | .str_wo_z = (.sec_str | gsub("Z$";""))
   | "\(.str_wo_z).\(.ms)";
 
+def ns_to_date: ts_to_date(1000000000);
+
 def us_to_date: ts_to_date(1000000);
 
 def ms_to_date: ts_to_date(1000);
@@ -881,3 +883,10 @@ def batch_of(n):
 
 def s2h:
   . / pow(60; 2);
+
+def transpose:
+  . as $m
+  | [range($m[0] | length)]
+  | map(. as $i
+        | $m
+        | map(.[$i]));
