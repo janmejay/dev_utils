@@ -10,6 +10,7 @@
   ls = branch -a
   cp = cherry-pick
   stack = !git-stack
+  local-commits = !git-all-local-commits
   mark-landed = !git-mark-branch-landed
   rebase-stacked = !git-rebase-stacked-diff
   remove-deleted = !git ls-files -d | xargs git rm

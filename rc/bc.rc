@@ -115,3 +115,10 @@ define b2kb(x) {
 define tb2tib(x) {
   return b2tib(x*1000*1000*1000*1000)
 }
+
+define div(x, y) {
+  auto q, r
+  q = flr(x / y)
+  r = x - (q * y)
+  print q, "r", r, "\n"
+}

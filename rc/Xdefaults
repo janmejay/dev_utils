@@ -32,7 +32,7 @@ xterm*font:     *-fixed-*-*-*-18-*
 ! XTerm.vt100.faceName: Liberation Mono:size=20:antialias=false
 
 ! pairing font
-!urxvt.font:xft:DejaVu Sans Mono:pixelsize=22:antialias=true:hinting=true
+! urxvt.font:xft:DejaVu Sans Mono:pixelsize=23:antialias=true:hinting=true
 
 
 ! urxvt.font:xft:ubuntu mono:regular:pixelsize=14:autohint=true

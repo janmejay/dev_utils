@@ -1,0 +1,6 @@
+#!/bin/bash
+
+br=${1:-}
+
+git log $br --decorate | \
+    sed -rn '/commit .+\(origin\/[^)]+\)/q;p'
