@@ -1,0 +1,5 @@
+#!/bin/bash
+
+# converts crdb --format=records output to json
+
+jq -R | jq -s 'crdb_records_json'

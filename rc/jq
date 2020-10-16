@@ -890,3 +890,48 @@ def transpose:
   | map(. as $i
         | $m
         | map(.[$i]));
+
+def crdb_records_json:
+  . as $d
+  | ($d | map(select(test("^-[ RECORD [0-9]+ ]$"))) | length) as $n
+  | $d
+  | batch_of($d | length / $n)
+  | map(.
+        | .[1:]
+        | map(.
+              | gsub(" +"; " ")
+              | split(" | ")
+              | {key: .[0], value: .[1]})
+        | from_entries);
+
+def crdb_replicas:
+  .
+  | gsub("{";"[")
+  | gsub("}"; "]")
+  | fromjson;
+
+def trim: gsub("^ +| +$"; "");
+
+def unpad: trim | gsub(" +"; " ");
+
+def usplit: unpad | split(" ");
+
+def tsplit: trim | split(" ");
+
+def if_n(fn):
+  if type == "number" then fn else . end;
+
+def if_s(fn):
+  if type == "string" then fn else . end;
+
+def if_o(fn):
+  if type == "object" then fn else . end;
+
+def if_l(fn):
+  if type == "array" then fn else . end;
+
+def if_e(fn):
+  if . then fn else . end;
+
+def if_ne(fn):
+  if (. | not) then fn else . end;

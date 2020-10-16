@@ -1,0 +1,22 @@
+#!/bin/bash
+
+jq -Rs --arg l "$1" \
+  '.
+   | split("\n\n")
+   | map(.
+         | select(length > 0)
+         | split("\n")
+         | map(select(length > 0))
+         | {h: .[0], d: .[1:]}
+         | if $l != "" then
+             . as $e
+             | ($l | tonumber) as $l
+             | if .d | length > $l then
+                 .d |= .[$l | tonumber]
+               else
+                 .d = null
+               end
+           else
+             .
+           end)'
+  
