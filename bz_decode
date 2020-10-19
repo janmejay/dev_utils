@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ ! -e "$1" ]; then
+   echo "File '$1' not found"
+   exit 1
+fi
+
+cat $1 | base64 -d | bunzip2 > $1.decoded
+
+if [ $? -eq 0 ]; then
+   rm $1
+   mv $1.decoded $1
+fi

@@ -895,7 +895,7 @@ def crdb_records_json:
   . as $d
   | ($d | map(select(test("^-[ RECORD [0-9]+ ]$"))) | length) as $n
   | $d
-  | batch_of($d | length / $n)
+  | batch_of(($d | length / $n))
   | map(.
         | .[1:]
         | map(.
@@ -911,6 +911,12 @@ def crdb_replicas:
   | fromjson;
 
 def trim: gsub("^ +| +$"; "");
+
+def esc_re:
+  gsub("(?<c>[\\]\\[().?{}^$])"; "\\\(.c)");
+
+def ctrim(cs):
+  gsub(cs | map(esc_re) | join("|") | "^(\(.))+|(\(.))+$"; "");
 
 def unpad: trim | gsub(" +"; " ");
 
@@ -935,3 +941,11 @@ def if_e(fn):
 
 def if_ne(fn):
   if (. | not) then fn else . end;
+
+def n: tonumber;
+
+def s: "\(.)";
+
+def tkv(k_idx; v_idx):
+  {key: .[k_idx],
+   value: .[v_idx]};
