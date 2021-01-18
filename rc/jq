@@ -949,3 +949,19 @@ def s: "\(.)";
 def tkv(k_idx; v_idx):
   {key: .[k_idx],
    value: .[v_idx]};
+
+def attempt(f):
+  . as $e
+  | $e
+  | try (. | f) catch ($e);
+
+# pass 2 maps in form [{.a.}, {.b.}] to compute pair-wise subtraction
+#  of the form {.a.} - {.b.}. This assumes values in these maps are all
+#  numbers.
+def map_diff:
+  . as [$a, $b]
+  | $a
+  | with_entries(.
+                 | .key as $k
+                 | .value |= (. - $b[$k])
+                 | select(.value != 0));

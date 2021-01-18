@@ -3507,7 +3507,7 @@ end
 
 python
 import os
-gdb.execute('set $in_emacs = ' + repr(1 if os.environ.has_key('IN_EMACS') else 0))
+gdb.execute('set $in_emacs = ' + repr(1 if os.environ.get('IN_EMACS') else 0))
 end
 
 if $in_emacs == 1
@@ -3688,6 +3688,8 @@ end
 #
 #   Version 2
 #     Radix bugfix by elaine
+
+add-auto-load-safe-path /usr/src/linux/scripts/gdb/vmlinux-gdb.py
 
 set history filename ~/.gdb_history
 set history save on

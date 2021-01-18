@@ -1,4 +1,4 @@
-define fact(n) {
+define f(n) {
   auto s, m
   if (n <= 0) {
     "Invalid input: "
@@ -15,7 +15,7 @@ define fact(n) {
     return(-1)
   }
   if (n < 2) return(1)
-  return(n * fact(n - 1))
+  return(n * f(n - 1))
 }
 
 # ctx: blobstore-random-ops-test
@@ -121,4 +121,12 @@ define div(x, y) {
   q = flr(x / y)
   r = x - (q * y)
   print q, "r", r, "\n"
+}
+
+define p(n, k) {
+  return (f(n)/f(n-k))
+}
+
+define c(n, k) {
+  return p(n, k)/f(k)
 }
