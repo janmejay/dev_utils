@@ -17,12 +17,12 @@ if [ "x${answer}" != "xy" ]; then
     exit 1
 fi
 
-disk_sz_bytes=$(lsblk -b | grep -F "$dev " | awk '{print $4}')
+disk_sz_bytes=$(lsblk -b $dev | head -2 | tail -1 | awk '{print $4}')
 
 blk_sz_mb=16
 
-iter_sz_mb=$(expr 4 * 1024)
-iter_sz_bytes=$(expr $iter_sz_mb * 1024 * 1024)
+iter_sz_mb=$(expr 4 '*' 1024)
+iter_sz_bytes=$(expr $iter_sz_mb '*' 1024 '*' 1024)
 blk_count=$(expr $iter_sz_mb '/' $blk_sz_mb)
 
 echo "Writing $blk_count 16MB random blocks starting at offset 0"

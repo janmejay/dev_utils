@@ -62,10 +62,21 @@ define mins(hrs, mins) {
   return(mins + hrs * 60)
 }
 
+define secs(mins, secs) {
+  return(secs + mins * 60)
+}
+
 define hr_min(min) {
   auto h
   h = flr(min / 60)
   print h, "h ", mod(min, 60), "m\n"
+}
+
+define hr_min_sec(sec) {
+  auto h, m
+  m = flr(sec / 60)
+  h = flr(m / 60)
+  print h, "h ", mod(m, 60), "m ", mod(sec, 60), "s\n"
 }
 
 define b2hu(x, k, b) {

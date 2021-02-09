@@ -1,0 +1,70 @@
+#!/bin/bash
+
+# This script helps
+# 1. Run a command
+# 2. Pick out someting from the output that can be used to
+#     fix something one intends to fix in each iteration.
+# 3. Transform the fragment into actual fixing-command
+#     and run it.
+# 4. Repeat the above until there is nothing more left to fix.
+
+arg_json=$1
+
+if [ "x$arg_json" == 'x' ]; then
+    echo "Pass configurator-arg json"
+    jq "" <<EOF
+{
+  "run": "command to be run until success",
+  "fix_re": "regular expression to match fixing cmds in output of 'run'",
+  "fix_xform": "cmd to transform each fix-cmd to the final form",
+  "out_file": "optional; default=/tmp/frr"
+}
+EOF
+    exit 1
+fi
+
+run=$(echo $arg_json | jq -r '.run')
+fix_re=$(echo $arg_json | jq -r '.fix_re')
+fix_xform=$(echo $arg_json | jq -r '.fix_xform')
+out_f=$(echo $arg_json | \
+            jq -r 'if .out_file then .out_file else "/tmp/frr" end')
+
+fix_sh="${out_f}.fix_cmds.sh"
+echo true > $fix_sh
+iter=1
+
+curr_out_path="${out_f}.0.out"
+curr_err_path="${out_f}.0.err"
+
+while [ $(stat -c %s $fix_sh) != '0' ]; do
+    echo "Iter: $iter..."
+    set -e
+    source $fix_sh
+    set +e
+
+    $run 1>$curr_out_path 2>$curr_err_path
+
+    ret_code=$?
+
+    cat $curr_out_path $curr_err_path | \
+        grep -oE "$fix_re" | \
+        $fix_xform > $fix_sh
+
+    out_path="${out_f}.${iter}.out"
+    err_path="${out_f}.${iter}.err"
+    mv $curr_out_path $out_path
+    mv $curr_err_path $err_path
+
+    iter=$(expr $iter '+' 1)
+done
+
+echo -e "\n\n==== OUTPUT ====\n"
+
+cat $out_path
+
+echo -e "\n\n==== ERROR ====\n"
+
+cat $err_path
+
+echo -e "\n\n==== EXIT: $ret_code ====\n"
+
