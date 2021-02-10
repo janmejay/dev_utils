@@ -1,0 +1,249 @@
+#!/usr/bin/env python
+
+# This is a Annotation-Editor
+# * It finds all statements matching a given pattern $1 in file $2
+# * Treats them as a edit command and comments them out using given
+#     comment sequence $4 (default = '//')
+#
+# and can be used to comment-in the fragments again when called with $3
+#  set to 'in' (default is 'out').
+#
+#
+# Invocation help.
+# Use the following to comment out:
+#   $ aed --pattern "TODO(jj) CMD" --file foo/bar/Baz.scala
+#
+# Use this to uncomment:
+#   $ aed --pattern "TODO(jj) CMD" --file foo/bar/Baz.scala --action uncomment
+#
+# _Annotation help_:
+#
+# 1. Comment out part of a line:
+#
+#     //////// FROM /////////
+#
+#                 //TODO(jj) CMD {"r":{"l":3,"e":" =.+$"}}
+#                 def delete(
+#                   obj: Obj,
+#                   attr: Attr = Attr.DEFAULT
+#                 ): Unit = ???
+#
+#
+#     ///////// TO //////////
+#
+#                 //TODO(jj) CMD {"r":{"l":3,"e":" =.+$"}}
+#                 def delete(
+#                   obj: Obj,
+#                   attr: Attr //[#AED#]  = Attr.DEFAULT
+#                 ): Unit = ???
+#
+# 2. Comment out several lines:
+#
+#     //////// FROM /////////
+#
+#                 //TODO(jj) CMD {"l":[1,3]}
+#                 def delete(obj: Obj): Unit = {
+#                   obj.delete()
+#                 }
+#
+#
+#     ///////// TO //////////
+#
+#                 //TODO(jj) CMD {"l":[1,3]}
+#     //[#AED#]   def delete(obj: Obj): Unit = {
+#     //[#AED#]     obj.delete()
+#     //[#AED#]   }
+#
+
+
+import argparse
+import json
+import os
+import re
+import sys
+
+ACTION_COMMENT = 'comment'
+ACTION_UNCOMMENT = 'uncomment'
+
+ACTIONS = [ACTION_COMMENT, ACTION_UNCOMMENT]
+
+class EditState:
+    def process(self, ctx, line, line_no):
+        raise RuntimeError(
+            "Invalid state at line#{} '{}'".format(line_no, line))
+
+class CommentFragState(EditState):
+    def __init__(self, comment_pattern):
+        self.comment_pattern = comment_pattern
+
+    def process(self, ctx, line, line_no):
+        search = re.search(self.comment_pattern, line)
+        if not search:
+            raise RuntimeError(
+                "Couldn't find '{}' in '{}' (#{})".format(
+                    self.comment_pattern,
+                    line,
+                    line_no))
+        start = search.start()
+        ctx.state = NoOpCommentState()
+        return line[:start] + ctx.comment_str + line[start:]
+
+class UncommentFragState(EditState):
+    def __init__(self, comment_pattern):
+        self.comment_pattern = comment_pattern
+
+    def process(self, ctx, line, line_no):
+        ctx.state = NoOpUncommentState()
+        start = line.find(ctx.comment_str)
+        if start >= 0:
+            end = len(ctx.comment_str) + start
+            return line[:start] + line[end:]
+        return line
+
+class CommentLinesState(EditState):
+    def __init__(self, num_lines):
+        self.num_lines = num_lines
+
+    def process(self, ctx, line, line_no):
+        if self.num_lines >= 0:
+            self.num_lines -= 1
+            return ctx.comment_str + line
+        else:
+            ctx.state = NoOpCommentState()
+            return ctx.state.process(ctx, line, line_no)
+
+class UncommentLinesState(EditState):
+    def __init__(self, num_lines):
+        self.num_lines = num_lines
+
+    def process(self, ctx, line, line_no):
+        if self.num_lines >= 0:
+            self.num_lines -= 1
+            if line.find(ctx.comment_str) == 0:
+                return line[len(ctx.comment_str):]
+            return line
+        else:
+            ctx.state = NoOpUncommentState()
+            return ctx.state.process(ctx, line, line_no)
+
+class PrepState(EditState):
+    def __init__(self, next_state, after):
+        self.next_state = next_state
+        self.after = after
+        assert self.after > 0
+
+    def process(self, ctx, line, line_no):
+        self.after -= 1
+        if self.after == 0:
+            ctx.state = self.next_state
+            return ctx.state.process(ctx, line, line_no)
+        return line
+
+class NoOpState():
+    def frag_edit_state(re_str):
+        raise RuntimeError("frag_edit_state not defined")
+
+    def line_edit_state(num_lines):
+        raise RuntimeError("line_edit_state not defined")
+
+    def process(self, ctx, line, line_no):
+        assert isinstance(ctx.state, NoOpState)
+        offset = line.find(ctx.cmd_pattern)
+        if offset > -1:
+            cmd_frag_start = offset + len(ctx.cmd_pattern)
+            cmd_offset = line[cmd_frag_start:].find("{")
+            cmd_str = line[cmd_frag_start + cmd_offset:]
+            cmd = json.loads(cmd_str)
+            if 'r' in cmd:
+                ctx.state = \
+                    PrepState(
+                        self.frag_edit_state(cmd['r']['e']), cmd['r']['l'])
+            elif 'l' in cmd:
+                start = cmd['l'][0]
+                end = cmd['l'][1]
+                ctx.state = PrepState(self.line_edit_state(end - start), start)
+            else:
+                raise RuntimeError("Unknown aed command {}".format(cmd_str))
+        return line
+
+class NoOpCommentState(NoOpState):
+    def frag_edit_state(self, re_str):
+        return CommentFragState(re_str)
+
+    def line_edit_state(self, num_lines):
+        return CommentLinesState(num_lines)
+
+class NoOpUncommentState(NoOpState):
+    def frag_edit_state(self, re_str):
+        return UncommentFragState(re_str)
+
+    def line_edit_state(self, num_lines):
+        return UncommentLinesState(num_lines)
+
+class EditCtx:
+    def __init__(self, start_state, cmd_pattern, comment_start):
+        self.state = start_state
+        self.cmd_pattern = cmd_pattern
+        self.comment_str = "{}[#AED#] ".format(comment_start)
+
+def run(args):
+    f = args.file
+    f_out = "{}.aed.tmp".format(args.file)
+    act = args.action
+    cmd_pattern = args.pattern
+    comment_start = args.comment_start
+    start_state = None
+    if act == ACTION_COMMENT:
+        start_state = NoOpCommentState()
+    elif act == ACTION_UNCOMMENT:
+        start_state = NoOpUncommentState()
+    else:
+        raise Exception("Unsupported action {}".format(act))
+
+    edit_ctx = EditCtx(start_state, cmd_pattern, comment_start)
+
+    with open(f, 'r') as r:
+        with open(f_out, 'w') as w:
+            line_no = 0
+            while True:
+                line = r.readline()
+                if len(line) == 0:
+                    break
+                ret_line = edit_ctx.state.process(edit_ctx, line, line_no)
+                w.write(ret_line)
+                line_no += 1
+    os.rename(f_out, f)
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Annotation-Editor')
+
+    parser.add_argument(
+        '--pattern',
+        type=str,
+        required=True,
+        help='String just before AED edit command.'
+             'Edit-command is expected to be a json object immediately '
+             'after the token in the matched line followed by end-of-line.')
+
+    parser.add_argument(
+        '--file',
+        type=str,
+        required=True,
+        help='File to be processed.')
+
+    parser.add_argument(
+        '--action',
+        type=str,
+        choices=ACTIONS,
+        default=ACTION_COMMENT,
+        help='Action to be performed.')
+
+    parser.add_argument(
+        '--comment_start',
+        type=str,
+        default="//",
+        help='Comment start char-sequence to be used.')
+
+
+    args = parser.parse_args(sys.argv[1:])
+    run(args)
