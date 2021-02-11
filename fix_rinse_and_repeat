@@ -48,6 +48,7 @@ while [ $(stat -c %s $fix_sh) != '0' ]; do
 
     cat $curr_out_path $curr_err_path | \
         grep -oE "$fix_re" | \
+        jq -csR 'split("\n") | sort | map(select(length > 0))' | \
         $fix_xform > $fix_sh
 
     out_path="${out_f}.${iter}.out"
