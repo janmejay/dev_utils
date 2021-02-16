@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -e
+
+function print_usage_and_exit {
+  echo "Usage: file_in_path <path> <file to look for in parent dir>"
+  exit 1
+}
+
+if [ "x$1" == 'x' ]; then
+  echo "Path to start at not given."
+  print_usage_and_exit
+fi
+
+if [ "x$2" == 'x' ]; then
+  echo "File to look for in parent dirs not given."
+  print_usage_and_exit
+fi
+
+d=$(readlink -f $1)
+lookup=$2
+
+# set -x
+
+while [ "x$d" != 'x' ]; do
+  p="$d/$lookup"
+  if [ -e "$p" ]; then
+    echo $p
+    exit 0
+  fi
+  d=$(echo $d | sed -re 's#/[^/]*$##g')
+done
+
+exit 1

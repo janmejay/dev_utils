@@ -3,4 +3,4 @@
 	url = git://github.com/gdbinit/Gdbinit.git
 [submodule "find-cursor"]
 	path = find-cursor
-	url = git://github.com/Carpetsmoker/find-cursor.git
+	url = git://github.com/janmejay/find-cursor.git
