@@ -11,6 +11,9 @@ def rd_file(path):
     with open(path, 'r') as f:
         return f.read()
 
+def get_color(all_good):
+    return "#00FF00" if all_good else "#FF0000"
+
 CPU_THERM = "x86_pkg_temp\n"
 CPU_MHZ_RE = re.compile(r'^cpu MHz\t{2}: (\d+\.\d+)+$')
 
@@ -122,7 +125,7 @@ class CpuStats:
                    (used_pct < 80) and \
                    (steal_pct < 0.1)
 
-        color = "#00FF00" if all_good else "#FF0000"
+        color = get_color(all_good)
 
         core_tmp = self.get_temp()
         avg_mhz = self.avg_freq()
@@ -130,11 +133,11 @@ class CpuStats:
         msg = ("%.1f °C, %s MHz, Use: %.1f%%, Wa: %.1f%%, Int: %.1f%%, St: %.1f%%" %
                (core_tmp, avg_mhz, used_pct, iowait_pct, interrupt_pct, steal_pct))
 
-        return {"color": color,
+        return [{"color": color,
                 "name": "cpu",
                 "markup": "none",
                 "full_text": msg,
-                "instance": "cpu"}
+                "instance": "cpu"}]
 
 class MemMatcher:
     def __init__(self, name):
@@ -187,7 +190,7 @@ class MemStats:
                    (pinned > 10) or \
                    (dirty > 10)
 
-        color = "#00FF00" if all_good else "#FF0000"
+        color = get_color(all_good)
 
         msg_format = "Rfr: %d (%0.1f%%), " + \
                      "Csh: %d (%0.1f%%), " + \
@@ -196,11 +199,33 @@ class MemStats:
                      "Pin: %0.2f"
         msg =  msg_format % (free / 1024, free_pct, buff_cache / 1024, cache_pct, swap_free / 1024, swap_free_pct, dirty / 1024, pinned / 1024)
 
-        return {"color": color,
+        return [{"color": color,
                 "name": "mem",
                 "markup": "none",
                 "full_text": msg,
-                "instance": "mem"}
+                "instance": "mem"}]
+
+class ConnectivityCheck:
+    def __init__(self, addrs):
+        self.__addrs = addrs.items()
+
+    def read(self):
+        results = []
+        for name, addr in self.__addrs:
+            ret = subprocess.run(
+                args = ["timeout", "2", "ping", "-c", "1", addr],
+                stdout = subprocess.DEVNULL,
+                stderr = subprocess.DEVNULL)
+            name = "🖧{}".format(name)
+            results.append({
+                "color": get_color(ret.returncode == 0),
+                "name": name,
+                "markup": "none",
+                "full_text": name,
+                "instance": name
+            })
+        return results
+
 
 own_path=os.path.realpath(__file__)
 
@@ -237,6 +262,12 @@ stdout.write(raw_bytes)
 
 cpu_stats_reader = CpuStats()
 mem_stats_reader = MemStats()
+connectivity_check_reader = \
+    ConnectivityCheck({
+        "Gogl": "8.8.8.8",
+        "Jail": "172.19.0.2",
+        "Vpn": "phabricator.rubrik.com",
+        "HomR": "192.168.1.1"})
 
 while True:
     raw_bytes = p.stdout.readline()
@@ -256,9 +287,9 @@ while True:
 
     cpu_stats = cpu_stats_reader.read()
     mem_stats = mem_stats_reader.read()
-    data = json.loads(data_str)
-    data.insert(0, mem_stats)
-    data.insert(0, cpu_stats)
+    connectivity_data = connectivity_check_reader.read()
+
+    data = cpu_stats + mem_stats + connectivity_data + json.loads(data_str)
     data_str = json.dumps(data)
 
     if prepend_comma:
