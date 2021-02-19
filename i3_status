@@ -210,20 +210,34 @@ class ConnectivityCheck:
         self.__addrs = addrs.items()
 
     def read(self):
-        results = []
+        results = [{
+            "color": "#FFFFFF",
+            "name": "dummy_nw",
+            "markup": "none",
+            "full_text": "🖧",
+            "instance": "dummy_nw",
+            "separator": False,
+            "separator_block_width": 16
+        }]
         for name, addr in self.__addrs:
             ret = subprocess.run(
                 args = ["timeout", "2", "ping", "-c", "1", addr],
                 stdout = subprocess.DEVNULL,
                 stderr = subprocess.DEVNULL)
-            name = "🖧{}".format(name)
             results.append({
                 "color": get_color(ret.returncode == 0),
                 "name": name,
                 "markup": "none",
                 "full_text": name,
-                "instance": name
+                "instance": name,
+                "separator": False,
+                "separator_block_width": 9
             })
+
+        last_result = results[-1]
+        del last_result["separator_block_width"]
+        del last_result["separator"]
+
         return results
 
 
