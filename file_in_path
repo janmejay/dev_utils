@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+# set -x
 
 function print_usage_and_exit {
   echo "Usage: file_in_path <path> <file to look for in parent dir>"
