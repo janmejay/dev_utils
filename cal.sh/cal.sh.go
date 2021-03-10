@@ -104,7 +104,7 @@ func main() {
 	subcommands.Register(subcommands.HelpCommand(), "")
 	subcommands.Register(subcommands.FlagsCommand(), "")
 	subcommands.Register(subcommands.CommandsCommand(), "")
-	subcommands.Register(subcmd.NewUpcomingCmd(srv), "")
+	subcommands.Register(subcmd.NewListCmd(srv), "")
 	subcommands.Register(subcmd.NewCreateCmd(srv), "")
 
 	flag.Parse()

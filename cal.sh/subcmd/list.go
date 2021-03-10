@@ -11,23 +11,26 @@ import (
 	"google.golang.org/api/calendar/v3"
 )
 
-type UpcomingCmd struct {
+type ListCmd struct {
 	svc *calendar.Service
 	num int64
-	fmt_json bool
+	fmtJson bool
+	startDateTime string
 }
 
-func (*UpcomingCmd) Name() string			{ return "upcoming" }
-func (*UpcomingCmd) Synopsis() string { return "Print a few upcoming events." }
-func (*UpcomingCmd) Usage() string {
-	return `upcoming [-num] <number of events, default 10> [-fmt_json]:
-	Print a few upcoming events.
+func (*ListCmd) Name() string			{ return "list" }
+func (*ListCmd) Synopsis() string { return "Print a few list events." }
+func (*ListCmd) Usage() string {
+	return `list [-num] <number of events, default 10> [-fmt_json]:
+	Print a few list events.
 `
 }
 
-func (p *UpcomingCmd) SetFlags(f *flag.FlagSet) {
+func (p *ListCmd) SetFlags(f *flag.FlagSet) {
 	f.Int64Var(&p.num, "num", 10, "number of events to show")
-	f.BoolVar(&p.fmt_json, "fmt_json", false, "spit out json-formatted events")
+	f.StringVar(&p.startDateTime, "start_date_time", "",
+		"start date time, RFC3339")
+	f.BoolVar(&p.fmtJson, "fmt_json", false, "spit out json-formatted events")
 }
 
 func printShort(evts *calendar.Events) {
@@ -50,28 +53,34 @@ func printJson(evts *calendar.Events) {
 	}
 }
 
-func (p *UpcomingCmd) Execute(
+func (p *ListCmd) Execute(
 	_ context.Context,
 	f *flag.FlagSet,
 	_ ...interface{}) subcommands.ExitStatus {
-	t := time.Now().Format(time.RFC3339)
+	var startDateTime string
+	if p.startDateTime == "" {
+		startDateTime = time.Now().Format(time.RFC3339)
+	} else {
+		startDateTime = p.startDateTime
+	}
+
 	events, err :=
 		p.svc.Events.
 		List("primary").
 		ShowDeleted(false).
 		SingleEvents(true).
-		TimeMin(t).
+		TimeMin(startDateTime).
 		MaxResults(p.num).
 		OrderBy("startTime").
 		Do()
 	if err != nil {
 		log.Fatalf("Unable to retrieve next ten of the user's events: %v", err)
 	}
-	fmt.Println("Upcoming events:")
+	fmt.Println("List events:")
 	if len(events.Items) == 0 {
-		fmt.Println("No upcoming events found.")
+		fmt.Println("No list events found.")
 	} else {
-		if (p.fmt_json) {
+		if (p.fmtJson) {
 			printJson(events)
 		} else {
 			printShort(events)
@@ -80,6 +89,6 @@ func (p *UpcomingCmd) Execute(
 	return subcommands.ExitSuccess
 }
 
-func NewUpcomingCmd(svc *calendar.Service) *UpcomingCmd {
-	return &UpcomingCmd{svc, 10, false}
+func NewListCmd(svc *calendar.Service) *ListCmd {
+	return &ListCmd{svc, 10, false, ""}
 }

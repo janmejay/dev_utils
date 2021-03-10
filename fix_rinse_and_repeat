@@ -30,7 +30,9 @@ out_f=$(echo $arg_json | \
             jq -r 'if .out_file then .out_file else "/tmp/frr" end')
 
 fix_sh="${out_f}.fix_cmds.sh"
+fix_sh_hashes="${out_f}.fix_hashes"
 echo true > $fix_sh
+echo > $fix_sh_hashes
 iter=1
 
 curr_out_path="${out_f}.0.out"
@@ -50,6 +52,16 @@ while [ $(stat -c %s $fix_sh) != '0' ]; do
         grep -oE "$fix_re" | \
         jq -csR 'split("\n") | sort | map(select(length > 0))' | \
         $fix_xform > $fix_sh
+
+    h=$(md5sum $fix_sh | awk '{print $1}')
+
+    grep -qF $h $fix_sh_hashes
+    if [ $? -eq 0 ]; then
+        echo "Discovered cycle, aborting rinse & repeat loop."
+        break
+    else
+        echo $h >> $fix_sh_hashes
+    fi
 
     out_path="${out_f}.${iter}.out"
     err_path="${out_f}.${iter}.err"
