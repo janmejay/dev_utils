@@ -106,6 +106,7 @@ func main() {
 	subcommands.Register(subcommands.CommandsCommand(), "")
 	subcommands.Register(subcmd.NewListCmd(srv), "")
 	subcommands.Register(subcmd.NewCreateCmd(srv), "")
+	subcommands.Register(subcmd.NewDeleteCmd(srv), "")
 
 	flag.Parse()
   ctx := context.Background()
