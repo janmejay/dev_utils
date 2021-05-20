@@ -79,6 +79,11 @@ define hr_min_sec(sec) {
   print h, "h ", mod(m, 60), "m ", mod(sec, 60), "s\n"
 }
 
+define hms(sec) {
+  auto ign
+  ign = hr_min_sec(sec)
+}
+
 define b2hu(x, k, b) {
   auto s, y
   s = scale
