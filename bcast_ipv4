@@ -1,0 +1,41 @@
+#!/bin/bash
+
+id=${1:-$(hostname)}
+usr=${2:-jj}
+
+function ord {
+  LC_CTYPE=C printf '%d' "'$1"
+}
+
+function get_dport {
+    p=1
+    for c in $(echo $usr | sed -re 's/(.)/\1 /g'); do
+        p=$(expr $p '*' $(ord $c))
+    done
+    echo "$p"
+}
+
+dport=$(get_dport)
+
+ip_re='[0-9.]+'
+
+addr=$(ip addr \
+           | grep -Po "inet $ip_re" \
+           | sed -re 's/inet //g' -e 's/$/, /g' \
+           | xargs \
+           | sed -re 's/,$//g')
+
+msg="Hi $usr! '$id' is @ $addr"
+
+tgts=$(ip addr \
+           | grep -Po "brd [0-9a-f.:+]+" \
+           | grep -vF ':' \
+           | sed -re 's/brd //g')
+
+echo $dport
+
+for tgt in $tgts; do
+    echo $msg | nc -u -b -w0 $tgt $dport
+done
+
+
