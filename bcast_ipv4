@@ -30,7 +30,9 @@ msg="Hi $usr! '$id' is @ $addr"
 tgts=$(ip addr \
            | grep -Po "brd [0-9a-f.:+]+" \
            | grep -vF ':' \
-           | sed -re 's/brd //g')
+           | sed -re 's/brd //g' \
+           | sort \
+           | uniq)
 
 echo "To listen use 'nc -ukl $dport' on bcast-domain."
 
