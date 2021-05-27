@@ -32,7 +32,7 @@ tgts=$(ip addr \
            | grep -vF ':' \
            | sed -re 's/brd //g')
 
-echo $dport
+echo "To listen use 'nc -ukl $dport' on bcast-domain."
 
 for tgt in $tgts; do
     echo $msg | nc -u -b -w0 $tgt $dport
