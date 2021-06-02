@@ -884,13 +884,6 @@ def batch_of(n):
 def s2h:
   . / pow(60; 2);
 
-def transpose:
-  . as $m
-  | [range($m[0] | length)]
-  | map(. as $i
-        | $m
-        | map(.[$i]));
-
 def crdb_records_json:
   . as $d
   | ($d | map(select(test("^-[ RECORD [0-9]+ ]$"))) | length) as $n
@@ -965,3 +958,31 @@ def map_diff:
                  | .key as $k
                  | .value |= (. - $b[$k])
                  | select(.value != 0));
+
+def mean_of_attr(get_fn): map(get_fn) | mean;
+
+def sum_of_attr(get_fn): map(get_fn) | add;
+
+def sq: . * .;
+
+def corr(get_x; get_y):
+    . as $d
+    | ($d | mean_of_attr(get_x)) as $mx
+    | ($d | mean_of_attr(get_y)) as $my
+    | $d
+    | map(.
+          | {rd: .}
+          | .xd = ((.rd | get_x) - $mx)
+          | .yd = ((.rd | get_y) - $my)
+          | .xdyd = (.xd * .yd)
+          | .xdsq = (.xd | sq)
+          | .ydsq = (.yd | sq)
+          | del(.rd))
+    | {sum_xdyd: sum_of_attr(.xdyd),
+       sum_xdsq: sum_of_attr(.xdsq),
+       sum_ydsq: sum_of_attr(.ydsq)}
+    | if .sum_xdyd == 0 then
+        0
+      else
+       .sum_xdyd / ((.sum_xdsq | sqrt) * (.sum_ydsq | sqrt))
+      end;
