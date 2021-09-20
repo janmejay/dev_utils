@@ -859,7 +859,20 @@ def qtile(q):
 def qtile_all(qs):
   . as $a
   | qs
-  | map(. as $q | "q\($q) -> \($a | qtile($q))");
+  | sort
+  | map(. as $q | {m: "q\($q)", v: ($a | qtile($q))})
+  | . + [{m: "cnt", v: ($a | length)}];
+
+def qtile_all_idx(qs):
+  .
+  | qtile_all(qs)
+  | map({key: .m, value: .v})
+  | from_entries;
+
+def qtile_all_str(qs):
+  .
+  | qtile_all(qs)
+  | map("\(.m) -> \(.v)");
 
 def mean: add / length;
 
@@ -986,3 +999,188 @@ def corr(get_x; get_y):
       else
        .sum_xdyd / ((.sum_xdsq | sqrt) * (.sum_ydsq | sqrt))
       end;
+
+def pcap_ms:
+  .
+  | split(".")
+  | {s: (.[0] | strptime("%H:%M:%S")[3:6]),
+     us: (.[1] | tonumber)}
+  | .s |= (.
+           | to_entries
+           | map(.value * pow(60; 2 - (.key)))
+           | add)
+  | .s * 1000 + .us / 1000;
+
+def pcap_tcp_fr_hdr_old:
+ .
+ | sub(", win.+$";"")
+ | sub(":[,0-9ack ]+$";"")
+ | split(" ")
+ | {t: .[0] | pcap_ms,
+    s: .[2],
+    d: .[4] | sub(":";""),
+    id: .[-2:] | join(" ")};
+
+def pcap_ack:
+  if (.[-1] | test("^ack ")) then
+    .[-1] | split(" ")[-1] | tonumber
+  else
+    null
+  end;
+
+def pcap_seq:
+  if (.[0] | test("^seq ")) then
+    .[0]
+    | split(" ")[-1]
+    | split(":")
+    | map(tonumber)
+    | if (length == 1) then [.[0], .[0] + 1] else . end
+  else
+    null
+  end;
+
+def pcap_tcp_fr_hdr:
+ .
+ | sub(", win.+$";"")
+ | split(",")
+ | {nos: .[1:] | map(trim), flow: .[0] | split(" ")}
+ | {t: .flow[0] | pcap_ms,
+    s: .flow[2],
+    d: .flow[4] | sub(":";""),
+    id: .nos[0] | sub(":.+$";""),
+    seq: .nos | pcap_seq,
+    ack: .nos | pcap_ack,
+    nos: .nos}
+ | if (.seq | not) then del(.seq) else . end
+ | if (.ack | not) then del(.ack) else . end;
+
+
+def pcap_rtt:
+  . as $d
+  | $d
+  | map(.
+        | select(.seq)
+        | {key: (.s + .d + (.seq[-1] | tostring)), value: .t})
+  | from_entries as $sidx
+  | $d
+  | map(.
+        | select(.ack)
+        | .tx_time = $sidx[(.d + .s + (.ack | tostring))]
+        | select(.tx_time)
+        | .rtt = .t - .tx_time);
+
+def map_keys(fn): with_entries(.key |= (fn));
+
+def dflt(x): if . then . else x end;
+
+# parses golang duration string, returns seconds (numeric)
+def golang_durs:
+  def split_mul(u):
+    . as $acc
+    | $acc.r
+    | split(u.n; "")
+    | if length == 2 then
+        {v: ((.[0] | tonumber * u.c) + $acc.v),
+         r: .[1]}
+      else $acc end;
+
+  . as $s
+  | [{n: "h", c: 3600},
+     {n: "m(?!s)", c: 60},
+     {n: "(?<![mµn])s", c: 1},
+     {n: "ms", c: .001},
+     {n: "µs", c: .000001},
+     {n: "ns", c: .000000001}]
+  | reduce .[] as $u (
+      {v: 0, r: $s};
+      split_mul($u))
+  | .v;
+
+def crdb_log_ts:
+  .
+  | split(" ")[:2]
+  | join(" ")
+  | .[1:]
+  | sub("\\.[0-9]+$";"")
+  | strptime("%y%m%d %T");
+
+def vals: to_entries | map(.value);
+
+# cat /tmp/clip.bt | grep -vP '0x[0-9a-f]+ in ' | jq -sR 'golang_bt_tree'
+def golang_bt_tree:
+  def merge(d; ri):
+    . as $t
+    | d.bt[ri] as $f
+    | if $f then
+        .
+        | if .b[$f] then . else .b[$f] |= {g: [], b: {}} end
+        | .b[$f] |= merge(d; ri - 1)
+      else
+        .
+        | .g |= (. + [d.g])
+      end;
+  def cleanup:
+    .
+    | if (.g | length == 0) then del(.g) else . end
+    | .b |= with_entries(.value |= cleanup)
+    | if (.b | length == 0) then del(.b) else . end;
+  def collapse_b:
+    .
+    | ((.b | length == 1) and(.g | not)) as $f
+    | if $f then
+        . as $p
+        | .b
+        | vals[0]
+        | .bc = ($p.bc + ($p.b | keys))
+        | collapse_b
+      elif .b then
+        .b |= map_values(collapse_b)
+      else
+        .
+      end;
+  def collapse_g:
+    .
+    | if .g then .g |= join(",") else . end
+    | if .b then .b |= map_values(collapse_g) else . end;
+  .
+  | split(" Goroutine ")
+  | map(.
+        | split(" ")
+        | {g: .[0],
+           bt: (.
+                | .[3:]
+                | join(" ")
+                | split("\n")
+                | map(.
+                      | trim
+                      | split(" ")[1]
+                      | select(length > 0)))}
+        | select(.bt | length > 0))
+   | reduce .[] as $gr ({g: [], b: {}}; merge($gr; -1))
+   | cleanup
+   | collapse_b
+   | collapse_g;
+
+# echo 1 | \
+#   jq --argfile b /tmp/clip.top.100.before \
+#      --argfile a /tmp/clip.top.100.after \
+#      'compare_stmt_dumps($b; $a; .count)'
+def compare_stmt_dumps(before; after; metric_fn):
+  def strfy: map({key: (.exec | tojson), value: .}) | from_entries;
+  def metric: metric_fn | if . then . else 1 end;
+  .
+  | before | strfy as $bef
+  | after
+  | strfy
+  | to_entries
+  | map(.
+        | {exec: .value.exec,
+           before: $bef[.key].stats,
+           after: .value.stats,
+           q: .value.key.query}
+        | .val_bef = (.before | metric)
+        | .val_aft = (.after | metric)
+        | .val_inc = (.val_aft - .val_bef)
+        | .inc_pct = ((.val_inc / ([1, .val_bef] | max)) * 100))
+  | sort_by(.val_inc)
+  | reverse;

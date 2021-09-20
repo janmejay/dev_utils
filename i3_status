@@ -281,7 +281,7 @@ connectivity_check_reader = \
         "Gogl": "8.8.8.8",
         "Jail": "172.19.0.2",
         "Vpn": "phabricator.rubrik.com",
-        "HomR": "192.168.1.1"})
+        "HomR": "192.168.0.1"})
 
 while True:
     raw_bytes = p.stdout.readline()
