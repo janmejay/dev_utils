@@ -500,6 +500,9 @@ def time_sh:
 def time_nsh:
   time_h("ns");
 
+def time_msh:
+  time_h("ms");
+
 def pow(b; e):
   if (e == 0) then 1 else (b * pow(b; e - 1)) end;
 
@@ -1184,3 +1187,4 @@ def compare_stmt_dumps(before; after; metric_fn):
         | .inc_pct = ((.val_inc / ([1, .val_bef] | max)) * 100))
   | sort_by(.val_inc)
   | reverse;
+
