@@ -1188,3 +1188,32 @@ def compare_stmt_dumps(before; after; metric_fn):
   | sort_by(.val_inc)
   | reverse;
 
+
+#
+# delve foo
+#
+def alt_name(p):
+  def nm:
+    if .kind == 25 then
+      "\(p)/\(.name)<\(.type)>"
+    elif .name == "" then
+      p
+    else
+      "\(p)/\(.name)"
+    end;
+  .
+  | if type == "object" then
+      . as $o
+      | $o
+      | nm as $n
+      | $o
+      | .name = $n
+      | if .children then .children |= map(alt_name($n)) else . end
+    else
+      .
+    end;
+
+def m(fn_key; fn_val):
+  .
+  | map({key: fn_key, value: fn_val})
+  | from_entries;
