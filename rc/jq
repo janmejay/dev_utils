@@ -1217,3 +1217,23 @@ def m(fn_key; fn_val):
   .
   | map({key: fn_key, value: fn_val})
   | from_entries;
+
+#
+# Use in place of `awk` to avoid trouble with '$' and double / single quotes.
+#
+# Eg.
+#
+# cat /tmp/clip.f | grep Unexpected | \
+#   grep -Po '/var/.+\.json\.gz on .+$' | sed -re 's/ on node//g' | \
+#   jq -rR 'interpolate("@"; "rkcl exec @2 \"rm @1\"") | dq2s'
+#
+def interpolate(refCh; tmpl):
+  .
+  | split(" ") as $v
+  | (.
+     | tmpl
+     | [match("\(refCh)(\\d+)"; "g")]
+     | map(.captures[0].string | tonumber)
+     | max) as $max_idx
+  | [range($max_idx; 0; -1)]
+  | reduce .[] as $i (tmpl; gsub("\(refCh)\($i)"; $v[$i - 1]));
