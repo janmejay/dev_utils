@@ -3,7 +3,7 @@
 pkill syndaemon
 
 be=$(synclient -l | grep -P ' +BottomEdge' | grep -Po '\d+$')
-bottom_reserved_pct=25
+bottom_reserved_pct=40
 bottom_edge_area=$(echo "${be}*(100 - $bottom_reserved_pct)/100" | bc)
 
 synclient ClickFinger2=0
