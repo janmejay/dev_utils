@@ -8,7 +8,7 @@ export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
 export MYSQL_HOME=~/tools/mysql
-alias emacs='/usr/local/bin/emacs -nw -q'
+alias emacs='/usr/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias gotags='etags `find . -name "*.go"`'
@@ -35,7 +35,7 @@ f() { find . -iname "*$1*" }
 
 alias xs='xclip -selection c.'
 
-x() { echo -n $* | xs }
+x() { clip x && cat /tmp/clip.x | xs }
 
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
 

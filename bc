@@ -1,0 +1,3 @@
+#!/bin/bash
+
+exec rlwrap -a /usr/bin/bc -l
