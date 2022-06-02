@@ -12,10 +12,12 @@ scroll_up: k
 start: C-a
 end: C-e
 indicator: topleft
-hint_exit: C-g
+hint_exit: q
 exit: q
 top: A-<
 middle: C-l
 bottom: A->
 indicator_color: #f3e260
 indicator_size: 8
+hint: C-A-g
+hint_chars: abcdefghijklmnoprstuvwxyz;,
