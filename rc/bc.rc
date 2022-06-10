@@ -79,6 +79,11 @@ define hr_min_sec(sec) {
   print h, "h ", mod(m, 60), "m ", mod(sec, 60), "s\n"
 }
 
+define hms(sec) {
+  auto ign
+  ign = hr_min_sec(sec)
+}
+
 define b2hu(x, k, b) {
   auto s, y
   s = scale
@@ -140,4 +145,24 @@ define p(n, k) {
 
 define c(n, k) {
   return p(n, k)/f(k)
+}
+
+# backoff_factor = min + backoff_coeff^attempt
+# m + backoff_factor time-to-fastest-failure
+define backoff_m_plus_bf_ttff(min, max, retries) {
+  r = e(l(max - min)/(retries - 1))
+  t = retries * min + (r^(retries + 1) - 1)/(r - 1)
+  # print "Time to fastest failure: ", t
+  return t
+}
+
+define backoff_m_plus_bf_times(min, max, retries) {
+  r = e(l(max - min)/(retries - 1))
+  s = min
+  print "backoff = ", min, ", cumulative_delay = ", s, "\n"
+  for (i = 1; i < retries; i++) {
+    t = ceil(min + r^i)
+    s += t
+    print "backoff = ", t, ", cumulative_delay = ", s, "\n"
+  }
 }

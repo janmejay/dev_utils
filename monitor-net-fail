@@ -1,0 +1,36 @@
+#!/bin/bash
+
+addr=${1:-8.8.8.8}
+aud=${2:-/usr/share/sounds/freedesktop/stereo/message-new-instant.oga}
+
+if [ ! -e $aud ]; then
+    echo "Audio file $aud does not exist"
+    exit 1
+fi
+
+paplay=$(which paplay)
+
+if [ ! -e $paplay ]; then
+    echo "Cannot find 'paplay' binary"
+    exit 1
+fi
+
+function buzz {
+    timeout 3 $paplay $aud
+    if [ $? -ne 0 ]; then
+        zenity --warning \
+               --text="Can't reach $addr, can't play $aud" \
+               --title="Net fail!!!"
+    fi
+}
+
+buzz
+
+while true; do
+    echo -n '.'
+    timeout 4 ping -c 1 $addr 1>/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+        buzz &
+    fi
+    sleep 4
+done

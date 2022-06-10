@@ -2,6 +2,10 @@
 
 pkill syndaemon
 
+be=$(synclient -l | grep -P ' +BottomEdge' | grep -Po '\d+$')
+bottom_reserved_pct=40
+bottom_edge_area=$(echo "${be}*(100 - $bottom_reserved_pct)/100" | bc)
+
 synclient ClickFinger2=0
 synclient ClickFinger3=3 #because thumb becomes the 3rd finger touches down on a clickpad
 synclient RightButtonAreaLeft=0
@@ -11,5 +15,7 @@ synclient MinSpeed=1
 synclient AccelFactor=0.1
 synclient TapButton3=2 #middle click
 synclient HorizTwoFingerScroll=1
-
+synclient VertScrollDelta=25
+synclient HorizScrollDelta=25
+synclient AreaBottomEdge=$bottom_edge_area
 syndaemon -i .6s -K -R -d
