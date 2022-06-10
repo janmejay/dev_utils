@@ -1,6 +1,8 @@
 #!/bin/bash
 
-git branch -vv | jq -rRs \
+commit_count=${1:-1}
+
+git branch -vv | jq --arg cc $commit_count -rRs \
    '. | split("\n")
       | map({raw: . | gsub(" +"; " ") | split(" ")})
       | map({
@@ -9,4 +11,4 @@ git branch -vv | jq -rRs \
         upstream: (.raw[3][1:][:-1])})
       | .[]
       | select(.current)
-      | @text "rebase --onto \(.upstream) \(.branch)~1 \(.branch)"' | xargs git
+      | @text "rebase --onto \(.upstream) \(.branch)~\($cc) \(.branch)"' | xargs git
