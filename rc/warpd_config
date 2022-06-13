@@ -19,5 +19,7 @@ middle: C-l
 bottom: A->
 indicator_color: #f3e260
 indicator_size: 8
-hint: C-A-g
+hint: C-A-g g
 hint_chars: abcdefghijklmnoprstuvwxyz;,
+drag: C-space
+copy_and_exit: A-w
