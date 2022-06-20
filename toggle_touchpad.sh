@@ -5,6 +5,8 @@ dev_id=$(xinput list | grep -iP '(touchpad|Synaptics)' | grep -Po 'id=\d+' | gre
 on=$(xinput list-props $dev_id | grep -F "$prop" | awk '{print $NF}')
 if [ "x$on" == 'x0' ]; then
     xinput set-prop $dev_id "$prop" 1
+    pkill hide_mouse_ptr
 else
     xinput set-prop $dev_id "$prop" 0
+    $(dirname $0)/hide_mouse_ptr &
 fi

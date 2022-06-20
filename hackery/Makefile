@@ -4,6 +4,7 @@ install: xmobar_launcher prlimit qcsv hash_join
 	cp prlimit ..
 	cp qcsv ..
 	cp hash_join ..
+	cp hide_mouse_ptr ..
 
 xmobar_launcher: xmobar_launcher.c Makefile
 	gcc -o xmobar_launcher xmobar_launcher.c
@@ -19,3 +20,6 @@ hash_join: hash_join.cc Makefile
 
 touch_utmp: touch_utmp.c Makefile
 	gcc -o touch_utmp touch_utmp.c
+
+hide_mouse_ptr: hide_mouse_ptr.c Makefile
+	gcc -o hide_mouse_ptr hide_mouse_ptr.c -lX11 -lXfixes

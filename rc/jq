@@ -1109,61 +1109,6 @@ def crdb_log_ts:
 
 def vals: to_entries | map(.value);
 
-# cat /tmp/clip.bt | grep -vP '0x[0-9a-f]+ in ' | jq -sR 'golang_bt_tree'
-def golang_bt_tree:
-  def merge(d; ri):
-    . as $t
-    | d.bt[ri] as $f
-    | if $f then
-        .
-        | if .b[$f] then . else .b[$f] |= {g: [], b: {}} end
-        | .b[$f] |= merge(d; ri - 1)
-      else
-        .
-        | .g |= (. + [d.g])
-      end;
-  def cleanup:
-    .
-    | if (.g | length == 0) then del(.g) else . end
-    | .b |= with_entries(.value |= cleanup)
-    | if (.b | length == 0) then del(.b) else . end;
-  def collapse_b:
-    .
-    | ((.b | length == 1) and(.g | not)) as $f
-    | if $f then
-        . as $p
-        | .b
-        | vals[0]
-        | .bc = ($p.bc + ($p.b | keys))
-        | collapse_b
-      elif .b then
-        .b |= map_values(collapse_b)
-      else
-        .
-      end;
-  def collapse_g:
-    .
-    | if .g then .g |= join(",") else . end
-    | if .b then .b |= map_values(collapse_g) else . end;
-  .
-  | split(" Goroutine ")
-  | map(.
-        | split(" ")
-        | {g: .[0],
-           bt: (.
-                | .[3:]
-                | join(" ")
-                | split("\n")
-                | map(.
-                      | trim
-                      | split(" ")[1]
-                      | select(length > 0)))}
-        | select(.bt | length > 0))
-   | reduce .[] as $gr ({g: [], b: {}}; merge($gr; -1))
-   | cleanup
-   | collapse_b
-   | collapse_g;
-
 # echo 1 | \
 #   jq --argfile b /tmp/clip.top.100.before \
 #      --argfile a /tmp/clip.top.100.after \
@@ -1237,3 +1182,23 @@ def interpolate(refCh; tmpl):
      | max) as $max_idx
   | [range($max_idx; 0; -1)]
   | reduce .[] as $i (tmpl; gsub("\(refCh)\($i)"; $v[$i - 1]));
+
+
+# array to object
+# echo '[1, 2, 3]' | jq 'a2o(["one", "two", "three"])'
+# returns {"one": 1, "two": 2, "three": 3}
+def a2o(attrs):
+  .
+  | [., attrs]
+  | transpose
+  | map({key: .[1], value: .[0]})
+  | from_entries;
+
+
+def head(n): .[:n];
+
+def keep(keys):
+  . as $e
+  | keys
+  | map({key: ., value: $e[.]})
+  | from_entries;

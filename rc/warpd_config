@@ -1,6 +1,6 @@
 hint_activation_key: C-A-g
 activation_key: C-A-f
-hint_size: 30
+hint_size: 36
 hint_bgcolor: #f3e260
 hint_fgcolor: #000000
 left: C-b
@@ -20,6 +20,6 @@ bottom: A->
 indicator_color: #f3e260
 indicator_size: 8
 hint: C-A-g g
-hint_chars: abcdefghijklmnoprstuvwxyz;,
+hint_chars: abcdef;ghijklmnoprst'uvwx[yz
 drag: C-space
 copy_and_exit: A-w
