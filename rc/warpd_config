@@ -12,14 +12,14 @@ scroll_up: k
 start: C-a
 end: C-e
 indicator: topleft
-hint_exit: q
-exit: q
+hint_exit: esc
+exit: esc
 top: A-<
 middle: C-l
 bottom: A->
 indicator_color: #f3e260
 indicator_size: 8
 hint: C-A-g g
-hint_chars: abcdef;ghijklmnoprst'uvwx[yz
+hint_chars: abcdef;ghijklmnopqrst'uvwx[yz
 drag: C-space
 copy_and_exit: A-w
