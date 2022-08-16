@@ -897,6 +897,8 @@ def batch_of(n):
   | [range(0;length/n) * n]
   | map($l[.:. + n]);
 
+def groups_of(n): batch_of(n);
+
 def s2h:
   . / pow(60; 2);
 
@@ -1202,3 +1204,4 @@ def keep(keys):
   | keys
   | map({key: ., value: $e[.]})
   | from_entries;
+
