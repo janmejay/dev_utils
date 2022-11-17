@@ -1,6 +1,9 @@
 #!/bin/bash
 
-f=/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness
+f_lenovo=/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight/brightness
+if [ -e $f_lenovo ]; then
+    f=$f_lenovo
+fi
 curr=$(sudo cat $f)
 
 if [ "x$1" == "x-" ]; then
