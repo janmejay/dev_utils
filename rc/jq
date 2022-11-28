@@ -1205,3 +1205,48 @@ def keep(keys):
   | map({key: ., value: $e[.]})
   | from_entries;
 
+def b64d: qsh_text("echo \(.) | base64 -d");
+
+def d(msg):
+  .
+  | {m: msg, d: .}
+  | debug
+  | .d;
+
+def dexp(msg; exp):
+  . as $d
+  | {m: msg, d: ($d | exp)}
+  | debug
+  | $d;
+
+def split_if(criteria):
+  reduce .[] as $r (
+    [];
+    if ($r | criteria) then
+      (. + [[$r]])
+    else
+      if length == 0 then
+        [[$r]]
+      else
+        (.[:-1] + [.[-1] + [$r]])
+      end
+    end);
+
+def abs: if . < 0 then . * -1 else . end;
+
+def dq: "\"\(.)\"";
+
+def csv2json:
+  .
+  | split("\n")
+  | . as $d
+  | .[0]
+  | split(",")
+  | map(trim) as $h
+  | $d[1:]
+  | map(.
+        | split(",")
+        | map(trim)
+        | [$h, .]
+        | transpose
+        | map({key: .[0], value: .[1]}));
