@@ -1250,3 +1250,10 @@ def csv2json:
         | [$h, .]
         | transpose
         | map({key: .[0], value: .[1]}));
+
+def add_all(attrs):
+  .
+  | reduce .[] as $r (
+      attrs | map({key: ., value: 0});
+      map({key: .key, value: (.value + $r[.key])}))
+  | from_entries;
