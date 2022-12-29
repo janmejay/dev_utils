@@ -1,7 +1,16 @@
 #!/bin/bash
 
-f=/sys/devices/pci0000:00/0000:00:02.0/drm/card1/card1-eDP-1/intel_backlight/brightness
-f=/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight/brightness
+# incidentally both are the same, but keep the differentiating code anyway
+f_lenovo=/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight/brightness
+f_dell=/sys/devices/pci0000:00/0000:00:02.0/drm/card0/card0-eDP-1/intel_backlight/brightness
+if [ -e $f_lenovo ]; then
+    f=$f_lenovo
+elif [ -e $f_dell ]; then
+    f=$f_dell
+else
+    echo "No known sysfs ctrl file"
+    exit 1
+fi
 curr=$(sudo cat $f)
 
 if [ "x$1" == "x-" ]; then
