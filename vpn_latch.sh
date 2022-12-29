@@ -24,11 +24,14 @@ function refresh {
   fi
 }
 
-return_rule="-d ${vpn_gw_ip} -j ACCEPT"
-onward_rule="-s ${vpn_gw_ip} -j ACCEPT"
+return_rule="-d ${egress_ip} -j ACCEPT"
+onward_rule="-s ${egress_ip} -j ACCEPT"
+nat_rule="-s ${egress_ip} -o ${tun_iface} -j MASQUERADE"
 
-insert_cmd="sudo iptables -t filter -I FORWARD 1"
-drop_cmd="sudo iptables -t filter -D FORWARD"
+insert_filt="iptables -t filter -I FORWARD 1"
+drop_filt="iptables -t filter -D FORWARD"
+insert_nat="iptables -t nat -I POSTROUTING 1"
+drop_nat="iptables -t nat -D POSTROUTING"
 
 case $cmd in
   on)
@@ -43,8 +46,10 @@ case $cmd in
         | tee $refresh_script
     refresh
 
-    ssh -t $vpn_ssh_host \
-        "${insert_cmd} ${onward_rule}; ${insert_cmd} ${return_rule}"
+    ins_frag="${insert_nat} ${nat_rule};"
+    ins_frag+="${insert_filt} ${onward_rule};"
+    ins_frag+="${insert_filt} ${return_rule};"
+    ssh -t $vpn_ssh_host "sudo /bin/bash -c '${ins_frag}'"
     ;;
   off)
     echo "Off..."
@@ -54,7 +59,12 @@ case $cmd in
         | tee $refresh_script
 
     refresh
-    ssh -t $vpn_ssh_host \
-        "${drop_cmd} ${onward_rule}; ${drop_cmd} ${return_rule}"
+
+    drop_frag="${drop_nat} ${nat_rule}; "
+    drop_frag+="${drop_filt} ${onward_rule};"
+    drop_frag+="${drop_filt} ${return_rule}"
+    ssh -t $vpn_ssh_host "sudo /bin/bash -c '${drop_frag}'"
     ;;
+  try)
+      ssh $vpn_ssh_host "ip route show | grep $tun_iface"
 esac
