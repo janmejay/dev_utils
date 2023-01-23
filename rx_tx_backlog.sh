@@ -12,6 +12,7 @@ rm -f $f
 for i in $(seq 1 $samples); do
   sudo netstat -antlp \
       | grep $port \
+      | grep -vF '127.0.0.1' \
       | awk '{print $2" "$3}' \
       | jq -R '.' \
       | jq -s '.

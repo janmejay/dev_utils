@@ -1,6 +1,10 @@
 #!/bin/bash
 
-git branch -vv | jq -Rs \
+curr_branch=$(git symbolic-ref --short HEAD)
+
+branch=${1:-$curr_branch}
+
+git branch -vv | jq --arg br $branch -Rs \
   'def upstream(curr):
      (. as $m
       | $m[curr]
@@ -41,7 +45,7 @@ git branch -vv | jq -Rs \
    (. | split("\n")
       | map({raw: . | gsub(" +"; " ") | split(" ")})
       | map({
-        current: (. | .raw[0] == "*"),
+        current: (if $br then ($br == .raw[1]) else (. | .raw[0] == "*") end),
         branch: .raw[1],
         upstream: (.raw[3][1:][:-1])})
       | map({key: .branch, value: .} | select(.key))
