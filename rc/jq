@@ -745,6 +745,13 @@ def group_by_key_and_collect:
           value: map(.value) })
   | from_entries;
 
+def group_by_and_collect(k; v):
+  .
+  | group_by(k)
+  | map({ key: (.[0] | k),
+          value: map(v) })
+  | from_entries;
+
 def sbs_id:
   gsub("_[0-9]+_[0-9]+$";"");
 
