@@ -50,6 +50,8 @@ case $cmd in
     ins_frag+="${insert_filt} ${onward_rule};"
     ins_frag+="${insert_filt} ${return_rule};"
     ssh -t $vpn_ssh_host "sudo /bin/bash -c '${ins_frag}'"
+    ssh $vpn_ssh_host "cat /etc/dnsmasq.d/vpn.conf" | sudo tee /etc/dnsmasq.d/vpn.conf
+    sudo rc-service dnsmasq restart
     ;;
   off)
     echo "Off..."
