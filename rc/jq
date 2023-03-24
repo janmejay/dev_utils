@@ -1264,3 +1264,31 @@ def add_all(attrs):
       attrs | map({key: ., value: 0});
       map({key: .key, value: (.value + $r[.key])}))
   | from_entries;
+
+def influx0: .results[0].series[0].values;
+
+def sliding_diff:
+  .
+  | sliding(2)
+  | map(.[1] - .[0]);
+
+def time_delta:
+  .
+  | influx0
+  | map(.[0] | iso8601_ts)
+  | sliding_diff
+  | {mean: mean, sd: sd, count: length};
+
+def influx0_val: influx0 | map(.[1]);
+
+def ctr_meter: influx0_val | sliding_diff;
+
+def tm_ns:
+  .
+  | influx0_val
+  | map(./1000/1000 | ceil);
+
+def influx0_change:
+  .
+  | influx0_val
+  | .[-1] - .[0];
