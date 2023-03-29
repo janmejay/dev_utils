@@ -1243,20 +1243,13 @@ def abs: if . < 0 then . * -1 else . end;
 
 def dq: "\"\(.)\"";
 
-def csv2json:
+# call with cat csv.csv | jq -s 'csv_rows'
+def csv_rows:
   .
-  | split("\n")
-  | . as $d
-  | .[0]
-  | split(",")
-  | map(trim) as $h
-  | $d[1:]
-  | map(.
-        | split(",")
-        | map(trim)
-        | [$h, .]
-        | transpose
-        | map({key: .[0], value: .[1]}));
+  | .[0] as $t
+  | .[1:] as $d
+  | $d
+  | map(add_idx | map({key: $t[.idx], value: .data}) | from_entries);
 
 def add_all(attrs):
   .

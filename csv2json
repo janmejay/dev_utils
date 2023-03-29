@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+import csv
+import json
+import sys
+
+if __name__ == "__main__":
+    if len(sys.argv) == 2:
+        f = sys.argv[1]
+        csvfile = open(f)
+    else:
+        csvfile = sys.stdin
+    rdr = csv.reader(csvfile, delimiter=',', quotechar='"')
+    for row in rdr:
+        j = json.dumps(row)
+        print(j)

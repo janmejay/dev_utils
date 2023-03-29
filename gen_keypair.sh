@@ -1,12 +1,13 @@
 #!/bin/bash
 
-cd /tmp
-
-echo "Password:"
+echo -n "Password: "
 read pass
 
-echo "CN:"
+echo -n "CN: "
 read cn
+
+echo -n "IP: "
+read ip
 
 cat << EOF > "extfile.cnf"
 [ req ]
@@ -21,7 +22,7 @@ localityName        = Bar
 commonName          = $cn
 emailAddress        = foo@bar.com
 [ req_ext ]
-subjectAltName      = DNS:$cn,IP:127.0.0.1
+subjectAltName      = DNS:$cn,IP:$ip
 EOF
 
 p="pass:$pass"
