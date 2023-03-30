@@ -6,4 +6,4 @@ if [ "x$at" == 'x' ]; then
     exit 1
 fi
 
-awk -v at=$at 'BEGIN { print "[" } { if (NR > 1 && (NR - 1) % at == 0)  {print "]\n["}; print $0 } END { print "]"}'
+awk -v at=$at 'BEGIN { print "[" } { if (NR > 1 && (NR - 1) % at == 0)  {print "]\n["}; print $0"," } END { print "]"}'
