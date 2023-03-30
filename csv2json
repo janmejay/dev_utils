@@ -33,8 +33,8 @@ if __name__ == "__main__":
     csv.register_dialect(
         'tmp',
         delimiter=args.delim,
-        doublequote=False,
-        escapechar=args.escape)
+        doublequote=(args.escape == '"'),
+        escapechar=None if (args.escape == '"') else args.escape)
     rdr = csv.reader(
         csvfile,
         'tmp',

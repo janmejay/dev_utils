@@ -1,0 +1,9 @@
+#!/bin/bash
+
+at=$1
+if [ "x$at" == 'x' ]; then
+    echo "Usage: split_json <num objs per array>"
+    exit 1
+fi
+
+awk -v at=$at 'BEGIN { print "[" } { if (NR > 1 && (NR - 1) % at == 0)  {print "]\n["}; print $0 } END { print "]"}'
