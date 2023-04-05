@@ -1285,3 +1285,8 @@ def influx0_change:
   .
   | influx0_val
   | .[-1] - .[0];
+
+def to_brackets(open; close):
+  .
+  | gsub(open; "[")
+  | gsub(close; "]");
