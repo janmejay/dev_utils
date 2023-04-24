@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 
+import json
+import sys
 import yaml
 
-with open(sys.argsv[1], "r") as stream:
-    try:
-        print(yaml.safe_load(stream))
-    except yaml.YAMLError as exc:
-        print(exc)
+with open(sys.argv[1], "r") as stream:
+    data = yaml.safe_load(stream)
+
+print(json.dumps(data))
