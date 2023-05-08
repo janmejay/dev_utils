@@ -2,7 +2,7 @@
 
 if [ "x$loaded_xsessionrc" != 'xyes' ]; then
    export SCALA_HOME=/home/janmejay/tools/scala-2.12.2
-   export PATH=~/.dev_utils:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:~/.gem/bin:~/tools/mysql/bin:/home/janmejay/go/bin:$SCALA_HOME/bin
+   export PATH=~/.dev_utils:$JDK_HOME/bin:$PATH:/sbin:/usr/sbin:/var/lib/gems/1.8/bin:~/.gem/bin:~/tools/mysql/bin:/home/janmejay/go/bin:$SCALA_HOME/bin:/home/janmejay/.nix-profile/bin
    export GOPATH=/home/janmejay/go:/home/janmejay/projects/rubrik/sdmain1/src/go
    export loaded_xsessionrc='yes'
 fi
