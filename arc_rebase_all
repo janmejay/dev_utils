@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e
+
+br=$(git first-downstream)
+
+if [ "x$br" == "xnull" ] then
+  echo "Done"
+else
+  git co $br
+  git rebase-stacked
+  arc diff --message=Rebase
+  exec $0
+fi

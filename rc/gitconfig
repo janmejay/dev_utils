@@ -10,6 +10,7 @@
   ls = branch -a
   cp = cherry-pick
   stack = !git-stack
+  first-downstream = !git-first-downstream
   local-commits = !git-all-local-commits
   mark-landed = !git-mark-branch-landed
   rebase-stacked = !git-rebase-stacked-diff
