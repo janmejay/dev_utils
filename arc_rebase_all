@@ -4,7 +4,7 @@ set -e
 
 br=$(git first-downstream)
 
-if [ "x$br" == "xnull" ] then
+if [ "x$br" == "xnull" ]; then
   echo "Done"
 else
   git co $br
