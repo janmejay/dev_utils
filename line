@@ -1,0 +1,9 @@
+#!/bin/bash
+
+l_no=$1
+
+if [ $l_no -gt 0 ]; then
+    head -$l_no | tail -1
+else
+    tail -n$l_no | head -1
+fi
