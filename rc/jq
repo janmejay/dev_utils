@@ -1290,3 +1290,18 @@ def to_brackets(open; close):
   .
   | gsub(open; "[")
   | gsub(close; "]");
+
+# clean-up host in ansible_o2j
+def ah:
+  .
+  | map(.h |= split(" ")[0]);
+
+# filter data in ansible_o2j output
+def adf(t):
+  .
+  | map(.d |= map(select(t)));
+
+def pctn:
+  .
+  | sub("%$";"")
+  | tonumber;
