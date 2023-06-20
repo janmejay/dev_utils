@@ -219,3 +219,6 @@ function cdm_log {
 }
 
 [[ $TERM == "dumb" ]] && unsetopt zle && PS1='$ ' && return
+
+GREP_COLORS='mt=1;32'
+unset GREP_COLOR
