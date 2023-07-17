@@ -19,6 +19,7 @@
   add-remove = !git remove-deleted && git add-untracked
   purge = !git clean -fdx
   lg = log --color --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --
+  graft = !git-graft-stack
 [core]
   editor = emacs -q -nw
   pager = less -F -x4
@@ -30,4 +31,6 @@
   fontui = -family \"Ubuntu Mono\" -size 5 -weight normal -slant roman -underline 0 -overstrike 0
   fontdiff = -family \"Ubuntu Mono\" -size 5 -weight normal -slant roman -underline 0 -overstrike 0
 [pull]
-	rebase = false
+  rebase = false
+[url "git@github.com:"]
+  insteadOf = https://github.com/

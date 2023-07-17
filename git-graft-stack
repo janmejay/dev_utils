@@ -1,0 +1,32 @@
+#!/bin/bash
+
+branch=$1
+
+upto=${2:-other/LOCAL_BASE}
+
+out_cmd="git log --decorate --oneline $upto..$branch | cut -d' ' -f2"
+
+# check all commits have corresponding branch-name (ie. the stack if rebased)
+len_with_branch=$(eval $out_cmd | grep -P "^\\(.+\\)$" | wc -l)
+
+len=$(eval $out_cmd | wc -l)
+
+if [ $len_with_branch -ne $len ]; then
+    echo "Stack is not fully rebased yet, aborting"
+    exit 1
+fi
+
+set -e
+
+echo "Will apply stack of len: $len, starting interactive graft"
+
+dt=$(date '+%Y%m%d')
+
+for raw_b in $(eval $out_cmd | sed -r 's/\(|\)//g' | tac); do
+    b=$(echo $raw_b | sed -re 's#.+/##g')
+    arc feature "G_${dt}__${b}"
+    git cp "$raw_b"
+    echo -n 'Proceed (Hit enter to continue, interrupt to stop)? '
+    read p
+    echo ""
+done
