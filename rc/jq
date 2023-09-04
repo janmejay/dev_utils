@@ -920,7 +920,7 @@ def crdb_records_json:
               | gsub(" +"; " ")
               | split(" | ")
               | {key: .[0], value: .[1]})
-        | from_entries);
+        | from_entries)[];
 
 def crdb_replicas:
   .
