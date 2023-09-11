@@ -3,7 +3,10 @@
 set -e
 
 git rebase-stacked
-arc diff --message=Rebase
+if [ "x$1" != 'xlocal' ]; then
+   arc diff --message=Rebase
+fi
+
 
 br=$(git first-downstream)
 
@@ -11,5 +14,5 @@ if [ "x$br" == "xnull" ]; then
   echo "Done"
 else
   git co $br
-  exec $0
+  exec $0 $@
 fi
