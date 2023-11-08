@@ -1305,3 +1305,72 @@ def pctn:
   .
   | sub("%$";"")
   | tonumber;
+
+#rate calculator
+#investment
+# p = {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, rate: 1.12, mat_err: 10}
+# mat_amt: maturity amount
+# mat_err: max acceptable error in maturity amt
+# pay: investment per year
+# pay_yrs: years to continue investing
+# mat_yrs: years to maturity
+# rate: rate estimate 1.12 is 12%
+#
+#p     = plan
+#yr    = year
+#value = curr value
+
+def dbg_on: $ARGS.named["dbg"] == "true";
+
+def dbg(m):
+  . as $o
+  | if (dbg_on) then {m: m, o: $o} | debug else . end
+  | $o;
+
+def mat_bounded(value; p):
+  if (value < (p.mat_amt - p.mat_err)) then
+   -1
+  elif (value > (p.mat_amt + p.mat_err)) then
+    1
+  else
+    0
+  end;
+
+def roi(p; yr; value):
+  dbg({v: value, y: yr}) |
+  if (yr == p.mat_yrs - 1) then
+    dbg("matured") | mat_bounded(value; p)
+  elif ((yr >= p.pay_yrs) and (yr < p.mat_yrs - 1)) then
+    dbg("not paying") | roi(p; yr + 1; value * p.rate)
+  elif (yr < p.pay_yrs) then
+    dbg("paying") | roi(p; yr + 1; (value + p.pay) * p.rate)
+  else
+    error("Invalid state, yr=\(.yr)")
+  end;
+
+# {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, mat_err: 10} | rate_for(1, 2)
+def rate_for(min_rate; max_rate):
+  .
+  | . as $p
+  | ((min_rate + max_rate) / 2) as $r
+  | $p
+  | .rate = $r
+  | roi(.; 0; 0) as $ret
+  |
+  if ($ret == 0) then
+    $r
+  elif ($ret == 1) then
+    rate_for(min_rate; $r)
+  elif ($ret == -1) then
+    rate_for($r; max_rate)
+  else
+    error("Invalid state, rate=\($r)")
+  end;
+
+# {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, mat_err: 10} | interest
+def interest:
+  .
+  | rate_for(1.0; 2.0)
+  | (. - 1)*100
+  | (.*1000 | round/1000)
+  | "\(.)%";
