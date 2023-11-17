@@ -1,0 +1,12 @@
+#!/bin/bash
+
+git log master.. --pretty=format:"%h %s" | \
+    jq -crR '.
+             | split(" ")
+             | {h: .[0], s:(.[1:] | join(" "))}
+             | .url=(.
+                     | "git show \(.h) | grep -F Differential "
+                     | qsh_text(.)
+                     | split(" |\n"; "")[-2])
+             | "\(.url) : \(.s)"' | \
+    tac
