@@ -1,5 +1,7 @@
 #!/bin/bash
 
+media=${1:-mem}
+
 xautolock -enable
 
 sudo /bin/bash -c \
