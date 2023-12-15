@@ -32,7 +32,7 @@ xterm*font:     *-fixed-*-*-*-18-*
 ! XTerm.vt100.faceName: Liberation Mono:size=20:antialias=false
 
 ! pairing font
-! urxvt.font:xft:DejaVu Sans Mono:pixelsize=21:antialias=true:hinting=true
+! urxvt.font:xft:DejaVu Sans Mono:pixelsize=24:antialias=true:hinting=true
 
 ! zoom meeting room
 ! urxvt.font:xft:DejaVu Sans Mono:pixelsize=30:antialias=true:hinting=true
