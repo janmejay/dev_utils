@@ -9,7 +9,7 @@ fi
 
 curr_br=$(git rev-parse --abbrev-ref HEAD)
 
-if [ "x$rebase_upto" == $curr_br ]; then
+if [ "x$rebase_upto" == "x$curr_br" ]; then
     echo "Reached rebase-target, stopping."
     exit 0
 fi
