@@ -46,9 +46,9 @@ pyenv() {
     export CUR_ENV=$1
 }
 
-venv() { virtualenv $PYENV/$1 --no-site-packages --distribute }
+venv2() { virtualenv $PYENV/$1 }
 
-venv3() { virtualenv $PYENV/$1 --no-site-packages --distribute -p python3 }
+venv3() { virtualenv $PYENV/$1 -p python3 }
 
 pipv() { pip `car $*` -E $PYENV/$CUR_ENV `cdr $*` }
 
