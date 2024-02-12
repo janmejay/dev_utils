@@ -232,3 +232,21 @@ NPM_PACKAGES="$HOME/.npm-packages"
 PATH="$NPM_PACKAGES/bin:$PATH"
 # MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
+
+##### Rubrik sd-dev-env specific
+function rklog {
+  ~/code/sdmain1/tools/logging/rklog.py
+}
+
+function rkless {
+  cat $@  | rklog | less -N
+}
+
+function rktail {
+  stdbuf -o0 -e0 tail $@ | rklog
+}
+
+function rktail {
+  stdbuf -o0 -e0 tail $@ | ~/code/sdmain1/tools/logging/rklog.py
+}
+#####
