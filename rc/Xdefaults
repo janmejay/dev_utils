@@ -35,8 +35,7 @@ xterm*font:     *-fixed-*-*-*-18-*
 ! urxvt.font:xft:DejaVu Sans Mono:pixelsize=24:antialias=true:hinting=true
 
 ! zoom meeting room
-! urxvt.font:xft:DejaVu Sans Mono:pixelsize=30:antialias=true:hinting=true
-
+! urxvt.font:xft:DejaVu Sans Mono:pixelsize=32:antialias=true:hinting=true
 
 ! urxvt.font:xft:ubuntu mono:regular:pixelsize=14:autohint=true
 urxvt.depth: 32
