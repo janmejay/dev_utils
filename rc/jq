@@ -1387,7 +1387,7 @@ def nd(d): if . == null then d else . end;
 # cat /tmp/blk_evt.json | jq -s 'blkio_evt_cidx' > /tmp/c_idx.json
 #
 # Generate time-report
-# cat /tmp/blk_evt.json | jq --argjson c_idx /tmp/c_idx.json -s 'blkio_tm'
+# cat /tmp/blk_evt.json | jq --slurpfile c_idx /tmp/c_idx.json -s 'blkio_tm'
 def blkio_evt:
   .
   | split(" ")
@@ -1421,7 +1421,7 @@ def blkio_tm:
         | .
       else
         $i
-        | select($c_idx[$r.off_sz | split("+")[0]])
+        | select($c_idx[0][$r.off_sz | split("+")[0]])
         | (.[$r.a][$r.off_sz] |= $r.t)
         | del(.p)
       end;
