@@ -1374,3 +1374,50 @@ def interest:
   | (. - 1)*100
   | (.*1000 | round/1000)
   | "\(.)%";
+
+def nd(d): if . == null then d else . end;
+
+# Usage: ... | \
+#   blkparse -i - -M | \
+#   awk '$6 != "m" {print $4" "$6" "$7" "$8" "$9" "$10}' | \
+#   grep -P '[0-9]+ \+ [0-9]+' | \
+#   jq -cR 'blkio_evt' | jq -s 'blkio_tm'
+def blkio_evt:
+  .
+  | split(" ")
+  | {
+    t: .[0] | tonumber,
+    a: .[1],
+    op: .[2],
+    off_sz: .[3:] | join("")};
+
+def blkio_tm:
+  foreach .[] as $r (
+    {"A": {}, "Q": {}, "I": {}, "D": {}, "G": {}};
+
+    . as $i
+    | $r.off_sz as $k
+    | $i
+    | if $r.a == "C" then
+        {
+          A: (.A | del(.[$k])),
+          Q: (.Q | del(.[$k])),
+          I: (.I | del(.[$k])),
+          D: (.D | del(.[$k])),
+          G: (.G | del(.[$k])),
+          p: (
+            $r
+            | {
+                a: ($r.t - ($i["A"][.off_sz] | nd($r.t))),
+                q: ($r.t - ($i["Q"][.off_sz] | nd($r.t))),
+                i: ($r.t - ($i["I"][.off_sz] | nd($r.t))),
+                d: ($r.t - ($i["D"][.off_sz] | nd($r.t)))})}
+        | .
+      else
+        $i
+        | (.[$r.a][$r.off_sz] |= $r.t)
+        | del(.p)
+      end;
+
+    . as $i
+    | if $i.p then ($r | .t = $i.p) | . else null end);
