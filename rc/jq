@@ -1421,6 +1421,7 @@ def blkio_tm:
         | .
       else
         $i
+        | select($c_idx[$r.off_sz | split("+")[0]])
         | (.[$r.a][$r.off_sz] |= $r.t)
         | del(.p)
       end;
