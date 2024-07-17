@@ -1388,6 +1388,12 @@ def nd(d): if . == null then d else . end;
 #
 # Generate time-report
 # cat /tmp/blk_evt.json | jq --slurpfile c_idx /tmp/c_idx.json -s 'blkio_tm'
+#
+# Event's time values are keyed by 'a', 'i' etc,
+# a => time between remap -> queued
+# q => time between queued -> issued
+# ...
+# d => time between dispatched -> complete
 def blkio_evt:
   .
   | split(" ")
@@ -1414,11 +1420,17 @@ def blkio_tm:
           p: (
             $r
             | {
-                a: ($r.t - ($i["A"][.off_sz] | nd($r.t))),
-                q: ($r.t - ($i["Q"][.off_sz] | nd($r.t))),
-                i: ($r.t - ($i["I"][.off_sz] | nd($r.t))),
-                d: ($r.t - ($i["D"][.off_sz] | nd($r.t)))})}
-        | .
+                a: $i["A"][.off_sz],
+                q: $i["Q"][.off_sz],
+                i: $i["I"][.off_sz],
+                d: $i["D"][.off_sz],
+                c: $r.t}
+            | map_values(nd($r.t))
+            | {
+                a: (.q - .a),
+                q: (.i - .q),
+                i: (.d - .i),
+                d: (.c - .d)})}
       else
         $i
         | select($c_idx[0][$r.off_sz | split("+")[0]])
@@ -1427,7 +1439,7 @@ def blkio_tm:
       end;
 
     . as $i
-    | if $i.p then ($r | .t = $i.p) | . else null end);
+    | if $i.p then ($r | .t = $i.p) | del(.a) else null end);
 
 # slurp
 def blkio_evt_cidx:
