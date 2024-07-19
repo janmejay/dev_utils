@@ -460,10 +460,10 @@ def humanize(u; d; uts):
   | $v
   | if . then h($i) else . end;
 
-def size_h:
+def _size_h(sep):
   humanize(
   "B";
-  " ";
+  sep;
   [{u: "B", m: 1024},
    {u: "KiB", m: 1024},
    {u: "MiB", m: 1024},
@@ -472,6 +472,9 @@ def size_h:
    {u: "PiB", m: 1024},
    {u: "EiB", m: infinite}]);
 
+def size_h: _size_h(" ");
+
+def size_h_no_space:_size_h("");
 
 def count_h:
   humanize(
@@ -879,10 +882,12 @@ def qtile_all_idx(qs):
   | map({key: .m, value: .v})
   | from_entries;
 
-def qtile_all_str(qs):
+def qtile_all_str(qs; map_fn; drop_count):
   .
   | qtile_all(qs)
-  | map("\(.m) -> \(.v)");
+  | map(select(.m != "cnt"))
+  | map("\(.m) = \(.v | map_fn)")
+  | join(", ");
 
 def mean: add / length;
 
