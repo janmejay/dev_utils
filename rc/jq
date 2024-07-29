@@ -1437,44 +1437,52 @@ def blkio_evt:
     off_sz: .[5:] | join("")}
   | if .a != "A" then del(.s_dev) else . end;
 
+def blk_evt_match(r):
+  $o_idx[0][r.off_sz | split("+")[0]] and $c_idx[0][r.off_sz | split("+")[0]];
+
 def blkio_tm:
   foreach .[] as $r (
-    {"A": {}, "Q": {}, "I": {}, "D": {}, "G": {}};
+    {};
 
     . as $i
     | $r.off_sz as $k
     | $i
-    | if $r.a == "C" then
-        {
-          A: (.A | del(.[$k])),
-          Q: (.Q | del(.[$k])),
-          I: (.I | del(.[$k])),
-          D: (.D | del(.[$k])),
-          G: (.G | del(.[$k])),
-          p: (
-            $r
-            | {
-                a: $i["A"][.off_sz],
-                q: $i["Q"][.off_sz],
-                i: $i["I"][.off_sz],
-                d: $i["D"][.off_sz],
-                c: $r.t}
-            | map_values(nd($r.t))
-            | {
-                a: (.q - .a),
-                q: (.i - .q),
-                i: (.d - .i),
-                d: (.c - .d)})}
+    | if blk_evt_match($r) then
+      .
+      | if $r.a == "C" then
+          {
+            A: (.A | del(.[$k])),
+            Q: (.Q | del(.[$k])),
+            I: (.I | del(.[$k])),
+            D: (.D | del(.[$k])),
+            G: (.G | del(.[$k])),
+            p: (
+              $r
+              | {
+                  a: $i["A"][.off_sz],
+                  q: $i["Q"][.off_sz],
+                  i: $i["I"][.off_sz],
+                  d: $i["D"][.off_sz],
+                  c: $r.t}
+              | map_values(nd($r.t))
+              | {
+                  a: (.q - .a),
+                  q: (.i - .q),
+                  i: (.d - .i),
+                  d: (.c - .d)})}
+        else
+          .
+          | (.[$r.a][$r.off_sz] |= $r.t)
+          | del(.p)
+        end
       else
         $i
-        | select($o_idx[0][$r.off_sz | split("+")[0]])
-        | select($c_idx[0][$r.off_sz | split("+")[0]])
-        | (.[$r.a][$r.off_sz] |= $r.t)
-        | del(.p)
       end;
 
     . as $i
-    | if $i.p then ($r | .t = $i.p) | del(.a) else null end);
+    | select(blk_evt_match($r))
+    | if $i.p then ($r | .t = $i.p) | del(.a) else null end)
+  | select(.);
 
 # slurp
 def blkio_evt_cidx:
