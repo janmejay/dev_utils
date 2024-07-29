@@ -1450,13 +1450,9 @@ def blkio_tm:
     | if blk_evt_match($r) then
       .
       | if $r.a == "C" then
-          {
-            A: (.A | del(.[$k])),
-            Q: (.Q | del(.[$k])),
-            I: (.I | del(.[$k])),
-            D: (.D | del(.[$k])),
-            G: (.G | del(.[$k])),
-            p: (
+          .
+          | map_values(del(.[$k]))
+          | .p = (
               $r
               | {
                   a: $i["A"][.off_sz],
@@ -1469,7 +1465,7 @@ def blkio_tm:
                   a: (.q - .a),
                   q: (.i - .q),
                   i: (.d - .i),
-                  d: (.c - .d)})}
+                  d: (.c - .d)})
         else
           .
           | (.[$r.a][$r.off_sz] |= $r.t)
