@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # export IDEA_JDK=/usr/lib/jvm/oracle-jdk-bin-1.8 # (used until 04 May 2022)
 # export IDEA_JDK=/usr/lib/jvm/openjdk-bin-11

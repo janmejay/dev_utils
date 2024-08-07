@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 addr=${1:-8.8.8.8}
 aud=${2:-/usr/share/sounds/freedesktop/stereo/message-new-instant.oga}

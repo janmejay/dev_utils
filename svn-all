@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo "files to be removed form svn versioning are..."
 svn st | grep ! | awk '{print $2}'
 read -p "Remove em all?? (Y/n):"

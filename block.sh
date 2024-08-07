@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 sudo ipset list blacklist 1>/dev/null 2>&1
 

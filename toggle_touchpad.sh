@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 prop='Device Enabled'
 dev_id=$(xinput list | grep -iP '(touchpad|Synaptics|Generic Mouse)' | grep -Po 'id=\d+' | grep -Po '\d+')
 

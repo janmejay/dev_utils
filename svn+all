@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo "files to be added for versioning with svn are..."
 svn st | grep ? | awk '{print $2}'
 read -p "Add em all?? (Y/n):"

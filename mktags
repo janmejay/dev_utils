@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function mktags {
   find . -name "*.[h|c]" -o -name "*.cpp" -o -name "*.cc" \

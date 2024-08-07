@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 if [ $# -eq 2 ]; then
     match_str=$2
 elif [ $# -eq 1 ]; then

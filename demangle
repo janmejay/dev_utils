@@ -1,3 +1,3 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 curl --data-urlencode input@- https://demangler.com/raw

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # this is called id-her because I wrote this to capture my daughters in action (they really like XF86PowerOff button :-)
 # comment out shutdown invocation and append "/home/janmejay/bin/id-her shut me down" to /etc/acpi/actions/powerbtn.sh (or whereever else acpi-shutdown handling is)

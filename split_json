@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 at=$1
 if [ "x$at" == 'x' ]; then

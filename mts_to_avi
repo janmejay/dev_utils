@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 src=$1
 dest=`echo $1 | sed -e 's/MTS/avi/g'`
