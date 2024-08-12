@@ -8,5 +8,5 @@ if [ "x$on" == 'x0' ]; then
     pkill hide_mouse_ptr
 else
     xinput set-prop $dev_id "$prop" 0
-    $(dirname $0)/hide_mouse_ptr &
+    hide_mouse_ptr &
 fi
