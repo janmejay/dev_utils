@@ -20,7 +20,7 @@ peer_egress_route=$(ssh $vpn_ssh_host "ip route get ${egress_ip}")
 refresh_script=/tmp/refresh.route.sh
 function refresh {
   if [ -s $refresh_script ]; then
-    sudo /bin/bash $refresh_script
+    sudo $0 $refresh_script
   fi
 }
 
@@ -51,7 +51,7 @@ case $cmd in
     ins_frag+="${insert_filt} ${return_rule};"
     ssh -t $vpn_ssh_host "sudo /bin/bash -c '${ins_frag}'"
     ssh $vpn_ssh_host "cat /etc/dnsmasq.d/vpn.conf" | sudo tee /etc/dnsmasq.d/vpn.conf
-    sudo rc-service dnsmasq restart
+    sudo systemctl restart dnsmasq
     ;;
   off)
     echo "Off..."
