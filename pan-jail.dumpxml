@@ -102,9 +102,5 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x04' function='0x0'/>
     </memballoon>
   </devices>
-  <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+0:+0</label>
-    <imagelabel>+0:+0</imagelabel>
-  </seclabel>
 </domain>
 
