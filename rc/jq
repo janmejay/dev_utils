@@ -460,10 +460,10 @@ def humanize(u; d; uts):
   | $v
   | if . then h($i) else . end;
 
-def size_h:
+def _size_h(sep):
   humanize(
   "B";
-  " ";
+  sep;
   [{u: "B", m: 1024},
    {u: "KiB", m: 1024},
    {u: "MiB", m: 1024},
@@ -472,6 +472,9 @@ def size_h:
    {u: "PiB", m: 1024},
    {u: "EiB", m: infinite}]);
 
+def size_h: _size_h(" ");
+
+def size_h_no_space:_size_h("");
 
 def count_h:
   humanize(
@@ -879,10 +882,12 @@ def qtile_all_idx(qs):
   | map({key: .m, value: .v})
   | from_entries;
 
-def qtile_all_str(qs):
+def qtile_all_str(qs; map_fn):
   .
   | qtile_all(qs)
-  | map("\(.m) -> \(.v)");
+  | map(if (.m | test("^q")) then .v |= map_fn else . end)
+  | map("\(.m) = \(.v)")
+  | join(", ");
 
 def mean: add / length;
 
@@ -1379,15 +1384,47 @@ def nd(d): if . == null then d else . end;
 
 # Usage: ... | \
 #   blkparse -i - -M | \
-#   awk '$6 != "m" {print $4" "$6" "$7" "$8" "$9" "$10}' | \
+#   awk '$6 != "m" {print $4" "$6" "$7" "$12" "$13" "$8" "$9" "$10}' | \
 #   grep -P '[0-9]+ \+ [0-9]+' | \
 #   jq -cR 'blkio_evt' > /tmp/blk_evt.json
 #
 # Generate cidx json using
 # cat /tmp/blk_evt.json | jq -s 'blkio_evt_cidx' > /tmp/c_idx.json
 #
+# Generate child-device-of-interest index
+# cat /tmp/blk_evt.json | \
+#    jq -s 'blkio_evt_devidx_soff({"(253,4)": true})' > /tmp/1_soff.json
+#
+# cat /tmp/blk_evt.json | jq \
+#    --slurpfile soff_idx /tmp/1_soff.json \
+#    -s 'blkio_evt_relevant_off' > /tmp/2_off.json
 # Generate time-report
-# cat /tmp/blk_evt.json | jq --slurpfile c_idx /tmp/c_idx.json -s 'blkio_tm'
+# cat /tmp/blk_evt.json | jq \
+#   --slurpfile c_idx /tmp/c_idx.json \
+#   --slurpfile d_idx /tmp/2_off.json \
+#   -s 'blkio_tm'
+#
+# Event's time values are keyed by 'a', 'i' etc,
+# a => time between remap -> queued
+# q => time between queued -> issued
+# ...
+# d => time between dispatched -> complete
+#
+# Eg.
+# cat /tmp/sdd1.evt.json | jq \
+#    --slurpfile c_idx /tmp/c_idx.json --slurpfile o_idx /tmp/2_off.json \
+#    -s 'blkio_tm | select(.)' | jq \
+#        -s '.
+#            | {a: map(.t.a), q: map(.t.q), i: map(.t.i), d: map(.t.d)}
+#            | map_values(qtile_all_str([95,99,100]; time_sh))'
+#
+# {
+#   "a": "q95 = 487.21ns, q99 = 688.19ns, q100 = 6.38us",
+#   "q": "q95 = 11.13us, q99 = 18.33us, q100 = 214.63us",
+#   "i": "q95 = 23.21us, q99 = 34.15us, q100 = 575.57us",
+#   "d": "q95 = 162.27us, q99 = 1.02ms, q100 = 4.02ms"
+# }
+#
 def blkio_evt:
   .
   | split(" ")
@@ -1395,42 +1432,69 @@ def blkio_evt:
     t: .[0] | tonumber,
     a: .[1],
     op: .[2],
-    off_sz: .[3:] | join("")};
+    s_dev: .[3],
+    s_off: .[4],
+    off_sz: .[5:] | join("")}
+  | if .a != "A" then del(.s_dev) else . end;
+
+def blk_evt_match(r):
+  $o_idx[0][r.off_sz | split("+")[0]] and $c_idx[0][r.off_sz | split("+")[0]];
 
 def blkio_tm:
   foreach .[] as $r (
-    {"A": {}, "Q": {}, "I": {}, "D": {}, "G": {}};
+    {};
 
     . as $i
     | $r.off_sz as $k
     | $i
-    | if $r.a == "C" then
-        {
-          A: (.A | del(.[$k])),
-          Q: (.Q | del(.[$k])),
-          I: (.I | del(.[$k])),
-          D: (.D | del(.[$k])),
-          G: (.G | del(.[$k])),
-          p: (
-            $r
-            | {
-                a: ($r.t - ($i["A"][.off_sz] | nd($r.t))),
-                q: ($r.t - ($i["Q"][.off_sz] | nd($r.t))),
-                i: ($r.t - ($i["I"][.off_sz] | nd($r.t))),
-                d: ($r.t - ($i["D"][.off_sz] | nd($r.t)))})}
-        | .
+    | if blk_evt_match($r) then
+      .
+      | if $r.a == "C" then
+          .
+          | map_values(del(.[$k]))
+          | .p = (
+              $r
+              | {
+                  a: $i["A"][.off_sz],
+                  q: $i["Q"][.off_sz],
+                  i: $i["I"][.off_sz],
+                  d: $i["D"][.off_sz],
+                  c: $r.t}
+              | map_values(nd($r.t))
+              | {
+                  a: (.q - .a),
+                  q: (.i - .q),
+                  i: (.d - .i),
+                  d: (.c - .d)})
+        else
+          .
+          | (.[$r.a][$r.off_sz] |= $r.t)
+          | del(.p)
+        end
       else
         $i
-        | select($c_idx[0][$r.off_sz | split("+")[0]])
-        | (.[$r.a][$r.off_sz] |= $r.t)
-        | del(.p)
       end;
 
     . as $i
-    | if $i.p then ($r | .t = $i.p) | . else null end);
+    | select(blk_evt_match($r))
+    | if $i.p then ($r | .t = $i.p) | del(.a) else null end)
+  | select(.);
 
 # slurp
 def blkio_evt_cidx:
   .
   | map(select(.a == "C") | .off_sz | split("+")[0])
+  | mapify(true);
+
+
+#slurp
+def blkio_evt_devidx_soff(dev):
+  .
+  | map(select(.a == "A" and (.s_dev | in(dev))) | .off_sz | split("+")[0])
+  | mapify(true);
+
+#slurp
+def blkio_evt_relevant_off:
+  .
+  | map(select(.a == "A" and (.s_off | in($soff_idx[0]))) | .off_sz | split("+")[0])
   | mapify(true);

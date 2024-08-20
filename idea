@@ -11,7 +11,8 @@
 #/home/janmejay/tools/idea-IC-181.5540.7/bin/idea.sh & # (last good before scala upgrade on master)
 #/home/janmejay/tools/idea-IC-191.7479.19/bin/idea.sh &
 # /home/janmejay/tools/idea-IC-191.6183.87/bin/idea.sh & # (used until 04 May 2022)
-/home/janmejay/tools/idea-IC-221.5080.210/bin/idea.sh &
+# /home/janmejay/tools/idea-IC-221.5080.210/bin/idea.sh &
+/home/janmejay/tools/idea-IC-241.18034.62/bin/idea.sh &
 
 #/home/janmejay/tools/idea-IC-182.4892.20/bin/idea.sh & # does not accept Set(classOf[TransactionRaceLostException]) for Class[_ <: Throwable] => Boolean
 
