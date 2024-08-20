@@ -4,7 +4,7 @@ media=${1:-mem}
 
 xautolock -enable
 
-sudo /bin/bash -c \
+sudo /bin/sh -c \
      'sync &&
       xautolock -locknow &&
       sleep 1 &&
