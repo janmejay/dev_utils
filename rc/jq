@@ -1382,6 +1382,13 @@ def interest:
 
 def nd(d): if . == null then d else . end;
 
+def eza_opts:
+  . as $orig
+  | $orig
+  | gsub("t|r"; "")
+  | if ($orig | (test("t") and test("r"))) then gsub("$"; "sold")
+    elif ($orig | test("t")) then gsub("$";"snew") end;
+
 # Usage: ... | \
 #   blkparse -i - -M | \
 #   awk '$6 != "m" {print $4" "$6" "$7" "$12" "$13" "$8" "$9" "$10}' | \
