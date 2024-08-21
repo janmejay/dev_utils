@@ -2,3 +2,12 @@
 
 * For Talks:
 ** TODO Use talk_xdefault.patch for talks
+
+* Tftp
+** Run:
+  sudo in.tftpd -p -u janmejay -v 2 -4 -L -l -m tftp.map /home/janmejay/tmp/tftp_data_dir
+** mapping
+  rg ^/blk-mamba.128mb.img$ /home/janmejay/tmp/tftp_data_dir/upgrade.bin
+  rg ^./blk-mamba.128mb.img$ /home/janmejay/tmp/tftp_data_dir/upgrade.bin
+  rg ^blk-mamba.128mb.img$ /home/janmejay/tmp/tftp_data_dir/upgrade.bin
+
