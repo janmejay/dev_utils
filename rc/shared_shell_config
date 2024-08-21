@@ -224,7 +224,7 @@ NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 function ls {
   opts=$1
   if [ "x$opts" != 'x' ]; then
-    opts=$(echo $opts | jq -R 'eza_opts')
+    opts=$(echo $opts | jq -rR 'eza_opts')
   fi
   eza $opts
 }
