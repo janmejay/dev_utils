@@ -221,14 +221,6 @@ PATH="$NPM_PACKAGES/bin:$PATH"
 # MANPATH="$NPM_PACKAGES/share/man:$(manpath)"
 NODE_PATH="$NPM_PACKAGES/lib/node_modules:$NODE_PATH"
 
-function ls {
-  opts=$1
-  if [ "x$opts" != 'x' ]; then
-    opts=$(echo $opts | jq -rR 'eza_opts')
-  fi
-  eza $opts
-}
-
 ##### Rubrik sd-dev-env specific
 function rklog {
   ~/code/sdmain1/tools/logging/rklog.py
