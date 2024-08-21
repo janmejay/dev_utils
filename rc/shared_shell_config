@@ -8,6 +8,7 @@ export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
 export MYSQL_HOME=~/tools/mysql
+alias emacs='/run/current-system/sw/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias gotags='etags `find . -name "*.go"`'
