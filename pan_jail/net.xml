@@ -1,0 +1,13 @@
+<network>
+  <name>pan-jail</name>
+  <uuid>c5e65907-8147-4b59-a235-0e7f48126329</uuid>
+  <forward mode='nat'/>
+  <bridge name='pj0' stp='on' delay='0'/>
+  <mac address='50:54:aa:54:27:2c'/>
+  <dns enable='no' forwardPlainNames='yes'/>
+  <ip address='172.19.0.1' netmask='255.255.255.252'>
+    <dhcp>
+      <range start='172.19.0.2' end='172.19.0.2'/>
+    </dhcp>
+  </ip>
+</network>
