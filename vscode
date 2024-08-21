@@ -1,3 +1,2 @@
 #!/usr/bin/env bash
-#exec ~/tools/VSCode-linux-x64/code
-exec /run/current-system/sw/bin/code
+exec /home/janmejay/.nix-profile/bin/code
