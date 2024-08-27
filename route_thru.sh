@@ -25,6 +25,8 @@ local_tun_dev=$(echo $tun_spec | sed -re 's/:.+//g' -e 's/^/tun/')
 
 ssh -w$tun_spec root@$tun_gw 'sleep 123456789' &
 
+trap "kill $(jobs -p)" EXIT
+
 while : ; do
   echo "Awaiting tunnel $local_tun_dev ..."
   ip link show | grep -qP "^\d+: $local_tun_dev:"
@@ -45,9 +47,9 @@ ssh root@$tun_gw <<EOF
     awk '{print \$2}' | \
     sort | \
     uniq | \
-    xargs -n1 -I% iptables -t nat -I POSTROUTING 1 -s $local_nw -o % -j MASQUERADE
- iptables -t filter -I FORWARD 1 -d $local_nw -j ACCEPT
- iptables -t filter -I FORWARD 1 -s $local_nw -j ACCEPT
+    xargs -n1 -I% iptables -t nat -I POSTROUTING 1 -s $nw -o % -j MASQUERADE
+ iptables -t filter -I FORWARD 1 -d $nw -j ACCEPT
+ iptables -t filter -I FORWARD 1 -s $nw -j ACCEPT
  ip link set up $gw_tun_dev
  ip addr add $gw_ip_nw dev $gw_tun_dev
 EOF
@@ -62,4 +64,4 @@ echo $ip_addr | \
   xargs -n1 | \
   xargs -I% ip route add % via $gw_ip
 
-fg
+wait $(jobs -p)
