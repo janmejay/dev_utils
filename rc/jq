@@ -1437,29 +1437,48 @@ def blkio_evt:
     off_sz: .[5:] | join("")}
   | if .a != "A" then del(.s_dev) else . end;
 
-def blk_evt_match(r):
-  $o_idx[0][r.off_sz | split("+")[0]] and $c_idx[0][r.off_sz | split("+")[0]];
+def blk_evt_match(i; off; sz; dev):
+  ((dev == null) or (dev == "(8,49)")) and (($o_idx[0][off]) or (i[off][sz] != null));
+
+def account_for_fragmentation(i; off; sz):
+    if ((i[off] != null) and (i[off] | keys | length) == 1) and (i[off][sz] == null) then
+		i
+        | (.[off] | keys | .[0]) as $prev_sz
+        | (((off|tonumber)+(sz|tonumber)) | tostring)  as $new_off
+        | ((($prev_sz|tonumber)-(sz|tonumber)) | tostring) as $new_sz
+        | .[off][sz] = .[off][$prev_sz]
+		| if ($new_sz|tonumber) > 0 then
+			.
+			| dbg("fragmentation")
+			| .[$new_off][$new_sz] = .[off][$prev_sz]
+		  else
+			.
+		  end
+        | del(.[off][$prev_sz])
+    else
+        i
+    end;
 
 def blkio_tm:
   foreach .[] as $r (
     {};
 
     . as $i
-    | $r.off_sz as $k
-    | $i
-    | if blk_evt_match($r) then
-      .
+	| ($r.off_sz | split("+")[0]) as $off
+	| ($r.off_sz | split("+")[1]) as $sz
+    | if blk_evt_match($i;$off;$sz;$r.s_dev) then
+      account_for_fragmentation($i;$off;$sz)
       | if $r.a == "C" then
           .
-          | map_values(del(.[$k]))
+          | del(.[$off][$sz])
           | .p = (
               $r
               | {
-                  a: $i["A"][.off_sz],
-                  q: $i["Q"][.off_sz],
-                  i: $i["I"][.off_sz],
-                  d: $i["D"][.off_sz],
-                  c: $r.t}
+                  a: $i[$off][$sz]["A"],
+                  q: $i[$off][$sz]["Q"],
+                  i: $i[$off][$sz]["I"],
+                  d: $i[$off][$sz]["D"],
+				  c: $r.t}
               | map_values(nd($r.t))
               | {
                   a: (.q - .a),
@@ -1468,15 +1487,15 @@ def blkio_tm:
                   d: (.c - .d)})
         else
           .
-          | (.[$r.a][$r.off_sz] |= $r.t)
+          | (.[$off][$sz][$r.a] |= $r.t)
           | del(.p)
         end
       else
-        $i
+		.
+		| del(.p)
       end;
 
     . as $i
-    | select(blk_evt_match($r))
     | if $i.p then ($r | .t = $i.p) | del(.a) else null end)
   | select(.);
 
@@ -1496,5 +1515,12 @@ def blkio_evt_devidx_soff(dev):
 #slurp
 def blkio_evt_relevant_off:
   .
-  | map(select(.a == "A" and (.s_off | in($soff_idx[0]))) | .off_sz | split("+")[0])
+  | map(select(.a == "A" and (.s_dev == "(8,49)") and (.s_off | in($soff_idx[0]))) | .off_sz | split("+")[0])
   | mapify(true);
+
+def off_in_stages(stg):
+  .
+  | map (.
+		 | (.off_sz | split("+")[0]) as $off
+		 | (.off_sz | split("+")[1]) as $sz
+		 | select(blk_evt_match(null;$off;$sz;.s_dev) and (.a == stg)) | .off_sz);
