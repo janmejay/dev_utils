@@ -1,4 +1,4 @@
-def git_out:
+def git_log:
   .
   | split("\n\ncommit ";null)
   | map(
@@ -7,8 +7,19 @@ def git_out:
       | (. |= "commit \(.)")
       | split("\n")
       | split_if(. == "")
-      | [.[0] | map(split(" ") | {key: .[0], value: .[1]})]
-          + [.[1][1:] | map(trim)]);
+      | (.
+         | .[0]
+         | map(split(" ")
+         | {key: .[0], value: .[1]})) +
+        (.
+         | .[1][1:]
+         | map(trim)
+         | [
+            {key: "title", value: .[0]},
+            {key: "text", value: (.
+                                  | .[1:]
+                                  | if (.[0] == "") then .[1:] else . end)}]))
+  | map(from_entries);
 
 # intersect 2 sets, passed as 2 members of an array eg.
 #  input:
