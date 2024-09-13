@@ -1323,7 +1323,7 @@ def git_log:
       | (.
          | .[0]
          | map(split(" ")
-         | {key: .[0], value: .[1]})) +
+         | {key: .[0], value: .[1:] | join(" ")})) +
         (.
          | .[1][1:]
          | map(trim)
