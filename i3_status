@@ -142,7 +142,7 @@ class CpuStats:
 class MemMatcher:
     def __init__(self, name):
         self.name = name
-        self.re = re.compile("^%s:\s+([0-9]+) kB$" % name)
+        self.re = re.compile("^%s:\\s+([0-9]+) kB$" % name)
 
 class MemStats:
     def __init__(self):
