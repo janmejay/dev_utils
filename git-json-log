@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+len=${1:-10}
+
+git log -$len --format=raw | jq -sR 'git_log'

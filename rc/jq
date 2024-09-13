@@ -1,3 +1,15 @@
+def git_out:
+  .
+  | split("\n\ncommit ";null)
+  | map(
+      .
+      | gsub("^commit ";"")
+      | (. |= "commit \(.)")
+      | split("\n")
+      | split_if(. == "")
+      | [.[0] | map(split(" ") | {key: .[0], value: .[1]})]
+          + [.[1][1:] | map(trim)]);
+
 # intersect 2 sets, passed as 2 members of an array eg.
 #  input:
 #   $ echo '[[1, 2, 3, 4], [5, 6, 4, 1]]' | jq '. | intersect'
