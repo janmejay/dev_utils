@@ -3,6 +3,7 @@
 cmd=$1
 
 vpn_gw_ip=$2
+set -x
 if [ -z $vpn_gw_ip ]; then
     echo "VPN GW IP addr is required (NAT isn't supported)"
     exit 1
@@ -20,7 +21,7 @@ peer_egress_route=$(ssh $vpn_ssh_host "ip route get ${egress_ip}")
 refresh_script=/tmp/refresh.route.sh
 function refresh {
   if [ -s $refresh_script ]; then
-    sudo $0 $refresh_script
+    sudo /usr/bin/env bash $refresh_script
   fi
 }
 
@@ -49,7 +50,7 @@ case $cmd in
     ins_frag="${insert_nat} ${nat_rule};"
     ins_frag+="${insert_filt} ${onward_rule};"
     ins_frag+="${insert_filt} ${return_rule};"
-    ssh -t $vpn_ssh_host "sudo /bin/bash -c '${ins_frag}'"
+    ssh -t $vpn_ssh_host "sudo /usr/bin/env bash -c '${ins_frag}'"
     ssh $vpn_ssh_host "cat /etc/dnsmasq.d/vpn.conf" | sudo tee /etc/dnsmasq.d/vpn.conf
     sudo systemctl restart dnsmasq
     ;;
@@ -65,7 +66,7 @@ case $cmd in
     drop_frag="${drop_nat} ${nat_rule}; "
     drop_frag+="${drop_filt} ${onward_rule};"
     drop_frag+="${drop_filt} ${return_rule}"
-    ssh -t $vpn_ssh_host "sudo /bin/bash -c '${drop_frag}'"
+    ssh -t $vpn_ssh_host "sudo /usr/bin/env bash -c '${drop_frag}'"
     ;;
   try)
       ssh $vpn_ssh_host "ip route show | grep $tun_iface"
