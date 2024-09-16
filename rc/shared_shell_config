@@ -66,15 +66,7 @@ for i in `seq 1 10`; do
     alias $name="cd $dir"
 done
 
-MVN_HOME=/home/janmejay/tools/apache-maven-3.5.0
-export PATH=$MVN_HOME/bin:$PATH:/home/janmejay/tools/gcloud/bin
-mvn_cmd="${MVN_HOME}/bin/mvn -DdownloadSources=true"
-
-alias mvn="$mvn_cmd"
-alias mi="$mvn_cmd idea:clean idea:idea"
-alias mci="$mvn_cmd clean install -DskipTests=true"
-alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
-alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
+export PATH=$PATH:/home/janmejay/tools/gcloud/bin:/mnt/work/bin
 
 function scr() {
     local screen_layouts=~/.screenlayout;
