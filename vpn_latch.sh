@@ -67,6 +67,9 @@ case $cmd in
     drop_frag+="${drop_filt} ${onward_rule};"
     drop_frag+="${drop_filt} ${return_rule}"
     ssh -t $vpn_ssh_host "sudo /usr/bin/env bash -c '${drop_frag}'"
+
+    echo '' | sudo tee /etc/dnsmasq.d/vpn.conf
+    sudo systemctl restart dnsmasq
     ;;
   try)
       ssh $vpn_ssh_host "ip route show | grep $tun_iface"
