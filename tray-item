@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 
-read -rsn1 i
+i=${1:-1} # item number; 1 based index
 
-if ! [[ "x$i" =~ ^x[0-9]+$ ]] ; then
-  echo "Given tray item 1-based index is not a number: $i"
-fi
-
-a=$1 # l => left click, r => right click
+a=$2 # l => left click, r => right click
 
 click=''
 if [ "x$a" == 'xr' ]; then
