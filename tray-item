@@ -11,7 +11,7 @@ elif [ "x$a" == 'xl' ]; then
   click="--click 1"
 fi
 
-x=$(expr 3688 '+' '(' $i '*' 22 ')')
+x=$(expr 3844 '-' '(' $i '*' 22 ')')
 y=12
 
 warpd --oneshot --move "$x $y" $click
