@@ -230,7 +230,7 @@ function rktail {
   stdbuf -o0 -e0 tail $@ | ~/code/sdmain1/tools/logging/rklog.py
 }
 
-alias img='timg -p k'
+alias img='timg -p k -g 80'
 #####
 
 PATH=$PATH:~/.dev_utils
