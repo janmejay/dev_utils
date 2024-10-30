@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-sudo rc-service docker start
+sudo systemctl start docker
 
 docker_gw_ip=$(
     ip addr \
