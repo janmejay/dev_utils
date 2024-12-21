@@ -884,8 +884,8 @@ def qtile_all_idx(qs):
 
 def qtile_all_str(qs; map_fn):
   .
-  | qtile_all(qs)
-  | map(if (.m | test("^q")) then .v |= map_fn else . end)
+  | [{m: "m", v: mean}, {m: "sd", v: sd}] + qtile_all(qs)
+  | map(if (.m | test("^cnt") | not) then .v |= map_fn else . end)
   | map("\(.m) = \(.v)")
   | join(", ");
 
@@ -1394,6 +1394,8 @@ def rate_for(min_rate; max_rate):
   else
     error("Invalid state, rate=\($r)")
   end;
+
+def round(n): (. * pow(10; n)) | round / pow(10; n);
 
 # {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, mat_err: 10} | interest
 def interest:
