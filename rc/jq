@@ -882,13 +882,6 @@ def qtile_all_idx(qs):
   | map({key: .m, value: .v})
   | from_entries;
 
-def qtile_all_str(qs; map_fn):
-  .
-  | [{m: "m", v: mean}, {m: "sd", v: sd}] + qtile_all(qs)
-  | map(if (.m | test("^cnt") | not) then .v |= map_fn else . end)
-  | map("\(.m) = \(.v)")
-  | join(", ");
-
 def mean: add / length;
 
 def sq_diff:
@@ -903,6 +896,13 @@ def sq_diff:
 def variance: sq_diff / length;
 
 def sd: variance | sqrt;
+
+def qtile_all_str(qs; map_fn):
+  .
+  | [{m: "m", v: mean}, {m: "sd", v: sd}] + qtile_all(qs)
+  | map(if (.m | test("^cnt") | not) then .v |= map_fn else . end)
+  | map("\(.m) = \(.v)")
+  | join(", ");
 
 def batch_of(n):
   . as $l
