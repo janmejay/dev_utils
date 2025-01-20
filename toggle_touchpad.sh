@@ -4,7 +4,7 @@ prop='Device Enabled'
 
 dev_ids=$(
     xinput list | \
-    grep -iP '(touchpad|Synaptics|Generic Mouse|ELAN2D)' | \
+    grep -iP '(touchpad|Synaptics|Generic Mouse|ELAN|SNSL|TrackPoint)' | \
     grep -Po 'id=\d+' | \
     grep -Po '\d+' | \
     sort -nk1 | \
