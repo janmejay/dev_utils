@@ -142,7 +142,7 @@ class CpuStats:
 class MemMatcher:
     def __init__(self, name):
         self.name = name
-        self.re = re.compile("^%s:\s+([0-9]+) kB$" % name)
+        self.re = re.compile("^%s:\\s+([0-9]+) kB$" % name)
 
 class MemStats:
     def __init__(self):
@@ -221,7 +221,7 @@ class ConnectivityCheck:
         }]
         for name, addr in self.__addrs:
             ret = subprocess.run(
-                args = ["timeout", "2", "ping", "-c", "1", addr],
+                args = ["timeout", "2", "ping", "-nc", "1", addr],
                 stdout = subprocess.DEVNULL,
                 stderr = subprocess.DEVNULL)
             results.append({

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 DIR="${HOME}/Pictures/Screenshots"
 DATE="$(date +%Y%m%d@%H%M%S)"

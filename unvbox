@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 sudo rmmod vboxnetflt
 sudo rmmod vboxnetadp
 sudo rmmod vboxdrv

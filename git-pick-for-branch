@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 echo -e "Picking commit \E[32m $1 \E[0m for \E[31m $2 \E[0m ..."
 read -p " Pick? (Y/n):"
 if [ "$REPLY" != "n" ]; then

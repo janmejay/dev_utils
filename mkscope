@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 function mkscope {
     find . -type f -name '*.h' -o -name '*.c' -o -name '*.y' -o -name '*.l' \

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+sz=${1:-30}
+
+urxvt -fn "xft:DejaVu Sans Mono:regular:size=$sz" -e tmux

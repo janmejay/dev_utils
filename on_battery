@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 read -p 'introduce VM writeback delay??? (Y/n):'
 

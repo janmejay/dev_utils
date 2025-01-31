@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 file_name=~/tmp/gem_set/$1
 link_location=~/.gem

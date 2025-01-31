@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 id=${1:-$(hostname)}
 usr=${2:-jj}

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+i=${1:-1} # item number; 1 based index
+
+a=$2 # l => left click, r => right click
+
+click=''
+if [ "x$a" == 'xr' ]; then
+  click="--click 3"
+elif [ "x$a" == 'xl' ]; then
+  click="--click 1"
+fi
+
+x=$(expr 3844 '-' '(' $i '*' 22 ')')
+y=12
+
+warpd --oneshot --move "$x $y" $click
+
+if [ "x$click" == 'x' ]; then
+  warpd --normal
+fi

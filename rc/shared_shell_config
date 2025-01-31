@@ -1,14 +1,14 @@
 . $(dirname $0)/xsessionrc
 
 #removed :~/tools/thrift/bin because installed thrift-0.9.2 in /usr/local
-export CDPATH=.:~:~/Desktop:~/projects:~/projects/rubrik
+export CDPATH=.:~:~/Desktop:~/projects:~/projects/observo
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/.dev_utils/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
 export EDITOR='emacs -nw -q'
 export MYSQL_HOME=~/tools/mysql
-alias emacs='/usr/bin/emacs -nw -q'
+alias emacs='/run/current-system/sw/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias gotags='etags `find . -name "*.go"`'
@@ -66,15 +66,7 @@ for i in `seq 1 10`; do
     alias $name="cd $dir"
 done
 
-MVN_HOME=/home/janmejay/tools/apache-maven-3.5.0
-export PATH=$MVN_HOME/bin:$PATH:/home/janmejay/tools/gcloud/bin
-mvn_cmd="${MVN_HOME}/bin/mvn -DdownloadSources=true"
-
-alias mvn="$mvn_cmd"
-alias mi="$mvn_cmd idea:clean idea:idea"
-alias mci="$mvn_cmd clean install -DskipTests=true"
-alias md="MAVEN_OPTS='-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005' $mvn_cmd"
-alias mdt="$mvn_cmd -Dmaven.surefire.debug='-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=5005 -Xnoagent -Djava.compiler=NONE' test"
+export PATH=$PATH:/home/janmejay/tools/gcloud/bin:/mnt/work/bin
 
 function scr() {
     local screen_layouts=~/.screenlayout;
@@ -146,18 +138,6 @@ function clip() {
     clipa $*
 }
 #alias clip='cat | xs'
-
-function man() {
-	env \
-		LESS_TERMCAP_mb=$(printf "\e[1;31m") \
-		LESS_TERMCAP_md=$(printf "\e[1;31m") \
-		LESS_TERMCAP_me=$(printf "\e[0m") \
-		LESS_TERMCAP_se=$(printf "\e[0m") \
-		LESS_TERMCAP_so=$(printf "\e[1;44;33m") \
-		LESS_TERMCAP_ue=$(printf "\e[0m") \
-		LESS_TERMCAP_us=$(printf "\e[1;32m") \
-			/usr/bin/man "$@"
-}
 
 alias music=pragha
 
@@ -249,6 +229,8 @@ function rktail {
 function rktail {
   stdbuf -o0 -e0 tail $@ | ~/code/sdmain1/tools/logging/rklog.py
 }
+
+alias img='timg -p k -g 80'
 #####
 
 PATH=$PATH:~/.dev_utils

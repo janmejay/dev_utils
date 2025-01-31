@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 git-stack \
   | jq -r '.DOWN[0] | if (. | type == "object") then keys[0] else . end'

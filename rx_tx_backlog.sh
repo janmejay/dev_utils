@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 samples=${1:-1000}
 sleep=${2:-.2}

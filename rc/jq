@@ -882,13 +882,6 @@ def qtile_all_idx(qs):
   | map({key: .m, value: .v})
   | from_entries;
 
-def qtile_all_str(qs; map_fn):
-  .
-  | qtile_all(qs)
-  | map(if (.m | test("^q")) then .v |= map_fn else . end)
-  | map("\(.m) = \(.v)")
-  | join(", ");
-
 def mean: add / length;
 
 def sq_diff:
@@ -903,6 +896,13 @@ def sq_diff:
 def variance: sq_diff / length;
 
 def sd: variance | sqrt;
+
+def qtile_all_str(qs; map_fn):
+  .
+  | [{m: "m", v: mean}, {m: "sd", v: sd}] + qtile_all(qs)
+  | map(if (.m | test("^cnt") | not) then .v |= map_fn else . end)
+  | map("\(.m) = \(.v)")
+  | join(", ");
 
 def batch_of(n):
   . as $l
@@ -1311,6 +1311,29 @@ def pctn:
   | sub("%$";"")
   | tonumber;
 
+def git_log:
+  .
+  | split("\n\ncommit ";null)
+  | map(
+      .
+      | gsub("^commit ";"")
+      | (. |= "commit \(.)")
+      | split("\n")
+      | split_if(. == "")
+      | (.
+         | .[0]
+         | map(split(" ")
+         | {key: .[0], value: .[1:] | join(" ")})) +
+        (.
+         | .[1][1:]
+         | map(trim)
+         | [
+            {key: "title", value: .[0]},
+            {key: "text", value: (.
+                                  | .[1:]
+                                  | if (.[0] == "") then .[1:] else . end)}]))
+  | map(from_entries);
+
 #rate calculator
 #investment
 # p = {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, rate: 1.12, mat_err: 10}
@@ -1371,6 +1394,8 @@ def rate_for(min_rate; max_rate):
   else
     error("Invalid state, rate=\($r)")
   end;
+
+def round(n): (. * pow(10; n)) | round / pow(10; n);
 
 # {mat_amt: 2000, pay: 500, pay_yrs: 2, mat_yrs: 4, mat_err: 10} | interest
 def interest:
