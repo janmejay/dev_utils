@@ -1523,3 +1523,15 @@ def blkio_evt_relevant_off:
   .
   | map(select(.a == "A" and (.s_off | in($soff_idx[0]))) | .off_sz | split("+")[0])
   | mapify(true);
+
+# converts table [["col1", "col2" ...], row1, row2 ..] format to [obj1, obj2 ...] etc
+def t2o:
+  .
+  | . as $d
+  | $d[0] as $h
+  | $d[1:]
+    | map(.
+          | [$h, .]
+          | transpose
+          | map({key: .[0], value: .[1]})
+          | from_entries);
