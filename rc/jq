@@ -1535,3 +1535,27 @@ def t2o:
           | transpose
           | map({key: .[0], value: .[1]})
           | from_entries);
+
+def pad(len; chr):
+  .
+  | {s: tostring}
+  | .l = (.s | length)
+  | if (.l < len) then chr*(len - .l) + .s else .s end;
+
+
+# enumerate (add index)
+def enum: [foreach .[] as $e (0; . + 1; {i: ., e: $e})];
+
+# align for transposing (say by fields x and y using `tr_align([.x, .y])`
+def tr_align(col_ids):
+  def cel_vs: . as $cel | col_ids | map(. as $f | $cel | $f);
+  . as $f
+  | $f
+  | map(map(cel_vs)[])
+  | sort
+  | unique
+  | enum
+  | map({key: (.e | tojson), value: .i})
+  | from_entries as $idx
+  | $f
+  | map(reduce .[] as $c ([]; .[$idx[$c | cel_vs | tojson]] = $c));
