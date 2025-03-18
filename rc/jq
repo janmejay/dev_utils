@@ -916,7 +916,7 @@ def s2h:
 
 def crdb_records_json:
   . as $d
-  | ($d | map(select(test("^-[ RECORD [0-9]+ ]$"))) | length) as $n
+  | ($d | map(select(test("^-[ RECORD [0-9]+ ]-*$"))) | length) as $n
   | $d
   | batch_of(($d | length / $n))
   | map(.
