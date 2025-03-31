@@ -238,6 +238,9 @@ function kctx {
 }
 
 function kctl {
+  if [ -z $kube_ctx ]; then
+    export kube_ctx=$(kubectx -c)
+  fi
   kubectl --context $kube_ctx "$@"
 }
 
