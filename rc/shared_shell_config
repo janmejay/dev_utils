@@ -232,6 +232,15 @@ function rktail {
   stdbuf -o0 -e0 tail $@ | ~/code/sdmain1/tools/logging/rklog.py
 }
 
+function kctx {
+  kubectx
+  export kube_ctx=$(kubectx -c)
+}
+
+function kctl {
+  kubectl --context $kube_ctx "$@"
+}
+
 alias img='timg -p k -g 80'
 #####
 
