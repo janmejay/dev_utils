@@ -2,4 +2,4 @@
 
 # converts crdb --format=records output to json
 
-jq -R | jq -s 'crdb_records_json'
+jq -R | jq -s 'pg_records_json'

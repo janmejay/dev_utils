@@ -914,9 +914,10 @@ def groups_of(n): batch_of(n);
 def s2h:
   . / pow(60; 2);
 
-def crdb_records_json:
+
+def pg_records_json:
   . as $d
-  | ($d | map(select(test("^-[ RECORD [0-9]+ ]-*$"))) | length) as $n
+  | ($d | map(select(test("^-[ RECORD [0-9]+ ][+-]*$"))) | length) as $n
   | $d
   | batch_of(($d | length / $n))
   | map(.
