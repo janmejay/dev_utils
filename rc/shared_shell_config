@@ -232,6 +232,8 @@ function rktail {
   stdbuf -o0 -e0 tail $@ | ~/code/sdmain1/tools/logging/rklog.py
 }
 
+OBS_K8S_SOCKS_PROXY=socks5://localhost:5000
+
 function kctx {
   kubectx
   export kube_ctx=$(kubectx -c)
@@ -241,7 +243,7 @@ function kctl {
   if [ -z $kube_ctx ]; then
     export kube_ctx=$(kubectx -c)
   fi
-  kubectl --context $kube_ctx "$@"
+  HTTPS_PROXY=$OBS_K8S_SOCKS_PROXY kubectl --context $kube_ctx "$@"
 }
 
 alias img='timg -p k -g 80'
