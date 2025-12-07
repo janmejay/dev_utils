@@ -68,27 +68,7 @@ for i in `seq 1 10`; do
     alias $name="cd $dir"
 done
 
-export PATH=$PATH:/home/janmejay/tools/gcloud/bin:/mnt/work/bin
-
-function scr() {
-    local screen_layouts=~/.screenlayout;
-    if [ $# -ne 1 ]; then
-        echo "Please identify configuration to use, possible options are:"
-        for i in find $screen_layouts -name '*.sh'; do
-            echo "- $i" | sed -e 's/\.sh//g'
-        done
-    else
-        local recipe=$screen_layouts/$1.sh
-        if [ -f $recipe ]; then
-            echo "Running $recipe"
-            $recipe
-        else
-            echo "Recipe $recipe does not exist"
-        fi
-    fi
-}
-
-export PATH=~/tools/google-cloud-sdk/bin:$PATH:~/.local/bin
+export PATH=$PATH:~/.local/bin
 # alias clip='cat >> /tmp/clip'
 function clipa() {
     suffix=''
@@ -112,7 +92,8 @@ function clipa() {
     local lines_before=$(wc -l $clip_file | awk '{print $1}')
     local chars_before=$(wc -c $clip_file | awk '{print $1}')
     if [ "x$2" = 'xx' ]; then
-      copyq clipboard > $clip_file
+      /Applications/CopyQ.app/Contents/MacOS/CopyQ clipboard > $clip_file
+      # copyq clipboard > $clip_file
     else
       tmux saveb -a $clip_file
     fi
