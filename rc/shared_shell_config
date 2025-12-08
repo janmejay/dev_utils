@@ -1,4 +1,5 @@
-. $(dirname $0)/xsessionrc
+# . $(dirname $0)/xsessionrc # no local linux
+export GOPATH=$HOME/.go
 
 bindkey "^[l" down-case-word
 
