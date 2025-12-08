@@ -1,5 +1,6 @@
 # . $(dirname $0)/xsessionrc # no local linux
 export GOPATH=$HOME/.go
+export PATH=$PATH:$GOPATH/bin
 
 bindkey "^[l" down-case-word
 
