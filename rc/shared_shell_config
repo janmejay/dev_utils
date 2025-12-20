@@ -1,4 +1,6 @@
-. $(dirname $0)/xsessionrc
+# . $(dirname $0)/xsessionrc # no local linux
+export GOPATH=$HOME/.go
+export PATH=$PATH:$GOPATH/bin
 
 bindkey "^[l" down-case-word
 
@@ -8,9 +10,8 @@ export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/.dev_utils/rc/pythonrc
 export TZ='Asia/Calcutta'
 export JAVA_OPTS='-Xmx1536m -Xms500m'
-export EDITOR='emacs -nw -q'
+export EDITOR='nvim'
 export MYSQL_HOME=~/tools/mysql
-alias emacs='/run/current-system/sw/bin/emacs -nw -q'
 
 alias ruby_tags='/usr/bin/ctags -e -a --Ruby-kinds=-cmfF -o TAGS -R .'
 alias gotags='etags `find . -name "*.go"`'
@@ -233,3 +234,12 @@ alias img='timg -p k -g 80'
 PATH=$PATH:~/.dev_utils
 
 alias gemini="npx @google/gemini-cli@latest"
+
+function y() {
+	local tmp="$(mktemp -t "yazi-cwd.XXXXXX")" cwd
+	yazi "$@" --cwd-file="$tmp"
+	IFS= read -r -d '' cwd < "$tmp"
+	[ -n "$cwd" ] && [ "$cwd" != "$PWD" ] && builtin cd -- "$cwd"
+	rm -f -- "$tmp"
+}
+
