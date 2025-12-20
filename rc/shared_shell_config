@@ -231,3 +231,5 @@ alias img='timg -p k -g 80'
 #####
 
 PATH=$PATH:~/.dev_utils
+
+alias gemini="npx @google/gemini-cli@latest"
