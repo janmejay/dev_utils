@@ -1003,13 +1003,17 @@ def tr_align(col_ids):
   | $f
   | map(reduce .[] as $c ([]; .[$idx[$c | cel_vs | tojson]] = $c));
 
-def obj(exp):
+def obj(exp; dereference):
   ..
   | select(type == "object" and exp)
-  | exp;
+  | if dereference then exp else . end;
 
-def arr(exp):
+def obj(exp): obj(exp; false);
+
+def arr(exp; dereference):
   ..
   | select(type == "array" and exp)
-  | exp;
+  | if dereference then exp else . end;
+
+def arr(exp): arr(exp; false);
 
