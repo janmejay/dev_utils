@@ -4,8 +4,7 @@ export PATH=$PATH:$GOPATH/bin
 
 bindkey "^[l" down-case-word
 
-#removed :~/tools/thrift/bin because installed thrift-0.9.2 in /usr/local
-export CDPATH=.:~:~/Desktop:~/projects:~/projects/observo
+export CDPATH=.:~:~/projects:~/ob:~/s1
 export SVN_EDITOR=$EDITOR
 export PYTHONSTARTUP=~/.dev_utils/rc/pythonrc
 export TZ='Asia/Calcutta'
