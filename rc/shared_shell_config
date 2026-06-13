@@ -244,3 +244,7 @@ function y() {
 	rm -f -- "$tmp"
 }
 
+# Agnoster's prompt_dir uses $CURRENT_FG (effectively dark) on a blue bg,
+# which is unreadable on many dark themes. Force white text.
+prompt_dir() { prompt_segment blue white '%~'; }
+
