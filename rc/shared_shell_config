@@ -218,14 +218,27 @@ function kctx {
   export kube_ctx=$(kubectx -c)
 }
 
+function kns {
+  if [ -z $1 ]; then
+    echo "clearing kube-ns = $kube_ns"
+    unset kube_ns
+  else
+    export kube_ns="$1"
+  fi
+}
+
 function kctl {
   if [ -z $kube_ctx ]; then
     export kube_ctx=$(kubectx -c)
   fi
-  if [ -z $OBS_K8S_SOCKS_PROXY ]; then
+  if [[ -n "$OBS_K8S_SOCKS_PROXY" ]]; then
+    local HTTPS_PROXY
+    HTTPS_PROXY=$OBS_K8S_SOCKS_PROXY
+  fi
+  if [ -z $kube_ns ]; then
     kubectl --context $kube_ctx "$@"
   else
-    HTTPS_PROXY=$OBS_K8S_SOCKS_PROXY kubectl --context $kube_ctx "$@"
+    kubectl --context $kube_ctx --namespace $kube_ns "$@"
   fi
 }
 
