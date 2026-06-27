@@ -1,5 +1,10 @@
 #!/bin/bash
-sel=$(aerospace list-windows --all \
-        --format '%{window-id}│%{app-name} — %{window-title}' \
-      | choose)
-[ -n "$sel" ] && aerospace focus --window-id "${sel%%│*}"
+if [ -z "$1" ]; then
+  echo "Usage: aerospace_windows.sh <focus|close>"
+  exit 1
+fi
+cmd=$1
+
+sel=$(aerospace list-windows --focused --format '%{window-id}│%{app-name} — %{window-title}' | choose)
+[ -n "$sel" ] && aerospace $cmd --window-id "${sel%%│*}"
+
