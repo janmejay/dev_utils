@@ -5,6 +5,6 @@ if [ -z "$1" ]; then
 fi
 cmd=$1
 
-sel=$(aerospace list-windows --focused --format '%{window-id}│%{app-name} — %{window-title}' | choose)
+ws=$(aerospace list-workspaces --focused)
+sel=$(aerospace list-windows --workspace $ws --format '%{window-id}│%{app-name} — %{window-title}' | choose)
 [ -n "$sel" ] && aerospace $cmd --window-id "${sel%%│*}"
-
