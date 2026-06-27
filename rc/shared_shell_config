@@ -92,8 +92,8 @@ function clipa() {
     local lines_before=$(wc -l $clip_file | awk '{print $1}')
     local chars_before=$(wc -c $clip_file | awk '{print $1}')
     if [ "x$2" = 'xx' ]; then
-      /Applications/CopyQ.app/Contents/MacOS/CopyQ clipboard > $clip_file
       # copyq clipboard > $clip_file
+      pbpaste > $clip_file
     else
       tmux saveb -a $clip_file
     fi
